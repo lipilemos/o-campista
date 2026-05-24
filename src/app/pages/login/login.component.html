@@ -1,0 +1,32 @@
+<div class="login-container">
+
+  <div class="login-card">
+
+    <div class="logo">
+    </div>
+
+    <h2>Bem-vindo</h2>
+
+    <input type="text" placeholder="Usuário" [(ngModel)]="usuario" />
+
+    <input type="password" placeholder="Senha" [(ngModel)]="senha" />
+
+    <button (click)="entrar()" [disabled]="loading">
+
+      @if(loading){
+      Entrando...
+      } @else {
+      Entrar
+      }
+
+    </button>
+
+    @if(erro){
+    <p class="erro">
+      {{ erro }}
+    </p>
+    }
+
+  </div>
+
+</div>
