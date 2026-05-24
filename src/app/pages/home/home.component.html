@@ -1,0 +1,54 @@
+<div class="home">
+
+    <div class="banner">
+
+        <button class="menu-toggle" (click)="toggleMenu()">
+            ☰
+        </button>
+
+    </div>
+
+    <div class="overlay" [class.show]="menuOpen" (click)="toggleMenu()">
+    </div>
+
+    <div class="layout">
+
+        <aside class="sidebar" [class.open]="menuOpen">
+
+            <div class="logo"></div>
+
+            <nav class="menu">
+
+                <button class="menu-item active">
+                    Minha Conta
+                </button>
+
+                <button class="menu-item">
+                    Campings
+                </button>
+
+                <button class="menu-item">
+                    Checklist
+                </button>
+
+            </nav>
+
+        </aside>
+
+        <main class="main-content">
+
+            <div class="content">
+
+                <h1>Bem-vindo ao O Campista 🏕️</h1>
+
+                <p>
+                    Seu portal de aventuras e campings.
+                </p>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</div>
