@@ -2,7 +2,7 @@
 
     <div class="banner">
 
-        <button class="menu-toggle" (click)="toggleMenu()">
+        <button class="menu-toggle" [class.hidden]="mapState.campingAberto()" (click)="toggleMenu()">
             ☰
         </button>
 
@@ -19,15 +19,15 @@
 
             <nav class="menu">
 
-                <button class="menu-item active">
+                <button class="menu-item" [class.active]="telaAtual === 'home'" (click)="abrirHome()">
                     Minha Conta
                 </button>
 
-                <button class="menu-item">
-                    Campings
+                <button class="menu-item" [class.active]="telaAtual === 'mapa'" (click)="abrirMapa()">
+                    Mapa
                 </button>
 
-                <button class="menu-item">
+                <button class="menu-item" [class.active]="telaAtual === 'checklist'" (click)="abrirChecklist()">
                     Checklist
                 </button>
 
@@ -39,11 +39,27 @@
 
             <div class="content">
 
+                @if (telaAtual === 'home') {
+
                 <h1>Bem-vindo ao O Campista 🏕️</h1>
 
                 <p>
                     Seu portal de aventuras e campings.
                 </p>
+
+                }
+
+                @if (telaAtual === 'mapa') {
+
+                <app-map />
+
+                }
+
+                @if (telaAtual === 'checklist') {
+
+                <h2>Checklist</h2>
+
+                }
 
             </div>
 

@@ -1,0 +1,68 @@
+<div class="map-wrapper">
+
+    <div #mapContainer class="map-container"></div>
+
+    @if (campingSelecionado) {
+
+    <div class="camping-info">
+        <button class=" btn-fechar" (click)="fecharCampingInfo()">
+
+            ✖
+
+        </button>
+        <!-- <img [src]="campingSelecionado.fotoPrincipal" [alt]="campingSelecionado.nome"> -->
+
+        <div class="camping-content">
+
+            <h2>
+                {{ campingSelecionado.nome }}
+            </h2>
+
+            <span class="tipo">
+                {{ campingSelecionado.tipo }}
+            </span>
+
+            <p class="avaliacao">
+                ⭐ {{ campingSelecionado.avaliacao }}
+            </p>
+
+            <p class="descricao">
+                {{ campingSelecionado.descricao }}
+            </p>
+
+            <div class="info-item">
+                📍 {{ campingSelecionado.cidade }} - {{ campingSelecionado.estado }}
+            </div>
+
+            <div class="info-item">
+                🛣️ {{ campingSelecionado.endereco }}
+            </div>
+
+            <div class="info-item">
+                📞 {{ campingSelecionado.telefone }}
+            </div>
+
+            <h4>Recursos</h4>
+
+            <div class="recursos">
+
+                @for (recurso of campingSelecionado.recursos; track recurso.nome) {
+
+                <div class="recurso" [class.disponivel]="recurso.disponivel" [class.indisponivel]="!recurso.disponivel">
+
+                    {{ recurso.disponivel ? '✅' : '❌' }}
+                    {{ recurso.nome }}
+
+                </div>
+
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+    }
+
+</div>
