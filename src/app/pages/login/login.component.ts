@@ -38,4 +38,12 @@ export class LoginComponent {
         }
       });
   }
+
+  recuperarSenha() {
+    this.router.navigate(['/forgot-password']);
+  }
+
+  criarConta() {
+    this.router.navigate(['/register']);
+  }
 }
