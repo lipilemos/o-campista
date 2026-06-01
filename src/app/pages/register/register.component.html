@@ -1,0 +1,40 @@
+<div class="register-container">
+
+    <div class="register-card">
+
+        <button type="button" class="back-button" (click)="voltarParaLogin()">
+            ← Voltar para login
+        </button>
+        <div class="logo"></div>
+
+        <h2>Criar conta</h2>
+
+        <form [formGroup]="form" (ngSubmit)="register()">
+
+            <input formControlName="nome" type="text" placeholder="Nome completo" />
+            <input formControlName="usuario" type="text" placeholder="Usuário" />
+            <input formControlName="email" type="email" placeholder="E-mail" />
+            <input formControlName="senha" type="password" placeholder="Senha" />
+            <input formControlName="confirmarSenha" type="password" placeholder="Confirmar senha" />
+
+            <button type="submit" [disabled]="loading">
+                @if(loading){
+                Criando conta...
+                } @else {
+                Criar conta
+                }
+            </button>
+
+            @if(sucesso){
+            <p class="sucesso">{{ sucesso }}</p>
+            }
+
+            @if(erro){
+            <p class="erro">{{ erro }}</p>
+            }
+
+        </form>
+
+    </div>
+
+</div>

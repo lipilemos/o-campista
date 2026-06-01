@@ -25,6 +25,15 @@ export class AuthService {
         );
     }
 
+    register(registro: { nome: string; usuario: string; email: string; senha: string }): Observable<User> {
+        return this.http.post<User>(`${this.apiUrl}/register`, registro).pipe(
+            tap(user => {
+                localStorage.setItem('token', user.token);
+                localStorage.setItem('user', JSON.stringify(user));
+            })
+        );
+    }
+
     logout() {
         localStorage.clear();
     }

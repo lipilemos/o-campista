@@ -98,6 +98,38 @@ button:hover {
   background: #e54e26;
 }
 
+.login-secondary {
+
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.btn_hover {
+  background: #ffffff;
+  color: #000000;
+}
+
+.btn_hover:hover {
+  background: #e54e26;
+  color: #ffffff;
+}
+
+.link-button {
+
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+}
+
+.link-button:hover {
+  background: transparent;
+}
+
 .erro {
 
   color: #ffb3b3;
