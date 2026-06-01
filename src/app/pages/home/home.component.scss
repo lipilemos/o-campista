@@ -85,7 +85,6 @@
     color: white;
 
     font-size: 16px;
-    font-weight: 500;
 
     text-align: left;
 
@@ -93,7 +92,10 @@
 
     cursor: pointer;
 
-    transition: 0.2s;
+    transition:
+        background .2s,
+        transform .2s,
+        box-shadow .2s;
 }
 
 .menu-item:hover {
@@ -106,6 +108,13 @@
     background: #f99920;
 
     color: white;
+
+    font-weight: 600;
+
+    box-shadow:
+        0 4px 12px rgba(249, 153, 32, .4);
+
+    transform: translateX(5px);
 }
 
 /* CONTEÚDO */
@@ -114,7 +123,7 @@
 
     flex: 1;
 
-    padding: 30px;
+    padding: 0;
 }
 
 .content h1 {
@@ -195,6 +204,7 @@
 
         align-items: center;
         justify-content: center;
+        z-index: 10003;
     }
 
     .layout {
@@ -212,15 +222,17 @@
         width: 260px;
         height: 100vh;
 
-        z-index: 999;
+        z-index: 10002;
 
-        transition: 0.3s;
+        transition: .3s;
     }
 
     .sidebar.open {
 
         left: 0;
     }
+
+
 
     .main-content {
 
@@ -233,4 +245,8 @@
 
         height: 260px;
     }
+}
+
+.hidden {
+    display: none !important;
 }
