@@ -1,16 +1,35 @@
 <div class="map-wrapper">
 
-    <div #mapContainer class="map-container"></div>
+    <div class="filtros">
+
+        <input type="text" placeholder="Buscar cidade, estado ou camping..." [(ngModel)]="busca"
+            (input)="aplicarFiltros()">
+
+        <select [(ngModel)]="categoriaSelecionada" (change)="aplicarFiltros()">
+
+            <option value="">Todas categorias</option>
+            <option value="camping">🏕️ Camping</option>
+            <option value="cachoeira">💧 Cachoeira</option>
+            <option value="trilha">🥾 Trilha</option>
+            <option value="mirante">🌄 Mirante</option>
+            <option value="pesca">🎣 Pesca</option>
+
+        </select>
+
+    </div>
+
+    <div #mapContainer class="map-container">
+    </div>
 
     @if (campingSelecionado) {
 
     <div class="camping-info">
-        <button class=" btn-fechar" (click)="fecharCampingInfo()">
+
+        <button class="btn-fechar" (click)="fecharCampingInfo()">
 
             ✖
 
         </button>
-        <!-- <img [src]="campingSelecionado.fotoPrincipal" [alt]="campingSelecionado.nome"> -->
 
         <div class="camping-content">
 
