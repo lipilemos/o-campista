@@ -1,0 +1,61 @@
+<div class="weather-card">
+
+    <div class="weather-header">
+
+        <div class="weather-icon">
+
+            {{ weather.icone }}
+
+        </div>
+
+        <div>
+
+            <h3>
+                Condição para Acampamento
+            </h3>
+
+            <span>
+                {{ weather.cidade }}
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="weather-temp">
+
+        {{ weather.temperatura }}°C
+
+    </div>
+
+    <div class="weather-description">
+
+        {{ weather.descricao }}
+
+    </div>
+
+    <div class="weather-details">
+
+        <div>
+            💧 Umidade: {{ weather.umidade }}%
+        </div>
+
+        <div>
+            🌬️ Vento: {{ weather.vento }} km/h
+        </div>
+
+        <div>
+            🌧️ Chuva: {{ weather.chuva }}%
+        </div>
+
+    </div>
+
+    <div class="weather-status" [class.excelente]="weather.statusCamping === 'Excelente'"
+        [class.atencao]="weather.statusCamping === 'Atenção'" [class.ruim]="weather.statusCamping === 'Ruim'">
+
+        {{ obterEmojiStatus(weather.statusCamping) }}
+        {{ weather.statusCamping }} para acampar
+
+    </div>
+
+</div>
