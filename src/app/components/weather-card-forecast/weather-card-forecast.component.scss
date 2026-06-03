@@ -1,0 +1,36 @@
+.forecast-card {
+
+    background: white;
+
+    border-radius: 20px;
+
+    padding: 20px;
+
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, .08);
+}
+
+.forecast-card h3 {
+
+    margin: 0 0 15px 0;
+
+    color: #6e1217;
+}
+
+.forecast-item {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 12px 0;
+
+    border-bottom: 1px solid #eee;
+}
+
+.forecast-item:last-child {
+
+    border-bottom: none;
+}

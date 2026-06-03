@@ -46,7 +46,19 @@
                 <p>
                     Seu portal de aventuras e campings.
                 </p>
+                @if (weather) {
 
+                <app-weather-card [weather]="weather">
+                </app-weather-card>
+
+                }
+                <div style="margin: 10px;"></div>
+                @if (previsao3Dias.length) {
+
+                <app-weather-card-forecast [previsoes]="previsao3Dias">
+                </app-weather-card-forecast>
+
+                }
                 }
 
                 @if (telaAtual === 'mapa') {

@@ -119,6 +119,16 @@ export class MapComponent implements AfterViewInit {
         mapId: environment.idMaps
       }
     );
+
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        this.map.setCenter({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        });
+        this.map.setZoom(12);
+      }
+    );
   }
 
   private obterEmoji(tipo: string): string {
