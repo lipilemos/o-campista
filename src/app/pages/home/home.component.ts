@@ -5,12 +5,13 @@ import { WeatherForecast } from '../../core/models/weather-forecast.model';
 import { Weather } from '../../core/models/weather.model';
 import { MapStateService } from '../../core/services/map-state.service';
 import { WeatherService } from '../../core/services/weather.service';
+import { ChecklistComponent } from '../checklist/checklist.component';
 import { MapComponent } from '../map/map.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [MapComponent, WeatherCardComponent, WeatherForecastCardComponent],
+  imports: [MapComponent, WeatherCardComponent, WeatherForecastCardComponent, ChecklistComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })

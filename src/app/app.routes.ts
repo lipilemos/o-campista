@@ -33,6 +33,12 @@ export const routes: Routes = [
                 .then(m => m.MapComponent)
     },
     {
+        path: 'checklist',
+        loadComponent: () =>
+            import('./pages/checklist/checklist.component')
+                .then(m => m.ChecklistComponent)
+    },
+    {
         path: '**',
         redirectTo: ''
     }
