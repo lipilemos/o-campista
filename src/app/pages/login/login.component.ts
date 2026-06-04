@@ -17,7 +17,7 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  usuario = '';
+  email = '';
   senha = '';
 
   loading = false;
@@ -27,7 +27,7 @@ export class LoginComponent {
 
     this.loading = true;
 
-    this.authService.login(this.usuario, this.senha)
+    this.authService.login(this.email, this.senha)
       .subscribe({
         next: () => {
           this.router.navigate(['/home']);

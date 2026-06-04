@@ -12,10 +12,10 @@ export class AuthService {
 
     private apiUrl = 'https://localhost:44316/api/auth';
 
-    login(usuario: string, senha: string): Observable<User> {
+    login(email: string, senha: string): Observable<User> {
 
         return this.http.post<User>(`${this.apiUrl}/login`, {
-            usuario,
+            email,
             senha
         }).pipe(
             tap(user => {
