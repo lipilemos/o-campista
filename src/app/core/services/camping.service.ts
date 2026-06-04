@@ -15,4 +15,12 @@ export class CampingService {
     listar(): Observable<Camping[]> {
         return this.http.get<Camping[]>(this.apiUrl);
     }
+
+    checkin(campingId: number) {
+
+        return this.http.post(
+            `${this.apiUrl}/${campingId}/checkin`,
+            {}
+        );
+    }
 }

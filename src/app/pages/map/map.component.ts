@@ -195,4 +195,15 @@ export class MapComponent implements AfterViewInit {
 
     this.markers.push(marker);
   }
+
+  fazerCheckin() {
+
+    this.campingService
+      .checkin(1)
+      .subscribe(response => {
+
+        alert('Check-in realizado! +100 XP');
+
+      });
+  }
 }

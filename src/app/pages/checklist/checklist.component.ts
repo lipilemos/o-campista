@@ -37,13 +37,9 @@ export class ChecklistComponent
     inject(ChecklistService);
 
   checklists: Checklist[] = [];
-
   totalItens = 0;
-
   totalConcluidos = 0;
-
   progressoGeral = 0;
-
   totalCategorias = 0;
 
   ngOnInit(): void {
