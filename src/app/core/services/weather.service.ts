@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-
 import {
     Observable,
     catchError,
+    forkJoin,
     from,
     map,
     of,
@@ -55,93 +55,21 @@ export class WeatherService {
             );
     }
 
-    obterClimaAtual(): Observable<Weather> {
-
-        return from(
-            this.obterLocalizacao()
-        )
-            .pipe(
-
-                switchMap(position => {
-
-                    const lat =
-                        position.latitude;
-
-                    const lng =
-                        position.longitude;
-
-                    return this.http.get<any>(
-                        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,rain,weather_code`
-                    )
-                        .pipe(
-
-                            switchMap(clima =>
-
-                                this.obterCidade(
-                                    lat,
-                                    lng
-                                ).pipe(
-
-                                    map(cidade => {
-
-                                        const current =
-                                            clima.current;
-
-                                        const temperatura =
-                                            current.temperature_2m ?? 0;
-
-                                        const chuva =
-                                            current.rain ?? 0;
-
-                                        const vento =
-                                            current.wind_speed_10m ?? 0;
-
-                                        return {
-
-                                            cidade,
-
-                                            temperatura,
-
-                                            descricao:
-                                                this.obterDescricao(
-                                                    current.weather_code
-                                                ),
-
-                                            umidade:
-                                                current.relative_humidity_2m ?? 0,
-
-                                            vento,
-
-                                            chuva,
-
-                                            statusCamping:
-                                                this.obterStatusCamping(
-                                                    temperatura,
-                                                    chuva,
-                                                    vento
-                                                ),
-
-                                            icone:
-                                                this.obterIcone(
-                                                    current.weather_code
-                                                )
-
-                                        } as Weather;
-                                    })
-                                )
-                            )
-                        );
-                })
-            );
-    }
-
     private obterLocalizacao(): Promise<{
         latitude: number;
         longitude: number;
     }> {
 
         return new Promise(resolve => {
+            if (!navigator.geolocation) {
 
+                resolve({
+                    latitude: -22.0174,
+                    longitude: -47.8903
+                });
+
+                return;
+            }
             navigator.geolocation.getCurrentPosition(
 
                 position => {
@@ -160,10 +88,31 @@ export class WeatherService {
 
                 error => {
 
-                    console.error(
-                        'Erro ao obter localização:',
-                        error
-                    );
+                    switch (error.code) {
+
+                        case error.PERMISSION_DENIED:
+                            console.warn(
+                                'Usuário negou acesso à localização.'
+                            );
+                            break;
+
+                        case error.POSITION_UNAVAILABLE:
+                            console.warn(
+                                'Localização indisponível.'
+                            );
+                            break;
+
+                        case error.TIMEOUT:
+                            console.warn(
+                                'Tempo limite excedido.'
+                            );
+                            break;
+
+                        default:
+                            console.warn(
+                                'Erro desconhecido.'
+                            );
+                    }
 
                     resolve({
                         latitude: -22.0174,
@@ -173,7 +122,7 @@ export class WeatherService {
 
                 {
                     enableHighAccuracy: false,
-                    timeout: 15000,
+                    timeout: 30000,
                     maximumAge: 300000
                 }
             );
@@ -241,32 +190,130 @@ export class WeatherService {
                 return 'Tempo variável';
         }
     }
-    obterPrevisao3Dias():
-        Observable<WeatherForecast[]> {
+
+    private obterNomeDia(
+        data: string
+    ): string {
+
+        const dias = [
+            'Dom',
+            'Seg',
+            'Ter',
+            'Qua',
+            'Qui',
+            'Sex',
+            'Sáb'
+        ];
+
+        return dias[
+            new Date(data).getDay()
+        ];
+    }
+    carregarDadosClima(): Observable<{
+        clima: Weather;
+        previsao: WeatherForecast[];
+    }> {
 
         return from(
             this.obterLocalizacao()
+        ).pipe(
+
+            switchMap(position => {
+
+                const lat = position.latitude;
+                const lng = position.longitude;
+
+                return forkJoin({
+
+                    clima: this.obterClimaAtualPorCoordenada(
+                        lat,
+                        lng
+                    ),
+
+                    previsao: this.obterPrevisaoPorCoordenada(
+                        lat,
+                        lng
+                    )
+                });
+            })
+        );
+    }
+    private obterClimaAtualPorCoordenada(
+        lat: number,
+        lng: number
+    ): Observable<Weather> {
+
+        return this.http.get<any>(
+            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,rain,weather_code`
         )
             .pipe(
 
-                switchMap(position => {
+                switchMap(clima =>
 
-                    const lat =
-                        position.latitude;
+                    this.obterCidade(
+                        lat,
+                        lng
+                    ).pipe(
 
-                    const lng =
-                        position.longitude;
+                        map(cidade => {
 
-                    return this.http.get<any>(
-                        `https://api.open-meteo.com/v1/forecast
-                    ?latitude=${lat}
-                    &longitude=${lng}
-                    &daily=weather_code,temperature_2m_max,temperature_2m_min
-                    &forecast_days=5
-                    &timezone=auto`
-                            .replace(/\s/g, '')
-                    );
-                }),
+                            const current =
+                                clima.current;
+
+                            return {
+
+                                cidade,
+
+                                temperatura:
+                                    current.temperature_2m ?? 0,
+
+                                descricao:
+                                    this.obterDescricao(
+                                        current.weather_code
+                                    ),
+
+                                umidade:
+                                    current.relative_humidity_2m ?? 0,
+
+                                vento:
+                                    current.wind_speed_10m ?? 0,
+
+                                chuva:
+                                    current.rain ?? 0,
+
+                                statusCamping:
+                                    this.obterStatusCamping(
+                                        current.temperature_2m ?? 0,
+                                        current.rain ?? 0,
+                                        current.wind_speed_10m ?? 0
+                                    ),
+
+                                icone:
+                                    this.obterIcone(
+                                        current.weather_code
+                                    )
+
+                            } as Weather;
+                        })
+                    )
+                )
+            );
+    }
+    private obterPrevisaoPorCoordenada(
+        lat: number,
+        lng: number
+    ): Observable<WeatherForecast[]> {
+
+        return this.http.get<any>(
+            `https://api.open-meteo.com/v1/forecast
+        ?latitude=${lat}
+        &longitude=${lng}
+        &daily=weather_code,temperature_2m_max,temperature_2m_min
+        &forecast_days=5
+        &timezone=auto`
+                .replace(/\s/g, '')
+        )
+            .pipe(
 
                 map(response => {
 
@@ -307,24 +354,5 @@ export class WeatherService {
                     return previsoes;
                 })
             );
-    }
-
-    private obterNomeDia(
-        data: string
-    ): string {
-
-        const dias = [
-            'Dom',
-            'Seg',
-            'Ter',
-            'Qua',
-            'Qui',
-            'Sex',
-            'Sáb'
-        ];
-
-        return dias[
-            new Date(data).getDay()
-        ];
     }
 }

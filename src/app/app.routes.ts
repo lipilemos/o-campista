@@ -27,6 +27,12 @@ export const routes: Routes = [
                 .then(m => m.HomeComponent)
     },
     {
+        path: 'account',
+        loadComponent: () =>
+            import('./pages/account/account.component')
+                .then(m => m.AccountComponent)
+    },
+    {
         path: 'mapa',
         loadComponent: () =>
             import('./pages/map/map.component')

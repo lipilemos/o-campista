@@ -1,20 +1,25 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
-import { User } from '../models/user.model';
+import { environment } from '../../../environment';
+import { UsuarioLogado } from '../models/user.model';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
+    constructor(
+        private router: Router
+    ) { }
 
     private http = inject(HttpClient);
 
-    private apiUrl = 'https://localhost:44316/api/auth';
+    private apiUrl = `${environment.apiUrl}/auth`;
 
-    login(email: string, senha: string): Observable<User> {
+    login(email: string, senha: string): Observable<UsuarioLogado> {
 
-        return this.http.post<User>(`${this.apiUrl}/login`, {
+        return this.http.post<UsuarioLogado>(`${this.apiUrl}/login`, {
             email,
             senha
         }).pipe(
@@ -25,8 +30,8 @@ export class AuthService {
         );
     }
 
-    register(registro: { nome: string; usuario: string; email: string; senha: string }): Observable<User> {
-        return this.http.post<User>(`${this.apiUrl}/register`, registro).pipe(
+    register(registro: { nome: string; usuario: string; email: string; senha: string }): Observable<UsuarioLogado> {
+        return this.http.post<UsuarioLogado>(`${this.apiUrl}/register`, registro).pipe(
             tap(user => {
                 localStorage.setItem('token', user.token);
                 localStorage.setItem('user', JSON.stringify(user));
@@ -34,11 +39,18 @@ export class AuthService {
         );
     }
 
-    logout() {
-        localStorage.clear();
+    logout(): void {
+
+        localStorage.removeItem('token');
+
+        localStorage.removeItem('user');
+
+        sessionStorage.clear();
+
+        this.router.navigate(['/login']);
     }
 
-    getUser(): User | null {
+    getUser(): UsuarioLogado | null {
 
         const user = localStorage.getItem('user');
 
@@ -50,4 +62,16 @@ export class AuthService {
     isAuthenticated(): boolean {
         return !!localStorage.getItem('token');
     }
+
+    obterUsuarioLogado() {
+
+        const usuario = localStorage.getItem('user');
+
+        if (!usuario) {
+            return null;
+        }
+
+        return JSON.parse(usuario);
+    }
+
 }

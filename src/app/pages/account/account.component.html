@@ -1,0 +1,93 @@
+@if(usuario){
+
+<div class="account">
+
+    <div class="profile-card">
+        <div class="avatar">
+            {{ usuario.nome.charAt(0).toUpperCase() }}
+        </div>
+
+        <div class="profile-info">
+            <h1>{{ usuario.nome }}</h1>
+            <p>{{ usuario.email }}</p>
+            <span class="badge">
+                🏕️ Nível {{ usuario.nivel }}
+            </span>
+        </div>
+    </div>
+
+    <div class="xp-card">
+        <h3>Experiência</h3>
+        <div class="xp-bar">
+            <div class="xp-fill" [style.width.%]="percentualXp">
+            </div>
+        </div>
+
+        <span>
+            {{ usuario.xpAtual }}
+            /
+            {{ usuario.xpProximoNivel }}
+            XP
+        </span>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <h2>{{ usuario.totalCheckins }}</h2>
+            <span>Check-ins</span>
+        </div>
+
+        <div class="stat-card">
+            <h2>
+                {{ usuario.totalCampingsVisitados }}
+            </h2>
+            <span>Campings</span>
+        </div>
+
+        <div class="stat-card">
+            <h2>
+                {{ usuario.totalTrilhasConcluidas }}
+            </h2>
+            <span>Trilhas</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🏆 Conquistas</h2>
+        <div class="cards">
+            @for(
+            conquista of usuario.conquistas;
+            track conquista.id
+            ){
+
+            <div class="item-card">
+                <h3>{{ conquista.nome }}</h3>
+                <p>{{ conquista.descricao }}</p>
+            </div>
+
+            }
+
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🎁 Presentes</h2>
+        <div class="cards">
+            @for(
+            presente of usuario.presentes;
+            track presente.id
+            ){
+
+            <div class="item-card">
+                <h3>{{ presente.nome }}</h3>
+                <p>{{ presente.descricao }}</p>
+            </div>
+
+            }
+
+        </div>
+    </div>
+
+</div>
+
+}
