@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  OnDestroy,
   ViewChild,
   inject
 } from '@angular/core';
@@ -10,8 +11,10 @@ import { GoogleMapsModule } from '@angular/google-maps';
 
 import { environment } from '../../../environment';
 
+import { Subscription } from 'rxjs';
 import { Camping } from '../../core/models/camping.model';
 import { CampingService } from '../../core/services/camping.service';
+import { LocationService } from '../../core/services/location.service';
 import { MapStateService } from '../../core/services/map-state.service';
 
 @Component({
@@ -24,10 +27,26 @@ import { MapStateService } from '../../core/services/map-state.service';
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements AfterViewInit {
+export class MapComponent implements AfterViewInit, OnDestroy {
+  ngOnDestroy(): void {
+
+    this.locationSubscription?.unsubscribe();
+
+    if (this.watchId) {
+
+      navigator.geolocation.clearWatch(
+        this.watchId
+      );
+    }
+  }
 
   private mapState = inject(MapStateService);
   private campingService = inject(CampingService);
+  private locationSubscription?: Subscription;
+
+  constructor(
+    private locationService: LocationService
+  ) { }
 
   @ViewChild('mapContainer', { static: true })
   mapContainer!: ElementRef;
@@ -42,10 +61,14 @@ export class MapComponent implements AfterViewInit {
   campings: Camping[] = [];
 
   markers: google.maps.marker.AdvancedMarkerElement[] = [];
+  userMarker?: google.maps.marker.AdvancedMarkerElement;
+  watchId?: number;
+  minhaPosicao?: google.maps.LatLngLiteral;
 
   ngAfterViewInit(): void {
     this.criarMapa();
     this.carregarCampings();
+    this.definirLocalizacaoInicial();
   }
 
   private carregarCampings() {
@@ -58,6 +81,24 @@ export class MapComponent implements AfterViewInit {
 
         this.aplicarFiltros();
       });
+  }
+  private definirLocalizacaoInicial() {
+
+    // começa SEM depender de GPS
+    this.minhaPosicao = this.posicaoPadrao;
+
+    this.atualizarMapaInicial();
+
+    this.iniciarLocalizacao();
+  }
+  private atualizarMapaInicial() {
+
+    if (!this.map) return;
+
+    this.map.setCenter(this.minhaPosicao!);
+    this.map.setZoom(12);
+
+    this.atualizarMarcadorUsuario();
   }
 
   aplicarFiltros() {
@@ -119,18 +160,91 @@ export class MapComponent implements AfterViewInit {
         mapId: environment.idMaps
       }
     );
+  }
+  private iniciarLocalizacao() {
 
-    navigator.geolocation.getCurrentPosition(
+    if (!navigator.geolocation) {
+      console.warn('Geolocalização não suportada');
+      return;
+    }
+
+    this.watchId = navigator.geolocation.watchPosition(
+
       position => {
-        this.map.setCenter({
+
+        this.minhaPosicao = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
-        });
-        this.map.setZoom(12);
+        };
+
+        this.atualizarMarcadorUsuario();
+        this.map.panTo(this.minhaPosicao);
+      },
+
+      error => {
+        console.warn('GPS indisponível (mantendo posição padrão)', error);
+        // NÃO sobrescreve o mapa aqui
+      },
+
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 10000
       }
     );
   }
+  private usarPosicaoPadrao() {
 
+    this.minhaPosicao = this.posicaoPadrao;
+
+    this.atualizarMarcadorUsuario();
+  }
+  private readonly posicaoPadrao: google.maps.LatLngLiteral = {
+    lat: -22.0174,
+    lng: -47.8903 // sua região atual (já está usando isso)
+  };
+  private atualizarMarcadorUsuario() {
+
+    if (!this.minhaPosicao) return;
+
+    const el = document.createElement('div');
+
+    el.style.width = '18px';
+    el.style.height = '18px';
+    el.style.borderRadius = '50%';
+    el.style.background = '#4285F4';
+    el.style.border = '3px solid white';
+    el.style.boxShadow = '0 0 6px rgba(0,0,0,0.3)';
+
+    if (!this.userMarker) {
+
+      this.userMarker = new google.maps.marker.AdvancedMarkerElement({
+        map: this.map,
+        position: this.minhaPosicao,
+        title: 'Você está aqui',
+        content: el
+      });
+
+      this.map.setCenter(this.minhaPosicao);
+      this.map.setZoom(14);
+
+      return;
+    }
+
+    this.userMarker.position = this.minhaPosicao;
+  }
+  centralizarNoUsuario() {
+
+    if (!this.minhaPosicao) {
+      return;
+    }
+
+    this.map.panTo(
+      this.minhaPosicao
+    );
+
+    this.map.setZoom(16);
+  }
   private obterEmoji(tipo: string): string {
 
     switch (tipo) {

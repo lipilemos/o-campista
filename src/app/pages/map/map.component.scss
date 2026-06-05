@@ -225,6 +225,33 @@
     background: #e54e26;
 }
 
+.btn-localizacao {
+
+    position: absolute;
+
+    bottom: 20px;
+    right: 20px;
+
+    z-index: 1000;
+
+    border: none;
+
+    border-radius: 25px;
+
+    padding: 12px 18px;
+
+    background: #f99920;
+
+    color: white;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, .2);
+}
+
 /* MOBILE */
 
 @media (max-width: 768px) {
