@@ -9,10 +9,8 @@ import { UsuarioLogado } from '../models/user.model';
     providedIn: 'root'
 })
 export class AuthService {
-    constructor(
-        private router: Router
-    ) { }
 
+    private router = inject(Router);
     private http = inject(HttpClient);
 
     private apiUrl = `${environment.apiUrl}/auth`;

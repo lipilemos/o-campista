@@ -4,4 +4,10 @@ export interface Presente {
     descricao: string;
     codigoResgate: string;
     utilizado: boolean;
+    fotoUrl: string;
+    latitude: number;
+    longitude: number;
+    usuarioCriadorId: number;
+    estaDisponivel: boolean;
+    criadoEm: Date;
 }

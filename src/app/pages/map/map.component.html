@@ -13,6 +13,7 @@
             <option value="trilha">🥾 Trilha</option>
             <option value="mirante">🌄 Mirante</option>
             <option value="pesca">🎣 Pesca</option>
+            <option value="presente">🎁 Presentes</option>
 
         </select>
 
@@ -32,6 +33,10 @@
             ✖
 
         </button>
+
+        @if (campingSelecionado.fotoPrincipal) {
+        <img [src]="campingSelecionado.fotoPrincipal" [alt]="campingSelecionado.nome">
+        }
 
         <div class="camping-content">
 

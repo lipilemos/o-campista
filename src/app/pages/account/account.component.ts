@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { UsuarioLogado } from '../../core/models/user.model';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -11,7 +12,8 @@ import { AuthService } from '../../core/services/auth.service';
 export class AccountComponent implements OnInit {
 
   usuario!: UsuarioLogado;
-
+  private router =
+    inject(Router);
   constructor(
     private authService: AuthService
   ) { }
@@ -35,5 +37,9 @@ export class AccountComponent implements OnInit {
       this.usuario.xpAtual /
       this.usuario.xpProximoNivel
     ) * 100;
+  }
+  openGiftForm() {
+    this.router.navigate(['/gift']);
+
   }
 }

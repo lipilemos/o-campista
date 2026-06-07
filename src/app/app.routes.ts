@@ -45,6 +45,12 @@ export const routes: Routes = [
                 .then(m => m.ChecklistComponent)
     },
     {
+        path: 'gift',
+        loadComponent: () =>
+            import('./pages/gift/gift.component')
+                .then(m => m.GiftComponent)
+    },
+    {
         path: '**',
         redirectTo: ''
     }

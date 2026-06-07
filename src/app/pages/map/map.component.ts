@@ -8,12 +8,11 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GoogleMapsModule } from '@angular/google-maps';
-
-import { environment } from '../../../environment';
-
 import { Subscription } from 'rxjs';
+import { environment } from '../../../environment';
 import { Camping } from '../../core/models/camping.model';
 import { CampingService } from '../../core/services/camping.service';
+import { GiftService } from '../../core/services/gift.service';
 import { LocationService } from '../../core/services/location.service';
 import { MapStateService } from '../../core/services/map-state.service';
 
@@ -41,6 +40,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   private mapState = inject(MapStateService);
+  private giftService = inject(GiftService);
   private campingService = inject(CampingService);
   private locationSubscription?: Subscription;
 
@@ -82,6 +82,36 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         this.aplicarFiltros();
       });
   }
+  private carregaPresentes() {
+    const pos = this.minhaPosicao ?? this.posicaoPadrao;
+
+    this.giftService.getNearby(pos.lat, pos.lng)
+      .subscribe(presentes => {
+        // desenha apenas os marcadores de presentes sem sobrescrever a lista principal
+        this.limparMarkers();
+
+        const campingsComPresentes: Camping[] = presentes.map(p => ({
+          id: p.id,
+          nome: p.nome,
+          descricao: p.descricao,
+          latitude: p.latitude,
+          longitude: p.longitude,
+          cidade: '',
+          estado: '',
+          tipo: 'presente',
+          endereco: '',
+          telefone: '',
+          avaliacao: 0,
+          fotoPrincipal: p.fotoUrl || '',
+          recursos: []
+        }));
+
+        campingsComPresentes.forEach(camping => {
+          this.criarMarker(camping);
+        });
+      });
+  }
+
   private definirLocalizacaoInicial() {
 
     // começa SEM depender de GPS
@@ -124,8 +154,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           !this.categoriaSelecionada ||
           camping.tipo === this.categoriaSelecionada;
 
+
+
         return atendeBusca && atendeCategoria;
       });
+    if (this.categoriaSelecionada === 'presente') {
+      // solicita presentes próximos ao backend e desenha marcadores
+      this.carregaPresentes();
+      return;
+    }
 
     campingsFiltrados.forEach(camping => {
       this.criarMarker(camping);
