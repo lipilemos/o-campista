@@ -34,7 +34,7 @@ export class AccountComponent implements OnInit {
     }
 
     return (
-      this.usuario.xpAtual /
+      this.usuario.xp /
       this.usuario.xpProximoNivel
     ) * 100;
   }

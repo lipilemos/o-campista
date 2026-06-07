@@ -10,18 +10,9 @@ import { Camping } from '../models/camping.model';
 export class CampingService {
 
     private http = inject(HttpClient);
-
-    private apiUrl = `${environment.apiUrl}/mapa/campings`;
+    private apiUrl = `${environment.apiUrl}/mapa`;
 
     listar(): Observable<Camping[]> {
-        return this.http.get<Camping[]>(this.apiUrl);
-    }
-
-    checkin(campingId: number) {
-
-        return this.http.post(
-            `${this.apiUrl}/${campingId}/checkin`,
-            {}
-        );
+        return this.http.get<Camping[]>(`${this.apiUrl}/campings`);
     }
 }

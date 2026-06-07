@@ -230,6 +230,72 @@
     margin: 0 auto;
 }
 
+.checkin-message {
+
+    margin: 12px 0;
+
+    padding: 12px 16px;
+
+    border-radius: 12px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    text-align: center;
+
+    animation: fadeIn .3s ease;
+}
+
+.checkin-message.success {
+
+    background: rgba(76, 175, 80, .15);
+
+    color: #2e7d32;
+
+    border: 1px solid rgba(76, 175, 80, .3);
+}
+
+.checkin-message.error {
+
+    background: rgba(244, 67, 54, .15);
+
+    color: #c62828;
+
+    border: 1px solid rgba(244, 67, 54, .3);
+}
+
+@keyframes fadeIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.checkin-info {
+
+    position: fixed;
+
+    bottom: 80px;
+    width: 100%;
+
+    right: 0;
+
+    display: flex;
+    justify-content: center;
+
+    z-index: 1000;
+
+    background: rgba(0, 0, 0, .7);
+    color: white;
+}
+
 .btn-checkin:hover {
 
     background: #e54e26;

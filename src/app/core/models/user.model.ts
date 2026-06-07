@@ -5,9 +5,10 @@ export interface UsuarioLogado {
   id: number;
   nome: string;
   email: string;
+  fotoPerfil: string;
   token: string;
   nivel: number;
-  xpAtual: number;
+  xp: number;
   xpProximoNivel: number;
   totalCheckins: number;
   totalCampingsVisitados: number;

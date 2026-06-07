@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   Component,
@@ -11,17 +12,23 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { Subscription } from 'rxjs';
 import { environment } from '../../../environment';
 import { Camping } from '../../core/models/camping.model';
+import { CheckinRequestModel, CheckinResponseModel } from '../../core/models/checkin.model';
+import { Presente } from '../../core/models/presente.model';
+import { AuthService } from '../../core/services/auth.service';
 import { CampingService } from '../../core/services/camping.service';
+import { CheckinService } from '../../core/services/checkin.service';
 import { GiftService } from '../../core/services/gift.service';
 import { LocationService } from '../../core/services/location.service';
 import { MapStateService } from '../../core/services/map-state.service';
+import { Util } from '../../core/Utils.ts/Util';
 
 @Component({
   selector: 'app-map',
   standalone: true,
   imports: [
     GoogleMapsModule,
-    FormsModule
+    FormsModule,
+    CommonModule
   ],
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
@@ -42,6 +49,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private mapState = inject(MapStateService);
   private giftService = inject(GiftService);
   private campingService = inject(CampingService);
+  private checkinService = inject(CheckinService);
+  private authService = inject(AuthService);
   private locationSubscription?: Subscription;
 
   constructor(
@@ -54,6 +63,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   map!: google.maps.Map;
 
   campingSelecionado?: Camping;
+  presenteSelecionado?: Presente;
 
   busca = '';
   categoriaSelecionada = '';
@@ -62,8 +72,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   markers: google.maps.marker.AdvancedMarkerElement[] = [];
   userMarker?: google.maps.marker.AdvancedMarkerElement;
+  raioUsuario?: google.maps.Circle;
   watchId?: number;
   minhaPosicao?: google.maps.LatLngLiteral;
+  mensagemCheckin = '';
+  tipoMensagem: 'sucesso' | 'erro' | '' = '';
+  checkinRealizado = false;
 
   ngAfterViewInit(): void {
     this.criarMapa();
@@ -90,26 +104,65 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         // desenha apenas os marcadores de presentes sem sobrescrever a lista principal
         this.limparMarkers();
 
-        const campingsComPresentes: Camping[] = presentes.map(p => ({
+        const presentesMark: Presente[] = presentes.map(p => ({
           id: p.id,
           nome: p.nome,
           descricao: p.descricao,
           latitude: p.latitude,
           longitude: p.longitude,
-          cidade: '',
-          estado: '',
+          codigoResgate: p.codigoResgate,
+          utilizado: p.utilizado,
+          usuarioCriadorId: p.usuarioCriadorId,
+          estaDisponivel: p.estaDisponivel,
+          criadoEm: new Date(p.criadoEm),
           tipo: 'presente',
-          endereco: '',
-          telefone: '',
-          avaliacao: 0,
-          fotoPrincipal: p.fotoUrl || '',
-          recursos: []
+          fotoUrl: p.fotoUrl || '',
         }));
 
-        campingsComPresentes.forEach(camping => {
-          this.criarMarker(camping);
+        presentesMark.forEach(presente => {
+          this.criarMarkerPresente(presente);
         });
       });
+  }
+  private criarMarkerPresente(presente: Presente) {
+
+    const element = document.createElement('div');
+
+    element.className = `camping-marker marker-presente`;
+
+    element.innerHTML = this.obterEmoji('presente');
+
+    element.style.width = '30px';
+    element.style.height = '30px';
+
+    element.style.display = 'flex';
+    element.style.alignItems = 'center';
+    element.style.justifyContent = 'center';
+
+    element.style.fontSize = '50px';
+
+    const marker =
+      new google.maps.marker.AdvancedMarkerElement({
+        map: this.map,
+        position: {
+          lat: presente.latitude,
+          lng: presente.longitude
+        },
+        title: presente.nome,
+        content: element,
+        gmpClickable: true
+      });
+
+    marker.addEventListener('gmp-click', () => {
+      this.mapState.campingAberto.set(false);
+      this.campingSelecionado = undefined;
+
+      this.mapState.presenteAberto.set(true);
+      this.presenteSelecionado = presente;
+
+    });
+
+    this.markers.push(marker);
   }
 
   private definirLocalizacaoInicial() {
@@ -161,12 +214,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     if (this.categoriaSelecionada === 'presente') {
       // solicita presentes próximos ao backend e desenha marcadores
       this.carregaPresentes();
+      this.atualizarRaioUsuario();
       return;
     }
 
     campingsFiltrados.forEach(camping => {
-      this.criarMarker(camping);
+      this.criarMarkerCampings(camping);
     });
+    this.limparRaioUsuario();
   }
 
   private limparMarkers() {
@@ -179,9 +234,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   protected fecharCampingInfo() {
-
     this.mapState.campingAberto.set(false);
     this.campingSelecionado = undefined;
+    this.mapState.presenteAberto.set(false);
+    this.presenteSelecionado = undefined;
   }
 
   private criarMapa() {
@@ -240,6 +296,45 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     lat: -22.0174,
     lng: -47.8903 // sua região atual (já está usando isso)
   };
+  private atualizarRaioUsuario() {
+
+    if (!this.minhaPosicao) {
+      return;
+    }
+
+    if (!this.raioUsuario) {
+
+      this.raioUsuario = new google.maps.Circle({
+        map: this.map,
+        center: this.minhaPosicao,
+        radius: 10000, // 10 km
+
+        strokeColor: '#4CAF50',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+
+        fillColor: '#4CAF50',
+        fillOpacity: 0.15
+      });
+
+      return;
+    }
+
+    this.raioUsuario.setCenter(
+      this.minhaPosicao
+    );
+  }
+
+  private limparRaioUsuario() {
+
+    if (!this.raioUsuario) {
+      return;
+    }
+
+    this.raioUsuario.setMap(null);
+    this.raioUsuario = undefined;
+  }
+
   private atualizarMarcadorUsuario() {
 
     if (!this.minhaPosicao) return;
@@ -263,13 +358,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       });
 
       this.map.setCenter(this.minhaPosicao);
-      this.map.setZoom(14);
+      this.map.setZoom(13);
 
       return;
     }
 
     this.userMarker.position = this.minhaPosicao;
   }
+
   centralizarNoUsuario() {
 
     if (!this.minhaPosicao) {
@@ -301,12 +397,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       case 'pesca':
         return '🎣';
 
+      case 'presente':
+        return '🎁';
+
       default:
         return '📍';
     }
   }
 
-  private criarMarker(camping: Camping) {
+  private criarMarkerCampings(camping: Camping) {
 
     const element = document.createElement('div');
 
@@ -338,23 +437,79 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       });
 
     marker.addEventListener('gmp-click', () => {
+      this.mapState.presenteAberto.set(false);
+      this.presenteSelecionado = undefined;
 
       this.mapState.campingAberto.set(true);
-
       this.campingSelecionado = camping;
     });
 
     this.markers.push(marker);
   }
 
+  podeFazerCheckin(): boolean {
+
+    if (!this.minhaPosicao || !this.campingSelecionado) {
+      return false;
+    }
+
+    if (this.campingSelecionado.tipo !== 'camping') {
+      return false;
+    }
+
+    const distancia =
+      Util.calcularDistanciaMetros(
+        this.minhaPosicao.lat,
+        this.minhaPosicao.lng,
+        this.campingSelecionado.latitude,
+        this.campingSelecionado.longitude
+      );
+
+    return distancia <= 250;
+  }
+
   fazerCheckin() {
 
-    this.campingService
-      .checkin(1)
-      .subscribe(response => {
+    this.mensagemCheckin = '';
+    this.tipoMensagem = '';
 
-        alert('Check-in realizado! +100 XP');
+    const usuario = this.authService.getUser();
 
+    if (!usuario || !this.minhaPosicao || !this.campingSelecionado) {
+      return;
+    }
+
+    const request: CheckinRequestModel = {
+      usuarioId: usuario.id,
+      campingId: this.campingSelecionado.id,
+      latitude: this.minhaPosicao.lat,
+      longitude: this.minhaPosicao.lng
+    };
+
+    this.checkinService
+      .checkin(request)
+      .subscribe({
+
+        next: (response: CheckinResponseModel) => {
+          this.checkinRealizado = true;
+          this.tipoMensagem = 'sucesso';
+
+          this.mensagemCheckin =
+            response?.mensagem ??
+            'Check-in realizado com sucesso! +100 XP';
+        },
+
+        error: (err: any) => {
+
+          this.tipoMensagem = 'erro';
+
+          this.mensagemCheckin =
+            err?.error?.mensagem ??
+            err?.error?.erro ??
+            err?.message ??
+            'Erro ao realizar check-in.';
+        }
       });
   }
 }
+

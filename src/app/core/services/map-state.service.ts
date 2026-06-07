@@ -6,4 +6,5 @@ import { Injectable, signal } from "@angular/core";
 export class MapStateService {
 
     campingAberto = signal(false);
+    presenteAberto = signal(false);
 }
