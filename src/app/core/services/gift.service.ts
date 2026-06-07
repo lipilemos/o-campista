@@ -1,0 +1,28 @@
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { environment } from '../../../environment';
+import { Presente } from '../models/presente.model';
+
+@Injectable({
+    providedIn: 'root'
+})
+export class GiftService {
+    private http = inject(HttpClient);
+
+    private apiUrl = `${environment.apiUrl}/presentes`;
+
+
+    createGift(data: FormData) {
+        // Envia o FormData contendo a foto e as coordenadas geográficas
+        return this.http.post(this.apiUrl, data);
+    }
+    // Busca presentes próximos usando latitude/longitude como query params
+    getNearby(latitude: number, longitude: number) {
+        return this.http.get<Presente[]>(this.apiUrl, {
+            params: {
+                latitude: String(latitude),
+                longitude: String(longitude)
+            }
+        });
+    }
+}
