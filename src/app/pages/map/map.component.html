@@ -84,16 +84,70 @@
                 }
 
             </div>
+            @if(campingSelecionado.tipo === 'camping') {
+            @if(mensagemCheckin) {
+            <div class="checkin-message" [class.success]="tipoMensagem === 'sucesso'"
+                [class.error]="tipoMensagem === 'erro'">
 
-            <button class="btn-checkin" (click)="fazerCheckin()">
+                {{ mensagemCheckin }}
 
+            </div>
+            }
+            <button class="btn-checkin" [disabled]="checkinRealizado" [hidden]="!podeFazerCheckin()"
+                (click)="fazerCheckin()">
                 Fazer Check-in
             </button>
+            }
+            @if(!podeFazerCheckin() && campingSelecionado.tipo === 'camping') {
+            <p class="checkin-info">
+                Voce precisa estar a menos de 250 metros do camping para fazer check-in.
+
+            </p>
+            }
 
         </div>
 
     </div>
 
     }
+    @if (presenteSelecionado) {
 
+    <div class="camping-info">
+        <button class="btn-fechar" (click)="fecharCampingInfo()">
+            ✖
+        </button>
+
+        @if (presenteSelecionado.fotoUrl) {
+        <img [src]="presenteSelecionado.fotoUrl" [alt]="presenteSelecionado.nome">
+        }
+
+        <div class="camping-content">
+
+            <h2>
+                {{ presenteSelecionado.nome }}
+            </h2>
+
+            <span class="tipo">
+                {{ 'presente' }}
+            </span>
+
+            <p class="avaliacao">
+                {{ presenteSelecionado.codigoResgate }}
+            </p>
+
+            <p class="descricao">
+                {{ presenteSelecionado.descricao }}
+            </p>
+
+            <div class="info-item">
+                {{ presenteSelecionado.estaDisponivel ? 'Disponível' : 'Indisponível' }}
+            </div>
+
+            <div class="info-item">
+                Criado em {{ presenteSelecionado.criadoEm | date:'dd/MM/yyyy HH:mm:ss' }}
+            </div>
+
+        </div>
+    </div>
+    }
 </div>
