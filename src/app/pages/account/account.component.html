@@ -66,10 +66,14 @@
             </div>
 
             }
-
+            @if(usuario.conquistas.length === 0){
+            <p>Você ainda não tem conquistas.
+                <br /> Faça check-in em campings para ganhar conquistas!
+            </p>
+            }
         </div>
     </div>
-
+    <hr />
     <div class="section">
         <h2>🎁 Presentes</h2>
         <div class="cards">
@@ -84,10 +88,15 @@
             </div>
 
             }
-
+            @if(usuario.presentes.length === 0){
+            <p>Você ainda não tem presentes.
+                <br /> Deixe um presente em um camping!
+            </p>
+            }
         </div>
+        <hr />
         <div class="gift-action">
-            <button (click)="openGiftForm()">
+            <button class="btn-gift" (click)="openGiftForm()">
                 Deixar um Presente
             </button>
         </div>

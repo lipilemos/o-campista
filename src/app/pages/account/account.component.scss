@@ -153,3 +153,78 @@
     box-shadow:
         0 5px 15px rgba(0, 0, 0, .08);
 }
+
+.gift-action {
+    padding-top: 20px;
+
+    display: flex;
+    justify-content: flex-end;
+
+
+}
+
+hr {
+    margin: 20px 0;
+}
+
+.btn-gift {
+
+    height: 52px;
+
+    padding: 0 20px;
+
+    border: none;
+    border-radius: 14px;
+
+    background: linear-gradient(135deg,
+            #f99920,
+            #e54e26);
+
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 24px rgba(229, 78, 38, 0.35);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.btn-gift:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 28px rgba(229, 78, 38, 0.45);
+}
+
+.btn-gift:active {
+
+    transform: scale(0.98);
+}
+
+@media (max-width: 768px) {
+
+    .gift-action {
+
+        right: 16px;
+        bottom: 80px;
+    }
+
+    .btn-gift {
+
+        height: 48px;
+
+        padding: 0 16px;
+
+        font-size: 14px;
+    }
+}

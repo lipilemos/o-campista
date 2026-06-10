@@ -11,9 +11,8 @@ export class GiftService {
 
     private apiUrl = `${environment.apiUrl}/presentes`;
 
-
+    //criar presentes
     createGift(data: FormData) {
-        // Envia o FormData contendo a foto e as coordenadas geográficas
         return this.http.post(this.apiUrl, data);
     }
     // Busca presentes próximos usando latitude/longitude como query params
@@ -25,4 +24,13 @@ export class GiftService {
             }
         });
     }
+    //resgatar um presente
+    resgatar(presenteId: number, usuarioId: string) {
+        return this.http.post(`${this.apiUrl}/resgatar`,
+            {
+                presenteId,
+                usuarioId
+            });
+    }
+
 }
