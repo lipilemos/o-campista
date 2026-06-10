@@ -511,5 +511,57 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
       });
   }
+  ehMeuPresente(): boolean {
+    const usuario = this.authService.getUser();
+
+    return usuario?.id ===
+      this.presenteSelecionado?.usuarioCriadorId;
+  }
+
+
+  copiarCodigo() {
+
+    if (!this.presenteSelecionado) {
+      return;
+    }
+
+    navigator.clipboard.writeText(
+      this.presenteSelecionado.codigoResgate
+    );
+
+    alert('Código copiado!');
+  }
+  resgatarPresente() {
+
+    const usuario = this.authService.getUser();
+
+    if (!usuario || !this.presenteSelecionado) {
+      return;
+    }
+
+    this.giftService
+      .resgatar(
+        this.presenteSelecionado.id,
+        usuario.id.toString(),
+      )
+      .subscribe({
+        next: () => {
+
+          alert(
+            '🎉 Você encontrou um presente! +XP'
+          );
+
+          this.presenteSelecionado!.estaDisponivel = false;
+        },
+
+        error: erro => {
+
+          alert(
+            erro.error?.mensagem ??
+            'Erro ao resgatar presente'
+          );
+        }
+      });
+  }
 }
 

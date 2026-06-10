@@ -122,7 +122,7 @@ export class WeatherService {
 
                 {
                     enableHighAccuracy: false,
-                    timeout: 30000,
+                    timeout: 2000,
                     maximumAge: 300000
                 }
             );

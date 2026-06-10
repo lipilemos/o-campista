@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UsuarioLogado } from '../../core/models/user.model';
 import { AuthService } from '../../core/services/auth.service';
+import { UsuarioService } from '../../core/services/usuario.service';
 
 @Component({
   selector: 'app-account',
@@ -15,16 +16,15 @@ export class AccountComponent implements OnInit {
   private router =
     inject(Router);
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private usuarioService: UsuarioService
   ) { }
 
   ngOnInit(): void {
-    const usuario =
-      this.authService.getUser();
-
-    if (usuario) {
-      this.usuario = usuario;
-    }
+    this.usuarioService.obterPerfil(this.authService.getUser()?.id.toString()!)
+      .subscribe(usuario => {
+        this.usuario = usuario;
+      });
   }
 
   get percentualXp(): number {

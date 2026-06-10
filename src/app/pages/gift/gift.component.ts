@@ -39,7 +39,7 @@ export class GiftComponent implements OnInit {
 
   captureGPS() {
     // Defina aqui a sua posição default (ex: um camping específico ou centro da cidade)
-    const DEFAULT_COORDS = { lat: -23.550520, lng: -46.633308 }; // Exemplo: São Paulo
+    const DEFAULT_COORDS = { lat: -22.0174, lng: -47.8903 }; // Exemplo: São Paulo
 
     if (navigator.geolocation) {
       const options = {
@@ -147,5 +147,7 @@ export class GiftComponent implements OnInit {
       });
   }
 
-  goBack() { this.router.navigate(['/account']); }
+  goBack() {
+    this.router.navigate(['/home']);
+  }
 }

@@ -112,42 +112,85 @@
     }
     @if (presenteSelecionado) {
 
-    <div class="camping-info">
-        <button class="btn-fechar" (click)="fecharCampingInfo()">
+    <div class="gift-overlay">
+
+        <button class="gift-close" (click)="fecharCampingInfo()">
             ✖
         </button>
 
-        @if (presenteSelecionado.fotoUrl) {
-        <img [src]="presenteSelecionado.fotoUrl" [alt]="presenteSelecionado.nome">
-        }
+        <div class="gift-card">
 
-        <div class="camping-content">
+            @if (presenteSelecionado.fotoUrl) {
+            <img class="gift-image" [src]="presenteSelecionado.fotoUrl" [alt]="presenteSelecionado.nome">
+            }
 
-            <h2>
-                {{ presenteSelecionado.nome }}
-            </h2>
+            <div class="gift-content">
 
-            <span class="tipo">
-                {{ 'presente' }}
-            </span>
+                <h2>
+                    {{ presenteSelecionado.nome }}
+                </h2>
 
-            <p class="avaliacao">
-                {{ presenteSelecionado.codigoResgate }}
-            </p>
+                <span class="gift-type">
+                    🎁 Presente escondido
+                </span>
 
-            <p class="descricao">
-                {{ presenteSelecionado.descricao }}
-            </p>
+                <p class="gift-description">
+                    {{ presenteSelecionado.descricao }}
+                </p>
 
-            <div class="info-item">
-                {{ presenteSelecionado.estaDisponivel ? 'Disponível' : 'Indisponível' }}
-            </div>
+                <div class="gift-code">
+                    <label>Código do presente</label>
 
-            <div class="info-item">
-                Criado em {{ presenteSelecionado.criadoEm | date:'dd/MM/yyyy HH:mm:ss' }}
+                    <input type="text" [value]="presenteSelecionado.codigoResgate" readonly (click)="copiarCodigo()">
+                </div>
+
+
+                <div class="gift-info">
+                    <strong>Status:</strong>
+                    {{ presenteSelecionado.estaDisponivel
+                    ? '🟢 Disponível'
+                    : '🔴 Já resgatado' }}
+                </div>
+
+
+                <div class="gift-info">
+                    Criado em
+                    {{ presenteSelecionado.criadoEm | date:'dd/MM/yyyy HH:mm' }}
+                </div>
+
+
+                @if (presenteSelecionado.estaDisponivel && !ehMeuPresente()) {
+
+                <button class="gift-button" (click)="resgatarPresente()">
+
+                    🎁 Resgatar Presente
+                </button>
+                }
+
+
+                @if (ehMeuPresente()) {
+
+                <p class="gift-message">
+                    Este presente foi deixado por você.
+                    Apenas outros campistas podem resgatá-lo.
+                </p>
+
+                }
+
+
+                @if (!presenteSelecionado.estaDisponivel) {
+
+                <p class="gift-message">
+                    Este presente já foi encontrado por outro campista.
+                </p>
+
+                }
+
             </div>
 
         </div>
+
     </div>
+
     }
 </div>
