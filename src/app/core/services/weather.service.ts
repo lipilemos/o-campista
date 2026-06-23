@@ -141,7 +141,7 @@ export class WeatherService {
         if (vento > 35)
             return 'Atenção';
 
-        if (temperatura < 10)
+        if (temperatura < 16)
             return 'Atenção';
 
         return 'Excelente';
@@ -244,7 +244,7 @@ export class WeatherService {
     ): Observable<Weather> {
 
         return this.http.get<any>(
-            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,rain,weather_code`
+            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&hourly=precipitation_probability&forecast_hours=1`
         )
             .pipe(
 
@@ -259,7 +259,7 @@ export class WeatherService {
 
                             const current =
                                 clima.current;
-
+                            const chanceChuva = clima.hourly.precipitation_probability[0];
                             return {
 
                                 cidade,
@@ -279,12 +279,12 @@ export class WeatherService {
                                     current.wind_speed_10m ?? 0,
 
                                 chuva:
-                                    current.rain ?? 0,
+                                    chanceChuva ?? 0,
 
                                 statusCamping:
                                     this.obterStatusCamping(
                                         current.temperature_2m ?? 0,
-                                        current.rain ?? 0,
+                                        chanceChuva ?? 0,
                                         current.wind_speed_10m ?? 0
                                     ),
 

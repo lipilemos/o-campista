@@ -29,9 +29,7 @@
     <div class="camping-info">
 
         <button class="btn-fechar" (click)="fecharCampingInfo()">
-
             ✖
-
         </button>
 
         @if (campingSelecionado.fotoPrincipal) {
@@ -158,14 +156,26 @@
                     {{ presenteSelecionado.criadoEm | date:'dd/MM/yyyy HH:mm' }}
                 </div>
 
+                <div class="gift-distance" [ngClass]="classeDistancia">
 
+                    <h3>{{ mensagemDistancia }}</h3>
+
+                    <p>
+                        Distância atual:
+                        <strong>{{ distanciaPresente }} metros</strong>
+                    </p>
+
+                </div>
                 @if (presenteSelecionado.estaDisponivel && !ehMeuPresente()) {
 
-                <button class="gift-button" (click)="resgatarPresente()">
+                <button class="gift-button" *ngIf="podeResgatar" (click)="resgatarPresente()">
 
                     🎁 Resgatar Presente
                 </button>
                 }
+                <p *ngIf="distanciaPresente && distanciaPresente > 150">
+                    Você precisa estar a menos de 150 metros do presente para resgatá-lo.
+                </p>
 
 
                 @if (ehMeuPresente()) {

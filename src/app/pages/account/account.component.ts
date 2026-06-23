@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Presente } from '../../core/models/presente.model';
 import { UsuarioLogado } from '../../core/models/user.model';
 import { AuthService } from '../../core/services/auth.service';
 import { UsuarioService } from '../../core/services/usuario.service';
@@ -13,6 +14,7 @@ import { UsuarioService } from '../../core/services/usuario.service';
 export class AccountComponent implements OnInit {
 
   usuario!: UsuarioLogado;
+  presenteSelecionado: Presente | null = null;
   private router =
     inject(Router);
   constructor(
@@ -42,4 +44,20 @@ export class AccountComponent implements OnInit {
     this.router.navigate(['/gift']);
 
   }
+
+
+  abrirPresente(presente: Presente) {
+    this.presenteSelecionado = presente;
+  }
+
+
+  fecharPresente() {
+    this.presenteSelecionado = null;
+  }
+  copiarCodigo(codigo: string): void {
+    navigator.clipboard.writeText(codigo);
+
+    alert('Código copiado com sucesso!');
+  }
 }
+

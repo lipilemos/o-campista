@@ -228,3 +228,119 @@ hr {
         font-size: 14px;
     }
 }
+
+.profile-gift-card {
+    background: rgb(255, 255, 255);
+    border-radius: 16px;
+    padding: 16px;
+    cursor: pointer;
+    transition: .3s;
+    backdrop-filter: blur(8px);
+    color: white;
+}
+
+.profile-gift-card:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.profile-gift-action {
+    font-size: 12px;
+    opacity: 0.8;
+    color: #777;
+}
+
+
+.profile-gift-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .75);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+}
+
+.gift-utilizado {
+    color: #ff000d;
+}
+
+.profile-gift-view {
+    position: relative;
+    width: 90%;
+    max-width: 420px;
+
+    background: rgba(255, 255, 255, 0.664);
+    backdrop-filter: blur(12px);
+
+    color: white;
+    padding: 24px;
+
+    border-radius: 22px;
+    box-shadow: 0 10px 35px black;
+}
+
+
+.profile-gift-close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+
+    background: transparent;
+    color: white;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+
+.profile-gift-image {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+
+    border-radius: 14px;
+    margin-bottom: 16px;
+}
+
+
+.profile-gift-description {
+    margin: 12px 0;
+}
+
+
+.profile-gift-code {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+
+.profile-gift-code input {
+    background: rgba(255, 255, 255, .15);
+    border: 1px solid rgba(255, 255, 255, .3);
+    color: white;
+
+    padding: 12px;
+    border-radius: 10px;
+}
+
+
+.profile-gift-copy-btn {
+    margin-top: 16px;
+    width: 100%;
+
+    background: #2ecc71;
+    color: white;
+
+    border: none;
+    padding: 14px;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+    font-weight: bold;
+}
