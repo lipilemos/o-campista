@@ -39,7 +39,7 @@ export class GiftComponent implements OnInit {
 
   captureGPS() {
     // Defina aqui a sua posição default (ex: um camping específico ou centro da cidade)
-    const DEFAULT_COORDS = { lat: -22.0174, lng: -47.8903 }; // Exemplo: São Paulo
+    //const DEFAULT_COORDS = { lat: -22.0174, lng: -47.8903 }; // Exemplo: São Paulo
 
     if (navigator.geolocation) {
       const options = {
@@ -55,19 +55,18 @@ export class GiftComponent implements OnInit {
           this.hasLocation = true;
         },
         (error) => {
-          // Fallback: Em caso de erro, usamos a posição padrão
-          console.warn('GPS falhou, usando posição default:', error.message);
+          console.warn('GPS falhou', error.message);
 
-          this.coords = DEFAULT_COORDS; // Atribui a mesma posição default no fallback
-          this.hasLocation = true; // Mantemos como true para permitir o envio do formulário
+          //this.coords = undefined; // Atribui a mesma posição default no fallback
+          this.hasLocation = false; // Mantemos como true para permitir o envio do formulário
 
         },
         options
       );
     } else {
       // Caso o navegador não suporte Geolocation
-      this.coords = DEFAULT_COORDS;
-      this.hasLocation = true;
+      //this.coords = DEFAULT_COORDS;
+      this.hasLocation = false;
     }
   }
 

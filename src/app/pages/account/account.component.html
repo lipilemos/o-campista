@@ -61,7 +61,7 @@
             ){
 
             <div class="item-card">
-                <h3>{{ conquista.nome }}</h3>
+                <h3>🏆 {{ conquista.nome }}</h3>
                 <p>{{ conquista.descricao }}</p>
             </div>
 
@@ -77,20 +77,35 @@
     <div class="section">
         <h2>🎁 Presentes</h2>
         <div class="cards">
-            @for(
+            @for (
             presente of usuario.presentes;
             track presente.id
-            ){
+            ) {
 
-            <div class="item-card">
-                <h3>{{ presente.nome }}</h3>
-                <p>{{ presente.descricao }}</p>
+            <div class="profile-gift-card" (click)="abrirPresente(presente)">
+                <h3>
+                    🎁 {{ presente.nome }}
+                </h3>
+                <p>
+                    {{ presente.descricao }}
+                </p>
+                @if(presente.utilizado){
+                <p class="gift-utilizado">Presente utilizado!</p>
+                }
+                @else{
+                <span class="profile-gift-action">
+                    Toque para visualizar
+                </span>
+                }
             </div>
 
             }
-            @if(usuario.presentes.length === 0){
-            <p>Você ainda não tem presentes.
-                <br /> Deixe um presente em um camping!
+
+            @if(usuario.presentes.length === 0) {
+            <p>
+                Você ainda não tem presentes.
+                <br />
+                Deixe um presente em um camping!
             </p>
             }
         </div>
@@ -101,7 +116,59 @@
             </button>
         </div>
     </div>
+    @if (presenteSelecionado) {
 
+    <div class="profile-gift-overlay">
+
+        <div class="profile-gift-view">
+
+            <button class="profile-gift-close" (click)="fecharPresente()">
+                ✖
+            </button>
+
+
+            @if (presenteSelecionado.fotoUrl) {
+
+            <img class="profile-gift-image" [src]="presenteSelecionado.fotoUrl" [alt]="presenteSelecionado.nome">
+
+            }
+
+
+            <h2>
+                {{ presenteSelecionado.nome }}
+            </h2>
+
+
+            <p class="profile-gift-description">
+                {{ presenteSelecionado.descricao }}
+            </p>
+
+            @if(presenteSelecionado.utilizado){
+            <p class="gift-utilizado">Presente já foi utilizado!</p>
+            }
+            @else{
+            <div class="profile-gift-code">
+
+                <label>
+                    Código de resgate
+                </label>
+
+                <input type="text" readonly [value]="presenteSelecionado.codigoResgate">
+
+            </div>
+
+
+            <button class="profile-gift-copy-btn" (click)="copiarCodigo(presenteSelecionado.codigoResgate)">
+
+                Copiar código
+
+            </button>
+            }
+        </div>
+
+    </div>
+
+    }
 </div>
 
 }

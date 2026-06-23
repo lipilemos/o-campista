@@ -64,7 +64,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   campingSelecionado?: Camping;
   presenteSelecionado?: Presente;
-
+  podeResgatar = false;
+  distanciaPresente: number | null = null;
+  mensagemDistancia: string = '';
+  classeDistancia: string = '';
   busca = '';
   categoriaSelecionada = '';
 
@@ -159,6 +162,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
       this.mapState.presenteAberto.set(true);
       this.presenteSelecionado = presente;
+
+      this.verificarDistanciaPresente(
+        presente.latitude,
+        presente.longitude
+      );
 
     });
 
@@ -563,5 +571,42 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
       });
   }
+  verificarDistanciaPresente(
+    latitudePresente: number,
+    longitudePresente: number
+  ): void {
+
+    if (!this.minhaPosicao) {
+      return;
+    }
+    const distancia =
+      Util.calcularDistanciaMetros(
+        this.minhaPosicao.lat,
+        this.minhaPosicao.lng,
+        latitudePresente,
+        longitudePresente
+      );
+
+    this.distanciaPresente = Math.round(distancia);
+
+    if (distancia <= 150) {
+      this.podeResgatar = true;
+      this.mensagemDistancia = 'Você encontrou o presente! 🎁';
+      this.classeDistancia = 'perto';
+    }
+    else if (distancia <= 500) {
+      this.podeResgatar = false;
+      this.mensagemDistancia = 'Está perto, continue caminhando 🚶';
+      this.classeDistancia = 'medio';
+    }
+    else {
+      this.podeResgatar = false;
+      this.mensagemDistancia = 'Você está longe do presente 📍';
+      this.classeDistancia = 'longe';
+    }
+
+
+  }
+
 }
 
