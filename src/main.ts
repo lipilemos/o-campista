@@ -2,7 +2,7 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import 'zone.js';
 import { App } from './app/app';
 import { appConfig } from './app/app.config';
-import { environment } from './environment';
+import { environment } from './environments/environment';
 
 // Load Google Maps script dynamically
 const loadGoogleMaps = () => {

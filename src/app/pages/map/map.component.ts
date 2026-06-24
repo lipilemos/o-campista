@@ -10,7 +10,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { Subscription } from 'rxjs';
-import { environment } from '../../../environment';
+import { environment } from '../../../environments/environment';
 import { Camping } from '../../core/models/camping.model';
 import { CheckinRequestModel, CheckinResponseModel } from '../../core/models/checkin.model';
 import { Presente } from '../../core/models/presente.model';

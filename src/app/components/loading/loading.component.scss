@@ -1,0 +1,74 @@
+.loading-container {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(26, 26, 26, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #ff9f43;
+    font-family: sans-serif;
+    z-index: 9999;
+}
+
+.campfire {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+}
+
+/* Animação da chama pulsante */
+.flame {
+    position: absolute;
+    bottom: 20px;
+    left: 25px;
+    width: 30px;
+    height: 30px;
+    background-color: #ff5722;
+    border-radius: 50% 0 50% 50%;
+    transform: rotate(-45deg);
+    animation: pulse 1.2s infinite ease-in-out;
+}
+
+.flame.center {
+    background-color: #ffb300;
+    width: 20px;
+    height: 20px;
+    left: 30px;
+    bottom: 20px;
+    animation-delay: 0.2s;
+}
+
+/* Toras de madeira */
+.log {
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+    width: 50px;
+    height: 10px;
+    background-color: #795548;
+    border-radius: 5px;
+    transform: rotate(15deg);
+}
+
+.log:nth-child(4) {
+    transform: rotate(-15deg);
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: rotate(-45deg) scale(1);
+        filter: blur(0px);
+    }
+
+    50% {
+        transform: rotate(-45deg) scale(1.2);
+        filter: blur(1px);
+        background-color: #ff9800;
+    }
+}
