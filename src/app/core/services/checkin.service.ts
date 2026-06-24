@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { environment } from '../../../environment';
+import { environment } from '../../../environments/environment';
 import { CheckinRequestModel, CheckinResponseModel } from '../models/checkin.model';
 
 @Injectable({

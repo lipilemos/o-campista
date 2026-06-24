@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
-import { environment } from '../../../environment';
+import { environment } from '../../../environments/environment';
 import { UsuarioLogado } from '../models/user.model';
 
 @Injectable({
@@ -38,22 +38,15 @@ export class AuthService {
     }
 
     logout(): void {
-
         localStorage.removeItem('token');
-
         localStorage.removeItem('user');
-
         sessionStorage.clear();
-
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
     }
 
     getUser(): UsuarioLogado | null {
-
         const user = localStorage.getItem('user');
-
         if (!user) return null;
-
         return JSON.parse(user);
     }
 
@@ -62,14 +55,8 @@ export class AuthService {
     }
 
     obterUsuarioLogado() {
-
         const usuario = localStorage.getItem('user');
-
-        if (!usuario) {
-            return null;
-        }
-
+        if (!usuario) return null;
         return JSON.parse(usuario);
     }
-
 }
