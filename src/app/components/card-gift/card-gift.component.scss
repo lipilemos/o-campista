@@ -1,0 +1,225 @@
+/* GIFT OVERLAY */
+
+.gift-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-5);
+  background:
+    linear-gradient(160deg, rgba(0, 0, 0, 0.6), rgba(110, 18, 23, 0.3)),
+    url('/images/background.jpg');
+  background-size: cover;
+  background-position: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.gift-card {
+  width: 100%;
+  max-width: 380px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-xl);
+  position: relative;
+  animation: cardAppear 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gift-image {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.gift-content {
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  h2 {
+    margin: 0;
+    text-align: center;
+    font-size: var(--text-2xl);
+    padding: 0;
+    color: var(--color-text-inverse);
+  }
+}
+
+.gift-type {
+  align-self: center;
+  background: rgba(249, 153, 32, 0.2);
+  color: var(--color-accent);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: var(--text-sm);
+}
+
+.gift-description {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+}
+
+.gift-code {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  label {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: var(--text-sm);
+  }
+
+  input {
+    height: 48px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-md);
+    padding: 0 var(--space-4);
+    font-size: var(--text-base);
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--color-text);
+    cursor: pointer;
+  }
+}
+
+.gift-info {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: var(--text-sm);
+}
+
+.gift-button {
+  height: 52px;
+  border: none;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
+  color: var(--color-text-inverse);
+  font-size: var(--text-base);
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-base);
+  box-shadow: 0 8px 24px rgba(229, 78, 38, 0.3);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(229, 78, 38, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.gift-message {
+  text-align: center;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-inverse);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.gift-close {
+  position: absolute;
+  top: var(--space-5);
+  right: var(--space-5);
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  color: var(--color-text-inverse);
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 2100;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.6);
+  }
+}
+
+.gift-distance {
+  margin: var(--space-3) 0;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  text-align: center;
+  font-weight: 600;
+  transition: var(--transition-slow);
+
+  h3 {
+    padding: var(--space-2);
+    font-size: var(--text-base);
+  }
+
+  &.perto {
+    background: var(--color-success-bg);
+    color: var(--color-success);
+    border: 2px solid #66bb6a;
+  }
+
+  &.medio {
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+    border: 2px solid #ffa726;
+  }
+
+  &.longe {
+    background: var(--color-error-bg);
+    color: var(--color-error);
+    border: 2px solid #ef5350;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 480px) {
+  .gift-card {
+    max-width: 100%;
+  }
+
+  .gift-image {
+    height: 190px;
+  }
+
+  .gift-content h2 {
+    font-size: var(--text-xl);
+  }
+}
