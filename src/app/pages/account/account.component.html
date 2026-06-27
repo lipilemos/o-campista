@@ -32,9 +32,10 @@
     </div>
 
     <div class="stats">
-        <div class="stat-card">
+        <div class="stat-card clickable" (click)="abrirHistoricoCheckins()">
             <h2>{{ usuario.totalCheckins }}</h2>
             <span>Check-ins</span>
+            <p class="hint">Clique para ver histórico</p>
         </div>
 
         <div class="stat-card">
@@ -168,6 +169,14 @@
 
     </div>
 
+    }
+
+    @if (mostrarHistorico) {
+        <div class="history-overlay-backdrop" (click)="fecharHistoricoCheckins()">
+            <div class="history-overlay-container" (click)="$event.stopPropagation()">
+                <app-checkin-history [historico]="historicoCheckins" [campingSelecionado]="campingSelecionado" [checkinsAvaliados]="checkinsAvaliados" (selecionarCampingEvent)="onSelecionarCamping($event)" (fecharDetalhesEvent)="onFecharDetalhes()" (fecharHistoricoEvent)="fecharHistoricoCheckins()" (avaliacaoSalvaEvent)="onAvaliacaoSalva()"></app-checkin-history>
+            </div>
+        </div>
     }
 </div>
 

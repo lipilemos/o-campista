@@ -1,0 +1,112 @@
+.star-rating {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+
+    .star {
+        background: none;
+        border: none;
+        font-size: 32px;
+        cursor: pointer;
+        transition: transform 0.2s;
+        padding: 0;
+
+        &:hover {
+            transform: scale(1.1);
+        }
+
+        &.active {
+            color: #ffc107;
+        }
+    }
+}
+
+
+.all-ratings-section {
+    margin-top: 24px;
+
+    h3 {
+        margin: 0 0 16px 0;
+        font-size: 16px;
+        font-weight: 600;
+    }
+}
+
+.loading,
+.no-ratings {
+    text-align: center;
+    color: #999;
+    padding: 20px;
+}
+
+.ratings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.rating-item {
+    padding: 16px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border-left: 4px solid #ffc107;
+
+    .rating-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+    }
+
+    .user-info {
+        display: flex;
+        gap: 12px;
+        flex: 1;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .user-avatar-placeholder {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #4caf50;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 18px;
+    }
+
+    .user-name {
+        margin: 0;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .rating-date {
+        margin: 4px 0 0 0;
+        font-size: 12px;
+        color: #999;
+    }
+
+    .rating-stars {
+        font-weight: 600;
+        color: #ffc107;
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .rating-comment {
+        margin: 0;
+        color: #333;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+}
