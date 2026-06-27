@@ -1,126 +1,137 @@
 .register-container {
+  width: 100%;
+  height: 100vh;
 
-    width: 100%;
-    height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('/images/background.jpg');
 
-    background:
-        linear-gradient(rgba(0, 0, 0, 0.45),
-            rgba(0, 0, 0, 0.45)),
-        url('/images/background.jpg');
-
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .register-card {
+  width: 360px;
 
-    width: 360px;
+  background: rgba(255, 255, 255, 0.08);
 
-    background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
 
-    backdrop-filter: blur(10px);
+  border-radius: 24px;
+  padding: 40px;
 
-    border-radius: 24px;
-    padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .logo {
+  width: 180px;
+  height: 180px;
 
-    width: 180px;
-    height: 180px;
+  margin: 0 auto 20px auto;
 
-    margin: 0 auto 20px auto;
-
-    background-image: url('/images/logo-transp.png');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
+  background-image: url('/images/logo-transp.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .back-button {
-
-    align-self: flex-start;
-    border: none;
-    background: transparent;
-    color: white;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 0;
+  align-self: flex-start;
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
 }
 
 h2 {
-
-    text-align: center;
-    color: white;
-    margin-bottom: 20px;
+  text-align: center;
+  color: white;
+  margin-bottom: 20px;
 }
 
 form {
-
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
 }
 
 input {
-
-    width: 100%;
-    height: 48px;
-    border: none;
-    border-radius: 12px;
-    padding: 0 16px;
-    font-size: 16px;
-    outline: none;
-    box-sizing: border-box;
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 12px;
+  padding: 0 16px;
+  font-size: 16px;
+  outline: none;
+  box-sizing: border-box;
 }
 
-button[type="submit"] {
-
-    width: 100%;
-    height: 48px;
-    border: none;
-    border-radius: 12px;
-    background: #f99920;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.2s;
+button[type='submit'] {
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 12px;
+  background: #f99920;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-button[type="submit"]:hover {
-
-    background: #e54e26;
+button[type='submit']:hover {
+  background: #e54e26;
 }
 
-button[type="submit"]:disabled {
+button[type='submit']:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
 
-    opacity: 0.7;
-    cursor: not-allowed;
+.google-button-container {
+  display: flex;
+  justify-content: center;
+  min-height: 44px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  span {
+    white-space: nowrap;
+  }
 }
 
 .erro {
-
-    color: #ffb3b3;
-    text-align: center;
+  color: #ffb3b3;
+  text-align: center;
 }
 
 .sucesso {
-
-    color: #2e7d32;
-    text-align: center;
+  color: #2e7d32;
+  text-align: center;
 }

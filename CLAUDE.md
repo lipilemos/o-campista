@@ -10,7 +10,7 @@ Plataforma web para entusiastas de camping. Permite descobrir campings no mapa, 
 - **Testes:** Vitest + jsdom
 - **Formatação:** Prettier
 - **Mapas:** Google Maps (Advanced Markers API)
-- **APIs externas:** Open-Meteo (clima), Nominatim/OpenStreetMap (geocoding reverso)
+- **APIs externas:** Open-Meteo (clima), Nominatim/OpenStreetMap (geocoding reverso), Google Identity Services (login Google)
 - **Backend:** REST API via ngrok (dev) — ver `src/environments/`
 
 ## Comandos
@@ -102,7 +102,8 @@ Base URL configurada em `src/environments/environment.ts` (`environment.apiUrl`)
 
 | Serviço | Responsabilidade | Endpoints |
 |---------|-----------------|-----------|
-| **AuthService** | Login, registro, logout, token/user no localStorage | `POST /auth/login`, `POST /auth/register` |
+| **AuthService** | Login, registro, login Google, logout, token/user no localStorage | `POST /auth/login`, `POST /auth/register`, `POST /auth/google` |
+| **GoogleAuthService** | Inicialização do Google Identity Services e renderização do botão Google Sign-In | Sem endpoint — usa GIS client-side |
 | **UsuarioService** | Perfil do usuário | `GET /usuarios/me/{id}` |
 | **CampingService** | Listar campings, avaliações (CRUD) | `GET /mapa/campings`, `GET/POST/PUT /mapa/camping/{id}/avaliacoes`, `POST /avaliacao` |
 | **CheckinService** | Check-in e histórico | `POST /checkin`, `GET /checkin/historico/{usuarioId}` |

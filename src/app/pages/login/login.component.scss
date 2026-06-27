@@ -1,5 +1,4 @@
 .login-container {
-
   width: 100%;
   height: 100vh;
 
@@ -8,9 +7,7 @@
   justify-content: center;
 
   background:
-    linear-gradient(rgba(0, 0, 0, 0.45),
-      rgba(0, 0, 0, 0.45)),
-    url('/images/background.jpg');
+    linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('/images/background.jpg');
 
   background-size: cover;
   background-position: center;
@@ -18,7 +15,6 @@
 }
 
 .login-card {
-
   width: 360px;
 
   background: rgba(255, 255, 255, 0.08);
@@ -34,12 +30,10 @@
 
   gap: 16px;
 
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .logo {
-
   width: 180px;
   height: 180px;
 
@@ -53,7 +47,6 @@
 }
 
 h2 {
-
   text-align: center;
   color: white;
 
@@ -61,7 +54,6 @@ h2 {
 }
 
 input {
-
   height: 48px;
 
   border: none;
@@ -75,7 +67,6 @@ input {
 }
 
 button {
-
   height: 48px;
 
   border: none;
@@ -94,12 +85,10 @@ button {
 }
 
 button:hover {
-
   background: #e54e26;
 }
 
 .login-secondary {
-
   display: flex;
   justify-content: center;
   gap: 12px;
@@ -116,7 +105,6 @@ button:hover {
 }
 
 .link-button {
-
   border: none;
   background: transparent;
   color: #ffffff;
@@ -130,8 +118,33 @@ button:hover {
   background: transparent;
 }
 
-.erro {
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
 
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  span {
+    white-space: nowrap;
+  }
+}
+
+.google-button-container {
+  display: flex;
+  justify-content: center;
+  min-height: 44px;
+}
+
+.erro {
   color: #ffb3b3;
 
   text-align: center;

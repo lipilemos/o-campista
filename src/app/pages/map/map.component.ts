@@ -78,6 +78,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   raioUsuario?: google.maps.Circle;
   watchId?: number;
   minhaPosicao?: google.maps.LatLngLiteral;
+  private jacentralizouNoPrimeiroGps = false;
   mensagemCheckin = '';
   tipoMensagem: 'sucesso' | 'erro' | '' = '';
   checkinRealizado = false;
@@ -279,7 +280,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         };
 
         this.atualizarMarcadorUsuario();
-        this.map.panTo(this.minhaPosicao);
+
+        if (!this.jacentralizouNoPrimeiroGps) {
+          this.jacentralizouNoPrimeiroGps = true;
+          this.map.panTo(this.minhaPosicao);
+        }
       },
 
       error => {
