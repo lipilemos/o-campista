@@ -21,6 +21,7 @@ import { CheckinService } from '../../core/services/checkin.service';
 import { GiftService } from '../../core/services/gift.service';
 import { LocationService } from '../../core/services/location.service';
 import { MapStateService } from '../../core/services/map-state.service';
+import { NetworkStatusService } from '../../core/services/network-status.service';
 import { Util } from '../../core/Utils.ts/Util';
 
 @Component({
@@ -53,14 +54,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private campingService = inject(CampingService);
   private checkinService = inject(CheckinService);
   private authService = inject(AuthService);
+  protected networkStatus = inject(NetworkStatusService);
   private locationSubscription?: Subscription;
 
   constructor(
     private locationService: LocationService
   ) { }
 
-  @ViewChild('mapContainer', { static: true })
-  mapContainer!: ElementRef;
+  @ViewChild('mapContainer', { static: false })
+  mapContainer?: ElementRef;
 
   map!: google.maps.Map;
 
@@ -252,6 +254,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   private criarMapa() {
+    if (!this.mapContainer) return;
 
     this.map = new google.maps.Map(
       this.mapContainer.nativeElement,
@@ -393,7 +396,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     this.map.setZoom(16);
   }
-  private obterEmoji(tipo: string): string {
+  protected obterEmoji(tipo: string): string {
 
     switch (tipo) {
 

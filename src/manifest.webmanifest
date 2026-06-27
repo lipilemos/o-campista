@@ -1,0 +1,21 @@
+{
+  "name": "O Campista",
+  "short_name": "Campista",
+  "theme_color": "#6e1217",
+  "background_color": "#f5f5f5",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "images/logo-transp.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/logo-transp.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

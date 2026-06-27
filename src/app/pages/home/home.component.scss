@@ -202,6 +202,11 @@
   justify-content: center;
   flex-shrink: 0;
   box-shadow: 0 2px 8px rgba(249, 153, 32, 0.3);
+
+  &.avatar-img {
+    object-fit: cover;
+    background: none;
+  }
 }
 
 .usuario-info {

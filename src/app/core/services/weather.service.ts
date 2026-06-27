@@ -7,11 +7,13 @@ import {
     from,
     map,
     of,
-    switchMap
+    switchMap,
+    tap
 } from 'rxjs';
 
 import { WeatherForecast } from '../models/weather-forecast.model';
 import { Weather } from '../models/weather.model';
+import { OfflineStorageService } from './offline-storage.service';
 
 @Injectable({
     providedIn: 'root'
@@ -20,6 +22,7 @@ export class WeatherService {
 
     private http =
         inject(HttpClient);
+    private offlineStorage = inject(OfflineStorageService);
 
     private obterCidade(
         latitude: number,
@@ -235,7 +238,20 @@ export class WeatherService {
                         lng
                     )
                 });
-            })
+            }),
+
+            tap(dados => this.offlineStorage.saveWeather(dados.clima, dados.previsao)),
+
+            catchError(() =>
+                from(this.offlineStorage.getWeather()).pipe(
+                    map(cache => {
+                        if (cache) {
+                            return { clima: cache.clima, previsao: cache.previsao };
+                        }
+                        throw new Error('Sem dados de clima em cache');
+                    })
+                )
+            )
         );
     }
     private obterClimaAtualPorCoordenada(
