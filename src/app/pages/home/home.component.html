@@ -16,9 +16,13 @@
         <aside class="sidebar" [class.open]="menuOpen">
             <div class="logo"></div>
             <div class="usuario" *ngIf="usuario">
+                @if (usuario.fotoPerfil) {
+                <img class="avatar avatar-img" [src]="usuario.fotoPerfil" [alt]="usuario.nome" />
+                } @else {
                 <div class="avatar">
                     {{ usuario.nome.charAt(0).toUpperCase() }}
                 </div>
+                }
                 <div class="usuario-info">
                     <span class="nome">
                         {{ usuario.nome }}

@@ -73,4 +73,8 @@ export class AuthService {
     if (!usuario) return null;
     return JSON.parse(usuario);
   }
+
+  atualizarUsuarioLocal(usuario: UsuarioLogado): void {
+    localStorage.setItem('user', JSON.stringify(usuario));
+  }
 }

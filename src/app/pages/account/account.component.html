@@ -2,10 +2,15 @@
 
 <div class="account">
 
-    <div class="profile-card">
+    <div class="profile-card clickable" (click)="abrirPerfilDetalhe()" role="button" tabindex="0"
+        (keydown.enter)="abrirPerfilDetalhe()" aria-label="Ver detalhes do perfil">
+        @if (usuario.fotoPerfil) {
+        <img class="avatar avatar-img" [src]="usuario.fotoPerfil" [alt]="usuario.nome" />
+        } @else {
         <div class="avatar">
             {{ usuario.nome.charAt(0).toUpperCase() }}
         </div>
+        }
 
         <div class="profile-info">
             <h1>{{ usuario.nome }}</h1>
@@ -177,6 +182,14 @@
                 <app-checkin-history [historico]="historicoCheckins" [campingSelecionado]="campingSelecionado" [checkinsAvaliados]="checkinsAvaliados" (selecionarCampingEvent)="onSelecionarCamping($event)" (fecharDetalhesEvent)="onFecharDetalhes()" (fecharHistoricoEvent)="fecharHistoricoCheckins()" (avaliacaoSalvaEvent)="onAvaliacaoSalva()"></app-checkin-history>
             </div>
         </div>
+    }
+
+    @if (mostrarPerfilDetalhe) {
+        <app-profile-detail
+            [usuario]="usuario"
+            (fechar)="fecharPerfilDetalhe()"
+            (perfilAtualizado)="onPerfilAtualizado($event)"
+        />
     }
 </div>
 

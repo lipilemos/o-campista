@@ -27,4 +27,16 @@ export class UsuarioService {
                 `${this.apiUrl}/me/${usuarioId}`
             );
     }
+
+    uploadFotoPerfil(
+        usuarioId: number,
+        foto: FormData
+    ): Observable<UsuarioLogado> {
+
+        return this.http
+            .post<UsuarioLogado>(
+                `${this.apiUrl}/${usuarioId}/foto-perfil`,
+                foto
+            );
+    }
 }

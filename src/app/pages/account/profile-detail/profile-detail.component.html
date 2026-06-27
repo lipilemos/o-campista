@@ -1,0 +1,69 @@
+<div class="profile-overlay" (click)="fecharModal()" (keydown.escape)="fecharModal()">
+  <div class="profile-card" (click)="$event.stopPropagation()">
+
+    <button class="close-btn" (click)="fecharModal()" aria-label="Fechar detalhes do perfil">
+      ✖
+    </button>
+
+    <div class="photo-section">
+      <div class="photo-wrapper" (click)="fileInput.click()" role="button" tabindex="0"
+        (keydown.enter)="fileInput.click()" aria-label="Alterar foto de perfil">
+        @if (fotoExibida()) {
+        <img class="profile-photo" [src]="fotoExibida()" [alt]="usuario().nome" />
+        } @else {
+        <div class="avatar-large">
+          {{ inicialNome() }}
+        </div>
+        }
+        <div class="photo-hover">
+          <span>📷</span>
+        </div>
+      </div>
+
+      <input #fileInput type="file" accept="image/*" (change)="onPhotoSelected($event)" hidden />
+
+      @if (imagePreview()) {
+      <div class="photo-actions">
+        <button class="btn-save" (click)="uploadPhoto()" [disabled]="uploading()">
+          @if (uploading()) {
+          Enviando...
+          } @else {
+          Salvar foto
+          }
+        </button>
+        <button class="btn-remove" (click)="removePhoto()" [disabled]="uploading()">
+          Remover
+        </button>
+      </div>
+      }
+    </div>
+
+    <div class="info-section">
+      <h2>{{ usuario().nome }}</h2>
+      <p class="email">{{ usuario().email }}</p>
+      <span class="badge">🏕️ Nivel {{ usuario().nivel }}</span>
+    </div>
+
+    <div class="stats-mini">
+      <div class="stat">
+        <strong>{{ usuario().totalCheckins }}</strong>
+        <span>Check-ins</span>
+      </div>
+      <div class="stat">
+        <strong>{{ usuario().totalCampingsVisitados }}</strong>
+        <span>Campings</span>
+      </div>
+      <div class="stat">
+        <strong>{{ usuario().totalTrilhasConcluidas }}</strong>
+        <span>Trilhas</span>
+      </div>
+    </div>
+
+    @if (mensagem()) {
+    <div class="feedback" [class.erro]="erro()" [class.sucesso]="!erro()">
+      {{ mensagem() }}
+    </div>
+    }
+
+  </div>
+</div>

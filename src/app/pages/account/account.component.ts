@@ -11,11 +11,12 @@ import { CampingService } from '../../core/services/camping.service';
 import { CheckinService } from '../../core/services/checkin.service';
 import { UsuarioService } from '../../core/services/usuario.service';
 import { CheckinHistoryComponent } from './checkin-history/checkin-history.component';
+import { ProfileDetailComponent } from './profile-detail/profile-detail.component';
 
 @Component({
   selector: 'app-account',
   standalone: true,
-  imports: [CommonModule, CheckinHistoryComponent],
+  imports: [CommonModule, CheckinHistoryComponent, ProfileDetailComponent],
   templateUrl: './account.component.html',
   styleUrls: ['./account.component.scss']
 })
@@ -38,6 +39,7 @@ export class AccountComponent implements OnInit {
   presenteSelecionado: Presente | null = null;
   historicoCheckins: HistoricoCheckin[] = [];
   mostrarHistorico = false;
+  mostrarPerfilDetalhe = false;
   private router = inject(Router);
   constructor(
     private authService: AuthService,
@@ -125,6 +127,21 @@ export class AccountComponent implements OnInit {
       .subscribe(usuario => {
         this.usuario = usuario;
       });
+  }
+
+  abrirPerfilDetalhe(): void {
+    this.mostrarPerfilDetalhe = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  fecharPerfilDetalhe(): void {
+    this.mostrarPerfilDetalhe = false;
+    document.body.style.overflow = '';
+  }
+
+  onPerfilAtualizado(usuario: UsuarioLogado): void {
+    this.usuario = usuario;
+    this.authService.atualizarUsuarioLocal(usuario);
   }
 
   abrirPresente(presente: Presente) {

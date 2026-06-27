@@ -15,23 +15,23 @@
 
         <div class="offline-cards">
             @for (camping of campings; track camping.id) {
-                @if (!busca ||
-                    camping.nome.toLowerCase().includes(busca.toLowerCase()) ||
-                    camping.cidade.toLowerCase().includes(busca.toLowerCase())) {
-                <div class="offline-card">
-                    <div class="offline-card-emoji">{{ obterEmoji(camping.tipo) }}</div>
-                    <div class="offline-card-info">
-                        <h3>{{ camping.nome }}</h3>
-                        <p>📍 {{ camping.cidade }} - {{ camping.estado }}</p>
-                        <div class="offline-card-meta">
-                            <span class="offline-card-tipo">{{ camping.tipo }}</span>
-                            <span class="offline-card-avaliacao">⭐ {{ camping.avaliacao }}</span>
-                        </div>
+            @if (!busca ||
+            camping.nome.toLowerCase().includes(busca.toLowerCase()) ||
+            camping.cidade.toLowerCase().includes(busca.toLowerCase())) {
+            <div class="offline-card">
+                <div class="offline-card-emoji">{{ obterEmoji(camping.tipo) }}</div>
+                <div class="offline-card-info">
+                    <h3>{{ camping.nome }}</h3>
+                    <p>📍 {{ camping.cidade }} - {{ camping.estado }}</p>
+                    <div class="offline-card-meta">
+                        <span class="offline-card-tipo">{{ camping.tipo }}</span>
+                        <span class="offline-card-avaliacao">⭐ {{ camping.avaliacao }}</span>
                     </div>
                 </div>
-                }
+            </div>
+            }
             } @empty {
-                <p class="offline-empty">Nenhum camping salvo. Conecte-se à internet para carregar dados.</p>
+            <p class="offline-empty">Nenhum camping salvo. Conecte-se à internet para carregar dados.</p>
             }
         </div>
     </div>
@@ -122,7 +122,6 @@
 
             </div>
 
-            <app-avaliacoes-usuarios [campingId]="campingSelecionado.id"></app-avaliacoes-usuarios>
             @if(campingSelecionado.tipo === 'camping') {
             @if(mensagemCheckin) {
             <div class="checkin-message" [class.success]="tipoMensagem === 'sucesso'"
@@ -132,6 +131,8 @@
 
             </div>
             }
+            <app-avaliacoes-usuarios [campingId]="campingSelecionado.id"></app-avaliacoes-usuarios>
+            <div style="height: 60px;"></div>
             <button class="btn-checkin" [disabled]="checkinRealizado" [hidden]="!podeFazerCheckin()"
                 (click)="fazerCheckin()">
                 Fazer Check-in
