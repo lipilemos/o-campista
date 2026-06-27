@@ -1,9 +1,6 @@
 <div class="login-container">
-
   <div class="login-card">
-
-    <div class="logo">
-    </div>
+    <div class="logo"></div>
 
     <h2>Bem-vindo</h2>
 
@@ -12,26 +9,30 @@
     <input type="password" placeholder="Senha" [(ngModel)]="senha" />
 
     <button (click)="entrar()" [disabled]="loading">
-
-      @if(loading){
-      Entrando...
+      @if (loading) {
+        Entrando...
       } @else {
-      Entrar
+        Entrar
       }
-
     </button>
 
+    <div class="divider" role="separator">
+      <span>ou</span>
+    </div>
+
+    <div #googleButton class="google-button-container" aria-label="Entrar com Google"></div>
+
     <div class="login-secondary">
-      <button type="button" class="link-button" (click)="recuperarSenha()">Esqueceu a senha?</button>
+      <button type="button" class="link-button" (click)="recuperarSenha()">
+        Esqueceu a senha?
+      </button>
     </div>
     <button type="button" class="btn_hover" (click)="criarConta()">Criar conta</button>
 
-    @if(erro){
-    <p class="erro">
-      {{ erro }}
-    </p>
+    @if (erro) {
+      <p class="erro">
+        {{ erro }}
+      </p>
     }
-
   </div>
-
 </div>

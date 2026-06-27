@@ -6,57 +6,71 @@ import { environment } from '../../../environments/environment';
 import { UsuarioLogado } from '../models/user.model';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
+  private router = inject(Router);
+  private http = inject(HttpClient);
 
-    private router = inject(Router);
-    private http = inject(HttpClient);
+  private apiUrl = `${environment.apiUrl}/auth`;
 
-    private apiUrl = `${environment.apiUrl}/auth`;
+  login(email: string, senha: string): Observable<UsuarioLogado> {
+    return this.http
+      .post<UsuarioLogado>(`${this.apiUrl}/login`, {
+        email,
+        senha,
+      })
+      .pipe(
+        tap((user) => {
+          localStorage.setItem('token', user.token);
+          localStorage.setItem('user', JSON.stringify(user));
+        }),
+      );
+  }
 
-    login(email: string, senha: string): Observable<UsuarioLogado> {
+  register(registro: {
+    nome: string;
+    usuario: string;
+    email: string;
+    senha: string;
+  }): Observable<UsuarioLogado> {
+    return this.http.post<UsuarioLogado>(`${this.apiUrl}/register`, registro).pipe(
+      tap((user) => {
+        localStorage.setItem('token', user.token);
+        localStorage.setItem('user', JSON.stringify(user));
+      }),
+    );
+  }
 
-        return this.http.post<UsuarioLogado>(`${this.apiUrl}/login`, {
-            email,
-            senha
-        }).pipe(
-            tap(user => {
-                localStorage.setItem('token', user.token);
-                localStorage.setItem('user', JSON.stringify(user));
-            })
-        );
-    }
+  loginWithGoogle(idToken: string): Observable<UsuarioLogado> {
+    return this.http.post<UsuarioLogado>(`${this.apiUrl}/google`, { idToken }).pipe(
+      tap((user) => {
+        localStorage.setItem('token', user.token);
+        localStorage.setItem('user', JSON.stringify(user));
+      }),
+    );
+  }
 
-    register(registro: { nome: string; usuario: string; email: string; senha: string }): Observable<UsuarioLogado> {
-        return this.http.post<UsuarioLogado>(`${this.apiUrl}/register`, registro).pipe(
-            tap(user => {
-                localStorage.setItem('token', user.token);
-                localStorage.setItem('user', JSON.stringify(user));
-            })
-        );
-    }
+  logout(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    sessionStorage.clear();
+    this.router.navigate(['/']);
+  }
 
-    logout(): void {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        sessionStorage.clear();
-        this.router.navigate(['/']);
-    }
+  getUser(): UsuarioLogado | null {
+    const user = localStorage.getItem('user');
+    if (!user) return null;
+    return JSON.parse(user);
+  }
 
-    getUser(): UsuarioLogado | null {
-        const user = localStorage.getItem('user');
-        if (!user) return null;
-        return JSON.parse(user);
-    }
+  isAuthenticated(): boolean {
+    return !!localStorage.getItem('token');
+  }
 
-    isAuthenticated(): boolean {
-        return !!localStorage.getItem('token');
-    }
-
-    obterUsuarioLogado() {
-        const usuario = localStorage.getItem('user');
-        if (!usuario) return null;
-        return JSON.parse(usuario);
-    }
+  obterUsuarioLogado() {
+    const usuario = localStorage.getItem('user');
+    if (!usuario) return null;
+    return JSON.parse(usuario);
+  }
 }
