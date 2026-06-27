@@ -6,6 +6,11 @@ import { AuthService } from '../../core/services/auth.service';
 import { CampingService } from '../../core/services/camping.service';
 import { AvaliacoesUsuariosComponent } from '../avaliacoes-usuarios/avaliacoes-usuarios.component';
 
+const XP_ESTRELAS = 100;
+const XP_COMENTARIO_CURTO = 100;
+const XP_COMENTARIO_LONGO = 300;
+const COMENTARIO_LONGO_MIN_CHARS = 20;
+
 @Component({
   selector: 'app-formulario-avaliacao',
   imports: [FormsModule, AvaliacoesUsuariosComponent],
@@ -30,6 +35,26 @@ export class FormularioAvaliacaoComponent implements OnChanges {
 
   readonly estrelas = [1, 2, 3, 4, 5];
 
+  get xpEstrelas(): number {
+    return this.nota > 0 ? XP_ESTRELAS : 0;
+  }
+
+  get xpComentario(): number {
+    const textoLimpo = this.comentario.trim();
+    if (!textoLimpo) return 0;
+    return textoLimpo.length > COMENTARIO_LONGO_MIN_CHARS
+      ? XP_COMENTARIO_LONGO
+      : XP_COMENTARIO_CURTO;
+  }
+
+  get xpTotal(): number {
+    return this.xpEstrelas + this.xpComentario;
+  }
+
+  get isNovaAvaliacao(): boolean {
+    return !this.minhaAvaliacao?.id;
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['camping']) {
       this.resetar();
@@ -41,12 +66,10 @@ export class FormularioAvaliacaoComponent implements OnChanges {
 
   salvar(): void {
     if (this.nota < 1 || this.nota > 5) {
-      alert('Por favor, selecione uma nota entre 1 e 5 estrelas');
       return;
     }
 
     if (!this.comentario.trim()) {
-      alert('Por favor, adicione um comentário');
       return;
     }
 
@@ -67,7 +90,6 @@ export class FormularioAvaliacaoComponent implements OnChanges {
       this.campingService.atualizarAvaliacao(this.minhaAvaliacao.id, avaliacao).subscribe({
         next: (resultado) => {
           this.carregando = false;
-          alert('Avaliação atualizada com sucesso!');
           this.avaliacaoSalva.emit(resultado);
         },
         error: (error) => {
@@ -76,11 +98,11 @@ export class FormularioAvaliacaoComponent implements OnChanges {
         },
       });
     } else {
-      this.campingService.criarAvaliacao(avaliacao).subscribe({
+      const avaliacaoComXp: Avaliacao = { ...avaliacao, xpGanho: this.xpTotal };
+      this.campingService.criarAvaliacao(avaliacaoComXp).subscribe({
         next: (resultado) => {
           this.carregando = false;
           this.minhaAvaliacao = resultado;
-          alert('Avaliação enviada com sucesso!');
           this.avaliacaoSalva.emit(resultado);
         },
         error: (error) => {
@@ -101,15 +123,17 @@ export class FormularioAvaliacaoComponent implements OnChanges {
     const usuarioId = this.authService.getUser()?.id;
     if (!usuarioId) return;
 
-    this.campingService.obterAvaliacaoUsuario(this.camping().id, usuarioId, this.checkinId()).subscribe({
-      next: (avaliacao) => {
-        if (avaliacao) {
-          this.minhaAvaliacao = avaliacao[0];
-          this.nota = avaliacao[0].nota;
-          this.comentario = avaliacao[0].comentario;
-        }
-      },
-      error: (error) => console.error('Erro ao carregar avaliação do usuário:', error),
-    });
+    this.campingService
+      .obterAvaliacaoUsuario(this.camping().id, usuarioId, this.checkinId())
+      .subscribe({
+        next: (avaliacao) => {
+          if (avaliacao) {
+            this.minhaAvaliacao = avaliacao[0];
+            this.nota = avaliacao[0].nota;
+            this.comentario = avaliacao[0].comentario;
+          }
+        },
+        error: (error) => console.error('Erro ao carregar avaliação do usuário:', error),
+      });
   }
 }

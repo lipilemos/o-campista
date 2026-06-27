@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { Subscription } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { AvaliacoesUsuariosComponent } from '../../components/avaliacoes-usuarios/avaliacoes-usuarios.component';
 import { Camping } from '../../core/models/camping.model';
 import { CheckinRequestModel, CheckinResponseModel } from '../../core/models/checkin.model';
 import { Presente } from '../../core/models/presente.model';
@@ -28,7 +29,8 @@ import { Util } from '../../core/Utils.ts/Util';
   imports: [
     GoogleMapsModule,
     FormsModule,
-    CommonModule
+    CommonModule,
+    AvaliacoesUsuariosComponent
   ],
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']

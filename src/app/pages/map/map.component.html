@@ -82,6 +82,8 @@
                 }
 
             </div>
+
+            <app-avaliacoes-usuarios [campingId]="campingSelecionado.id"></app-avaliacoes-usuarios>
             @if(campingSelecionado.tipo === 'camping') {
             @if(mensagemCheckin) {
             <div class="checkin-message" [class.success]="tipoMensagem === 'sucesso'"

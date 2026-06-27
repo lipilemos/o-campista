@@ -1,136 +1,165 @@
 .login-container {
   width: 100%;
-  height: 100vh;
-
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-
   background:
-    linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('/images/background.jpg');
-
+    linear-gradient(160deg, rgba(0, 0, 0, 0.5), rgba(110, 18, 23, 0.35)),
+    url('/images/background.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
 .login-card {
-  width: 360px;
-
-  background: rgba(255, 255, 255, 0.08);
-
-  backdrop-filter: blur(10px);
-
-  border-radius: 24px;
-
-  padding: 40px;
-
+  width: 380px;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-10);
   display: flex;
   flex-direction: column;
+  gap: var(--space-4);
+  box-shadow: var(--shadow-xl);
+  animation: cardAppear 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
-  gap: 16px;
-
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .logo {
-  width: 180px;
-  height: 180px;
-
-  margin: 0 auto 20px auto;
-
+  width: 160px;
+  height: 160px;
+  margin: 0 auto var(--space-5) auto;
   background-image: url('/images/logo-transp.png');
-
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
 }
 
 h2 {
   text-align: center;
-  color: white;
-
-  margin-bottom: 20px;
+  color: var(--color-text-inverse);
+  margin-bottom: var(--space-5);
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 input {
   height: 48px;
-
-  border: none;
-  border-radius: 12px;
-
-  padding: 0 16px;
-
-  font-size: 16px;
-
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-4);
+  font-size: var(--text-base);
   outline: none;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--color-text);
+  transition: var(--transition-base);
+
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  &:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(249, 153, 32, 0.25);
+    background: #ffffff;
+  }
 }
 
 button {
   height: 48px;
-
   border: none;
-  border-radius: 12px;
-
-  background: #f99920;
-
-  color: white;
-
-  font-size: 16px;
-  font-weight: bold;
-
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+  font-size: var(--text-base);
+  font-weight: 700;
   cursor: pointer;
+  transition: var(--transition-base);
+  position: relative;
+  overflow: hidden;
 
-  transition: 0.2s;
-}
+  &:hover {
+    background: var(--color-accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(249, 153, 32, 0.35);
+  }
 
-button:hover {
-  background: #e54e26;
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
 }
 
 .login-secondary {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .btn_hover {
-  background: #ffffff;
-  color: #000000;
-}
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--color-text);
+  font-weight: 600;
 
-.btn_hover:hover {
-  background: #e54e26;
-  color: #ffffff;
+  &:hover {
+    background: var(--color-accent-hover);
+    color: var(--color-text-inverse);
+  }
 }
 
 .link-button {
   border: none;
   background: transparent;
-  color: #ffffff;
-  text-decoration: underline;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--text-sm);
+  font-weight: 600;
   padding: 0;
-}
+  transition: var(--transition-fast);
 
-.link-button:hover {
-  background: transparent;
+  &:hover {
+    color: var(--color-text-inverse);
+    text-decoration: underline;
+    background: transparent;
+    transform: none;
+    box-shadow: none;
+  }
 }
 
 .divider {
   display: flex;
   align-items: center;
-  gap: 12px;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 14px;
+  gap: var(--space-3);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: var(--text-sm);
 
   &::before,
   &::after {
     content: '';
     flex: 1;
     height: 1px;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15);
   }
 
   span {
@@ -146,6 +175,10 @@ button:hover {
 
 .erro {
   color: #ffb3b3;
-
   text-align: center;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  padding: var(--space-3);
+  background: rgba(198, 40, 40, 0.15);
+  border-radius: var(--radius-sm);
 }
