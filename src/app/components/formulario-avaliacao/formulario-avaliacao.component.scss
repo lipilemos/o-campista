@@ -1,0 +1,142 @@
+.camping-details-panel {
+  background-color: #f0f0f0;
+  overflow-y: auto;
+  padding: 24px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1001;
+
+  .close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 254, 254, 0.45);
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #000000;
+    transition: color 0.2s;
+    border-radius: 50%;
+
+    &:hover {
+      color: #333;
+    }
+  }
+}
+
+.camping-header {
+  margin-bottom: 24px;
+
+  .camping-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    margin: 0 0 8px 0;
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .location {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+  }
+}
+
+.rating-section {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+
+  h3 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    font-weight: 600;
+  }
+}
+
+.star-rating {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+
+  .star {
+    background: none;
+    border: none;
+    font-size: 32px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    padding: 0;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &.active {
+      color: #ffc107;
+    }
+  }
+}
+
+.comment-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: #4caf50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+  }
+}
+
+.save-btn {
+  width: 100%;
+  padding: 12px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+
+  &:hover:not(:disabled) {
+    background: #45a049;
+  }
+
+  &:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+}
+
+@media (max-width: 768px) {
+  .camping-details-panel {
+    padding: 16px;
+  }
+
+  .camping-header .camping-image {
+    height: 200px;
+  }
+
+  .star-rating .star {
+    font-size: 28px;
+  }
+}

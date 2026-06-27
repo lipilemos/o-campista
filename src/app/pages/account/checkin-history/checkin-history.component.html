@@ -1,0 +1,36 @@
+<div class="history-overlay" *ngIf="historico.length > 0" tabindex="-1" #historyOverlay>
+  <div class="history-list">
+    <div class="history-header">
+      <h2>📋 Histórico de Check-ins</h2>
+      <button class="close-btn" (click)="fecharHistorico()" aria-label="Fechar histórico">✖</button>
+    </div>
+
+    @for (item of historico; track item.id) {
+    <div class="history-item" (click)="selecionarCamping(item)"
+      [class.selecionado]="campingSelecionado?.id === item.id"
+      [class.avaliado]="isAvaliado(item)">
+      <div class="history-item-info">
+        <h3>{{ item.camping.nome }}</h3>
+        <p class="camping-details">{{ item.camping.cidade }}, {{ item.camping.estado }}</p>
+        <p class="check-in-date">{{ item.dataCriacao | date: 'dd/MM/yyyy HH:mm' }}</p>
+      </div>
+      @if (isAvaliado(item)) {
+        <span class="badge-avaliado">Já avaliado</span>
+      } @else {
+        <span class="chevron">›</span>
+      }
+    </div>
+    }
+
+  </div>
+
+  @if (campingSelecionado) {
+    <app-formulario-avaliacao
+      [camping]="campingSelecionado.camping"
+      [checkinId]="campingSelecionado.id"
+      [jaAvaliado]="isAvaliado(campingSelecionado)"
+      (fechar)="fecharDetalhes()"
+      (avaliacaoSalva)="onAvaliacaoSalva($event)"
+    />
+  }
+</div>

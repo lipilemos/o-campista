@@ -1,0 +1,48 @@
+<div class="camping-details-panel">
+  <button class="close-btn" (click)="fechar.emit()" aria-label="Fechar detalhes">✖</button>
+
+  <div class="camping-header">
+    @if (camping().fotoPrincipal) {
+    <img [src]="camping().fotoPrincipal" [alt]="camping().nome" class="camping-image" />
+    }
+    <h2>{{ camping().nome }}</h2>
+    <p class="location">
+      📍 {{ camping().endereco }}, {{ camping().cidade }}
+    </p>
+  </div>
+
+  <div class="rating-section">
+    <h3>Sua Avaliação</h3>
+
+    <div class="star-rating">
+      @for (i of estrelas; track i) {
+      <button
+        class="star"
+        [class.active]="i <= nota"
+        (click)="nota = i"
+        [attr.aria-label]="i + ' estrela' + (i > 1 ? 's' : '')"
+      >
+        {{ i <= nota ? '⭐' : '☆' }}
+      </button>
+      }
+    </div>
+
+    <textarea
+      [(ngModel)]="comentario"
+      placeholder="Compartilhe sua experiência neste camping..."
+      class="comment-input"
+      rows="4"
+      aria-label="Comentário da avaliação"
+    ></textarea>
+
+    <button
+      (click)="salvar()"
+      class="save-btn"
+      [disabled]="carregando || nota === 0 || !comentario.trim()"
+    >
+      {{ minhaAvaliacao ? 'Atualizar Avaliação' : 'Enviar Avaliação' }}
+    </button>
+  </div>
+
+  <app-avaliacoes-usuarios [campingId]="camping().id" />
+</div>
