@@ -1,108 +1,89 @@
 .weather-card {
-
-    background: white;
-
-    border-radius: 20px;
-
-    padding: 24px;
-
-    box-shadow:
-        0 8px 24px rgba(0, 0, 0, .08);
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border-light);
+  margin: 0 var(--space-5);
 }
 
 .weather-header {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 16px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
 }
 
 .weather-icon {
-
-    font-size: 40px;
+  font-size: 40px;
+  line-height: 1;
 }
 
 .weather-temp {
-
-    margin-top: 20px;
-
-    font-size: 56px;
-
-    font-weight: bold;
+  margin-top: var(--space-5);
+  font-size: 52px;
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.03em;
+  line-height: 1;
 }
 
 .weather-description {
-
-    color: #666;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
 }
 
 .weather-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
 
-    display: flex;
-
-    flex-wrap: wrap;
-
-    gap: 10px;
-
-    margin-top: 20px;
-}
-
-.weather-details div {
-
-    background: #f5f5f5;
-
-    padding: 10px;
-
-    border-radius: 10px;
+  div {
+    background: var(--color-surface-alt);
+    padding: var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+    font-weight: 500;
+  }
 }
 
 .weather-status {
-
-    margin-top: 20px;
-
-    padding: 14px;
-
-    border-radius: 12px;
-
-    font-weight: 600;
+  margin-top: var(--space-5);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: var(--text-sm);
 }
 
 .excelente {
-
-    background: #e8f5e9;
-
-    color: #2e7d32;
+  background: var(--color-success-bg);
+  color: var(--color-success);
 }
 
 .atencao {
-
-    background: #fff8e1;
-
-    color: #f57f17;
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
 }
 
 .ruim {
-
-    background: #ffebee;
-
-    color: #c62828;
+  background: var(--color-error-bg);
+  color: var(--color-error);
 }
 
 @media (max-width: 768px) {
+  .weather-card {
+    margin: 0;
+  }
 
-    .weather-temp {
+  .weather-temp {
+    font-size: 36px;
+  }
 
-        font-size: 38px;
-    }
+  .weather-details {
+    flex-direction: column;
+  }
 
-    .weather-details {
-
-        flex-direction: column;
-    }
-
-    h3 {
-        font-size: 20px;
-    }
+  h3 {
+    font-size: var(--text-lg);
+  }
 }

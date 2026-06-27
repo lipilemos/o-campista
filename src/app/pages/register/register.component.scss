@@ -1,103 +1,135 @@
 .register-container {
   width: 100%;
-  height: 100vh;
-
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-
   background:
-    linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('/images/background.jpg');
-
+    linear-gradient(160deg, rgba(0, 0, 0, 0.5), rgba(110, 18, 23, 0.35)),
+    url('/images/background.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
 .register-card {
-  width: 360px;
-
-  background: rgba(255, 255, 255, 0.08);
-
-  backdrop-filter: blur(10px);
-
-  border-radius: 24px;
-  padding: 40px;
-
+  width: 380px;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-10);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
+  box-shadow: var(--shadow-xl);
+  animation: cardAppear 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .logo {
-  width: 180px;
-  height: 180px;
-
-  margin: 0 auto 20px auto;
-
+  width: 160px;
+  height: 160px;
+  margin: 0 auto var(--space-5) auto;
   background-image: url('/images/logo-transp.png');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
 }
 
 .back-button {
   align-self: flex-start;
   border: none;
   background: transparent;
-  color: white;
-  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: var(--text-sm);
   font-weight: 600;
   cursor: pointer;
-  padding: 0;
+  padding: var(--space-1) 0;
+  transition: var(--transition-fast);
+
+  &:hover {
+    color: var(--color-text-inverse);
+  }
 }
 
 h2 {
   text-align: center;
-  color: white;
-  margin-bottom: 20px;
+  color: var(--color-text-inverse);
+  margin-bottom: var(--space-5);
+  font-weight: 700;
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
   width: 100%;
 }
 
 input {
   width: 100%;
   height: 48px;
-  border: none;
-  border-radius: 12px;
-  padding: 0 16px;
-  font-size: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-4);
+  font-size: var(--text-base);
   outline: none;
-  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--color-text);
+  transition: var(--transition-base);
+
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  &:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(249, 153, 32, 0.25);
+    background: #ffffff;
+  }
 }
 
 button[type='submit'] {
   width: 100%;
   height: 48px;
   border: none;
-  border-radius: 12px;
-  background: #f99920;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+  font-size: var(--text-base);
+  font-weight: 700;
   cursor: pointer;
-  transition: 0.2s;
-}
+  transition: var(--transition-base);
 
-button[type='submit']:hover {
-  background: #e54e26;
-}
+  &:hover {
+    background: var(--color-accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(249, 153, 32, 0.35);
+  }
 
-button[type='submit']:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
 }
 
 .google-button-container {
@@ -109,16 +141,16 @@ button[type='submit']:disabled {
 .divider {
   display: flex;
   align-items: center;
-  gap: 12px;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 14px;
+  gap: var(--space-3);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: var(--text-sm);
 
   &::before,
   &::after {
     content: '';
     flex: 1;
     height: 1px;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15);
   }
 
   span {
@@ -129,9 +161,19 @@ button[type='submit']:disabled {
 .erro {
   color: #ffb3b3;
   text-align: center;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  padding: var(--space-3);
+  background: rgba(198, 40, 40, 0.15);
+  border-radius: var(--radius-sm);
 }
 
 .sucesso {
-  color: #2e7d32;
+  color: #a5d6a7;
   text-align: center;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  padding: var(--space-3);
+  background: rgba(46, 125, 50, 0.15);
+  border-radius: var(--radius-sm);
 }

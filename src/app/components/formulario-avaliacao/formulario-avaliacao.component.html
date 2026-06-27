@@ -3,12 +3,10 @@
 
   <div class="camping-header">
     @if (camping().fotoPrincipal) {
-    <img [src]="camping().fotoPrincipal" [alt]="camping().nome" class="camping-image" />
+      <img [src]="camping().fotoPrincipal" [alt]="camping().nome" class="camping-image" />
     }
     <h2>{{ camping().nome }}</h2>
-    <p class="location">
-      📍 {{ camping().endereco }}, {{ camping().cidade }}
-    </p>
+    <p class="location">📍 {{ camping().endereco }}, {{ camping().cidade }}</p>
   </div>
 
   <div class="rating-section">
@@ -16,24 +14,48 @@
 
     <div class="star-rating">
       @for (i of estrelas; track i) {
-      <button
-        class="star"
-        [class.active]="i <= nota"
-        (click)="nota = i"
-        [attr.aria-label]="i + ' estrela' + (i > 1 ? 's' : '')"
-      >
-        {{ i <= nota ? '⭐' : '☆' }}
-      </button>
+        <button
+          class="star"
+          [class.active]="i <= nota"
+          (click)="nota = i"
+          [attr.aria-label]="i + ' estrela' + (i > 1 ? 's' : '')"
+        >
+          {{ i <= nota ? '⭐' : '☆' }}
+        </button>
+      }
+
+      @if (isNovaAvaliacao && xpEstrelas > 0) {
+        <span class="xp-badge xp-badge--active" aria-live="polite">+{{ xpEstrelas }} XP</span>
       }
     </div>
 
-    <textarea
-      [(ngModel)]="comentario"
-      placeholder="Compartilhe sua experiência neste camping..."
-      class="comment-input"
-      rows="4"
-      aria-label="Comentário da avaliação"
-    ></textarea>
+    <div class="comment-field">
+      <textarea
+        [(ngModel)]="comentario"
+        placeholder="Compartilhe sua experiência neste camping..."
+        class="comment-input"
+        rows="4"
+        aria-label="Comentário da avaliação"
+      ></textarea>
+
+      @if (isNovaAvaliacao && xpComentario > 0) {
+        <span
+          class="xp-badge"
+          [class.xp-badge--bonus]="comentario.trim().length > 20"
+          [class.xp-badge--active]="comentario.trim().length <= 20"
+          aria-live="polite"
+        >
+          +{{ xpComentario }} XP
+          @if (comentario.trim().length <= 20) {
+            <span class="xp-hint">Escreva mais de 20 caracteres para +300 XP!</span>
+          }
+        </span>
+      }
+    </div>
+
+    @if (isNovaAvaliacao && xpTotal > 0) {
+      <div class="xp-total" aria-live="polite">✨ Total: +{{ xpTotal }} XP</div>
+    }
 
     <button
       (click)="salvar()"

@@ -5,6 +5,7 @@ export interface Avaliacao {
   campingId: number;
   nota: number;
   comentario: string;
+  xpGanho?: number;
   dataCriacao?: string;
   dataAtualizacao?: string;
 }

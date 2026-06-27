@@ -1,9 +1,10 @@
 .history-overlay {
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 20px;
-  background: rgba(0, 0, 0, .45);
-  backdrop-filter: blur(6px);
+  padding: var(--space-5);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   position: fixed;
   top: 0;
   left: 0;
@@ -13,50 +14,48 @@
   height: 100%;
   display: flex;
   z-index: 1000;
-  animation: slideUp 0.3s ease;
+  animation: fadeIn 0.2s ease;
 }
 
-@keyframes slideUp {
+@keyframes fadeIn {
   from {
-    transform: translateY(20px);
     opacity: 0;
   }
-
   to {
-    transform: translateY(0);
     opacity: 1;
   }
 }
 
 .history-list {
-
-  background: white;
+  background: var(--color-surface);
   max-width: 1000px;
   width: 90%;
   margin: auto;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   max-height: 90vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-xl);
   overflow-y: auto;
   overflow-x: hidden;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
   .history-header {
     position: sticky;
     top: 0;
-    background: white;
+    background: var(--color-surface);
     z-index: 2;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 24px;
-    border-bottom: 2px solid #f0f0f0;
+    padding: var(--space-6);
+    border-bottom: 1px solid var(--color-border);
 
     h2 {
       margin: 0;
-      font-size: 20px;
-      font-weight: 600;
+      font-size: var(--text-xl);
+      font-weight: 700;
+      padding: 0;
     }
 
     .close-btn {
@@ -64,16 +63,27 @@
       border: none;
       font-size: 20px;
       cursor: pointer;
-      color: #999;
-      transition: color 0.2s;
-      padding: 4px 8px;
-      border-radius: 4px;
+      color: var(--color-text-muted);
+      transition: var(--transition-fast);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
 
       &:hover {
-        color: #333;
-        background: #f0f0f0;
+        color: var(--color-text);
+        background: var(--color-surface-alt);
       }
     }
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 
@@ -81,17 +91,25 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
-  border-bottom: 1px solid #f0f0f0;
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--color-border-light);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background var(--transition-fast);
 
   &:hover {
-    background: #f9f9f9;
+    background: var(--color-surface-hover);
   }
 
   &.selecionado {
-    background: #f0f7ff;
+    background: rgba(249, 153, 32, 0.06);
+  }
+
+  &.avaliado {
+    opacity: 0.65;
+
+    &:hover {
+      background: rgba(46, 125, 50, 0.04);
+    }
   }
 }
 
@@ -99,49 +117,43 @@
   flex: 1;
 
   h3 {
-    margin: 0 0 4px 0;
-    font-size: 16px;
+    margin: 0 0 var(--space-1) 0;
+    font-size: var(--text-base);
     font-weight: 600;
-    color: #333;
+    color: var(--color-text);
+    padding: 0;
   }
 
   p {
     margin: 2px 0;
-    font-size: 14px;
-    color: #666;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    padding: 0;
   }
 
   .check-in-date {
-    color: #999;
-    font-size: 12px;
-  }
-}
-
-.history-item.avaliado {
-  opacity: 0.7;
-
-  &:hover {
-    background: #f0f7f0;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
   }
 }
 
 .badge-avaliado {
   display: inline-flex;
   align-items: center;
-  background: #e8f5e9;
-  color: #2e7d32;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 12px;
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
   white-space: nowrap;
-  margin-left: 16px;
+  margin-left: var(--space-4);
 }
 
 .chevron {
-  color: #ccc;
+  color: var(--color-text-muted);
   font-size: 24px;
-  margin-left: 16px;
+  margin-left: var(--space-4);
 }
 
 @media (max-width: 768px) {

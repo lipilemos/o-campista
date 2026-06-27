@@ -120,6 +120,11 @@ export class AccountComponent implements OnInit {
     this.mostrarHistorico = false;
     document.body.style.overflow = '';
     this.campingSelecionado = null;
+
+    this.usuarioService.obterPerfil(this.authService.getUser()?.id.toString()!)
+      .subscribe(usuario => {
+        this.usuario = usuario;
+      });
   }
 
   abrirPresente(presente: Presente) {
