@@ -11,18 +11,16 @@ import { FormsModule } from '@angular/forms';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { Subscription } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { AvaliacoesUsuariosComponent } from '../../components/avaliacoes-usuarios/avaliacoes-usuarios.component';
+import { CardCampingComponent } from '../../components/card-camping/card-camping.component';
+import { CardGiftComponent } from '../../components/card-gift/card-gift.component';
 import { Camping } from '../../core/models/camping.model';
-import { CheckinRequestModel, CheckinResponseModel } from '../../core/models/checkin.model';
 import { Presente } from '../../core/models/presente.model';
-import { AuthService } from '../../core/services/auth.service';
 import { CampingService } from '../../core/services/camping.service';
-import { CheckinService } from '../../core/services/checkin.service';
 import { GiftService } from '../../core/services/gift.service';
 import { LocationService } from '../../core/services/location.service';
 import { MapStateService } from '../../core/services/map-state.service';
 import { NetworkStatusService } from '../../core/services/network-status.service';
-import { Util } from '../../core/Utils.ts/Util';
+
 
 @Component({
   selector: 'app-map',
@@ -31,7 +29,8 @@ import { Util } from '../../core/Utils.ts/Util';
     GoogleMapsModule,
     FormsModule,
     CommonModule,
-    AvaliacoesUsuariosComponent
+    CardCampingComponent,
+    CardGiftComponent
   ],
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
@@ -52,8 +51,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private mapState = inject(MapStateService);
   private giftService = inject(GiftService);
   private campingService = inject(CampingService);
-  private checkinService = inject(CheckinService);
-  private authService = inject(AuthService);
   protected networkStatus = inject(NetworkStatusService);
   private locationSubscription?: Subscription;
 
@@ -68,10 +65,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   campingSelecionado?: Camping;
   presenteSelecionado?: Presente;
-  podeResgatar = false;
-  distanciaPresente: number | null = null;
-  mensagemDistancia: string = '';
-  classeDistancia: string = '';
   busca = '';
   categoriaSelecionada = '';
 
@@ -83,9 +76,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   watchId?: number;
   minhaPosicao?: google.maps.LatLngLiteral;
   private jacentralizouNoPrimeiroGps = false;
-  mensagemCheckin = '';
-  tipoMensagem: 'sucesso' | 'erro' | '' = '';
-  checkinRealizado = false;
 
   ngAfterViewInit(): void {
     this.criarMapa();
@@ -167,12 +157,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
       this.mapState.presenteAberto.set(true);
       this.presenteSelecionado = presente;
-
-      this.verificarDistanciaPresente(
-        presente.latitude,
-        presente.longitude
-      );
-
     });
 
     this.markers.push(marker);
@@ -463,159 +447,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     });
 
     this.markers.push(marker);
-  }
-
-  podeFazerCheckin(): boolean {
-
-    if (!this.minhaPosicao || !this.campingSelecionado) {
-      return false;
-    }
-
-    if (this.campingSelecionado.tipo !== 'camping') {
-      return false;
-    }
-
-    const distancia =
-      Util.calcularDistanciaMetros(
-        this.minhaPosicao.lat,
-        this.minhaPosicao.lng,
-        this.campingSelecionado.latitude,
-        this.campingSelecionado.longitude
-      );
-
-    return distancia <= 250;
-  }
-
-  fazerCheckin() {
-
-    this.mensagemCheckin = '';
-    this.tipoMensagem = '';
-
-    const usuario = this.authService.getUser();
-
-    if (!usuario || !this.minhaPosicao || !this.campingSelecionado) {
-      return;
-    }
-
-    const request: CheckinRequestModel = {
-      usuarioId: usuario.id,
-      campingId: this.campingSelecionado.id,
-      latitude: this.minhaPosicao.lat,
-      longitude: this.minhaPosicao.lng
-    };
-
-    this.checkinService
-      .checkin(request)
-      .subscribe({
-
-        next: (response: CheckinResponseModel) => {
-          this.checkinRealizado = true;
-          this.tipoMensagem = 'sucesso';
-
-          this.mensagemCheckin =
-            response?.mensagem ??
-            'Check-in realizado com sucesso! +100 XP';
-        },
-
-        error: (err: any) => {
-
-          this.tipoMensagem = 'erro';
-
-          this.mensagemCheckin =
-            err?.error?.mensagem ??
-            err?.error?.erro ??
-            err?.message ??
-            'Erro ao realizar check-in.';
-        }
-      });
-  }
-  ehMeuPresente(): boolean {
-    const usuario = this.authService.getUser();
-
-    return usuario?.id ===
-      this.presenteSelecionado?.usuarioCriadorId;
-  }
-
-
-  copiarCodigo() {
-
-    if (!this.presenteSelecionado) {
-      return;
-    }
-
-    navigator.clipboard.writeText(
-      this.presenteSelecionado.codigoResgate
-    );
-
-    alert('Código copiado!');
-  }
-  resgatarPresente() {
-
-    const usuario = this.authService.getUser();
-
-    if (!usuario || !this.presenteSelecionado) {
-      return;
-    }
-
-    this.giftService
-      .resgatar(
-        this.presenteSelecionado.id,
-        usuario.id.toString(),
-      )
-      .subscribe({
-        next: () => {
-
-          alert(
-            '🎉 Você encontrou um presente! +XP'
-          );
-
-          this.presenteSelecionado!.estaDisponivel = false;
-        },
-
-        error: erro => {
-
-          alert(
-            erro.error?.mensagem ??
-            'Erro ao resgatar presente'
-          );
-        }
-      });
-  }
-  verificarDistanciaPresente(
-    latitudePresente: number,
-    longitudePresente: number
-  ): void {
-
-    if (!this.minhaPosicao) {
-      return;
-    }
-    const distancia =
-      Util.calcularDistanciaMetros(
-        this.minhaPosicao.lat,
-        this.minhaPosicao.lng,
-        latitudePresente,
-        longitudePresente
-      );
-
-    this.distanciaPresente = Math.round(distancia);
-
-    if (distancia <= 150) {
-      this.podeResgatar = true;
-      this.mensagemDistancia = 'Você encontrou o presente! 🎁';
-      this.classeDistancia = 'perto';
-    }
-    else if (distancia <= 500) {
-      this.podeResgatar = false;
-      this.mensagemDistancia = 'Está perto, continue caminhando 🚶';
-      this.classeDistancia = 'medio';
-    }
-    else {
-      this.podeResgatar = false;
-      this.mensagemDistancia = 'Você está longe do presente 📍';
-      this.classeDistancia = 'longe';
-    }
-
-
   }
 
 }
