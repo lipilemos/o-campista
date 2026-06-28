@@ -1,10 +1,16 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, catchError, from, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Avaliacao, AvaliacaoComUsuario } from '../models/avaliacao.model';
 import { Camping } from '../models/camping.model';
 import { OfflineStorageService } from './offline-storage.service';
+
+export interface CampingFiltro {
+  busca?: string;
+  tipo?: string;
+  recursos?: string[];
+}
 
 @Injectable({
   providedIn: 'root',
@@ -14,9 +20,25 @@ export class CampingService {
   private offlineStorage = inject(OfflineStorageService);
   private apiUrl = `${environment.apiUrl}/mapa`;
 
-  listar(): Observable<Camping[]> {
-    return this.http.get<Camping[]>(`${this.apiUrl}/campings`).pipe(
-      tap((campings) => this.offlineStorage.saveCampings(campings)),
+  listar(filtro?: CampingFiltro): Observable<Camping[]> {
+    let params = new HttpParams();
+    if (filtro?.busca) {
+      params = params.set('busca', filtro.busca);
+    }
+    if (filtro?.tipo) {
+      params = params.set('tipo', filtro.tipo);
+    }
+    if (filtro?.recursos?.length) {
+      filtro.recursos.forEach((r) => {
+        params = params.append('recursos', r);
+      });
+    }
+    return this.http.get<Camping[]>(`${this.apiUrl}/campings`, { params }).pipe(
+      tap((campings) => {
+        if (!filtro?.busca && !filtro?.tipo && !filtro?.recursos?.length) {
+          this.offlineStorage.saveCampings(campings);
+        }
+      }),
       catchError(() => from(this.offlineStorage.getCampings())),
     );
   }

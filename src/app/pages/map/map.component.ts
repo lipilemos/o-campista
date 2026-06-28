@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GoogleMapsModule } from '@angular/google-maps';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription, debounceTime } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { CardCampingComponent } from '../../components/card-camping/card-camping.component';
 import { CardGiftComponent } from '../../components/card-gift/card-gift.component';
@@ -35,15 +35,14 @@ import { NetworkStatusService } from '../../core/services/network-status.service
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements AfterViewInit, OnDestroy {
-  ngOnDestroy(): void {
+  private buscaSubject = new Subject<void>();
 
+  ngOnDestroy(): void {
+    this.buscaSubject.complete();
     this.locationSubscription?.unsubscribe();
 
     if (this.watchId) {
-
-      navigator.geolocation.clearWatch(
-        this.watchId
-      );
+      navigator.geolocation.clearWatch(this.watchId);
     }
   }
 
@@ -68,6 +67,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   categoriaSelecionada = '';
 
   campings: Camping[] = [];
+  recursosDisponiveis: string[] = [];
+  private recursosCarregados = false;
+  recursosSelecionados: Set<string> = new Set();
+  recursoSelectValue = '';
 
   markers: google.maps.marker.AdvancedMarkerElement[] = [];
   userMarker?: google.maps.marker.AdvancedMarkerElement;
@@ -78,19 +81,40 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.criarMapa();
-    this.carregarCampings();
     this.definirLocalizacaoInicial();
+
+    this.buscaSubject.pipe(debounceTime(400)).subscribe(() => {
+      this.carregarCampings();
+    });
+
+    this.carregarCampings();
   }
 
   private carregarCampings() {
+    if (this.categoriaSelecionada === 'presente') {
+      this.limparMarkers();
+      this.carregaPresentes();
+      this.atualizarRaioUsuario();
+      return;
+    }
+
+    const filtro = {
+      busca: this.busca || undefined,
+      tipo: this.categoriaSelecionada || undefined,
+      recursos: this.recursosSelecionados.size > 0
+        ? [...this.recursosSelecionados]
+        : undefined,
+    };
 
     this.campingService
-      .listar()
+      .listar(filtro)
       .subscribe(campings => {
-
         this.campings = campings;
-
-        this.aplicarFiltros();
+        if (!this.recursosCarregados) {
+          this.extrairRecursosDisponiveis();
+          this.recursosCarregados = true;
+        }
+        this.desenharMarkers();
       });
   }
   private carregaPresentes() {
@@ -180,44 +204,46 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.atualizarMarcadorUsuario();
   }
 
-  aplicarFiltros() {
+  private extrairRecursosDisponiveis() {
+    const recursos = new Set<string>();
+    this.campings.forEach(camping => {
+      camping.recursos
+        .filter(r => r.disponivel)
+        .forEach(r => recursos.add(r.nome));
+    });
+    this.recursosDisponiveis = [...recursos].sort();
+  }
 
-    this.limparMarkers();
-
-    const campingsFiltrados =
-      this.campings.filter(camping => {
-
-        const atendeBusca =
-          !this.busca ||
-          camping.nome
-            .toLowerCase()
-            .includes(this.busca.toLowerCase()) ||
-          camping.cidade
-            .toLowerCase()
-            .includes(this.busca.toLowerCase()) ||
-          camping.estado
-            .toLowerCase()
-            .includes(this.busca.toLowerCase());
-
-        const atendeCategoria =
-          !this.categoriaSelecionada ||
-          camping.tipo === this.categoriaSelecionada;
-
-
-
-        return atendeBusca && atendeCategoria;
-      });
-    if (this.categoriaSelecionada === 'presente') {
-      // solicita presentes próximos ao backend e desenha marcadores
-      this.carregaPresentes();
-      this.atualizarRaioUsuario();
-      return;
+  onRecursoSelect(recurso: string) {
+    if (!recurso) return;
+    if (this.recursosSelecionados.has(recurso)) {
+      this.recursosSelecionados.delete(recurso);
+    } else {
+      this.recursosSelecionados.add(recurso);
     }
+    this.recursoSelectValue = '';
+    this.carregarCampings();
+  }
 
-    campingsFiltrados.forEach(camping => {
+  removerRecurso(recurso: string) {
+    this.recursosSelecionados.delete(recurso);
+    this.carregarCampings();
+  }
+
+  aplicarFiltros() {
+    this.buscaSubject.next();
+  }
+
+  aplicarFiltrosImediato() {
+    this.carregarCampings();
+  }
+
+  private desenharMarkers() {
+    this.limparMarkers();
+    this.limparRaioUsuario();
+    this.campings.forEach(camping => {
       this.criarMarkerCampings(camping);
     });
-    this.limparRaioUsuario();
   }
 
   private limparMarkers() {
