@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin, Observable } from 'rxjs';
 import { Avaliacao } from '../../core/models/avaliacao.model';
@@ -18,7 +18,8 @@ import { ProfileDetailComponent } from './profile-detail/profile-detail.componen
   standalone: true,
   imports: [CommonModule, CheckinHistoryComponent, ProfileDetailComponent],
   templateUrl: './account.component.html',
-  styleUrls: ['./account.component.scss']
+  styleUrls: ['./account.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountComponent implements OnInit {
   onSelecionarCamping(historico: HistoricoCheckin) {
@@ -41,6 +42,7 @@ export class AccountComponent implements OnInit {
   mostrarHistorico = false;
   mostrarPerfilDetalhe = false;
   private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
   constructor(
     private authService: AuthService,
     private usuarioService: UsuarioService,
@@ -52,6 +54,7 @@ export class AccountComponent implements OnInit {
     this.usuarioService.obterPerfil(this.authService.getUser()?.id.toString()!)
       .subscribe(usuario => {
         this.usuario = usuario;
+        this.cdr.markForCheck();
         this.carregarHistoricoCheckins();
       });
   }
@@ -62,6 +65,7 @@ export class AccountComponent implements OnInit {
       this.checkinService.obterHistorico(usuarioId).subscribe(
         historico => {
           this.historicoCheckins = historico;
+          this.cdr.markForCheck();
           this.carregarStatusAvaliacoes();
         },
         error => console.error('Erro ao carregar histórico de check-ins:', error)
@@ -91,6 +95,7 @@ export class AccountComponent implements OnInit {
           });
         });
         this.checkinsAvaliados = avaliados;
+        this.cdr.markForCheck();
       },
       error: (error) => console.error('Erro ao carregar status das avaliações:', error),
     });
@@ -126,6 +131,7 @@ export class AccountComponent implements OnInit {
     this.usuarioService.obterPerfil(this.authService.getUser()?.id.toString()!)
       .subscribe(usuario => {
         this.usuario = usuario;
+        this.cdr.markForCheck();
       });
   }
 

@@ -157,6 +157,23 @@ Definidos em `src/app/core/models/`:
 - Paleta terrosa: verdes para camping, vermelho sidebar (`#6e1217`)
 - Responsivo via media queries nos estilos de cada componente
 
+### Classes Utilitárias Globais (`src/styles.scss`)
+
+Estilos compartilhados entre componentes — usar nos templates para evitar duplicação:
+
+| Classe | Uso |
+|--------|-----|
+| `.btn-close-round` | Botão fechar redondo (40×40, fundo escuro, para overlays/imagens) |
+| `.btn-close-round--light` | Variante clara (fundo surface, borda, para painéis) |
+| `.btn-close-round--inverse` | Variante inversa (fundo branco translúcido, para headers escuros) |
+| `.overlay-backdrop` | Backdrop escuro com blur para modais/overlays |
+| `.glass-card` | Card com glassmorphism (blur, borda translúcida, animação cardAppear) |
+| `.auth-bg` | Fundo de tela cheia com gradient + imagem de background |
+| `.custom-scrollbar` | Scrollbar estilizada fina (6px, cor de borda) |
+| `.card-elevated` | Card branco elevado com sombra e borda sutil |
+
+Animações globais disponíveis: `fadeIn`, `cardAppear`, `slideUp`, `slideIn`
+
 ## Ambientes
 
 Configurados em `src/environments/`:

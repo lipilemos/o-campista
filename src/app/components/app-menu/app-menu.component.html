@@ -1,0 +1,64 @@
+<div class="app-shell">
+
+    <div class="banner">
+
+        <button class="menu-toggle" [class.hidden]="mapState.campingAberto()" (click)="toggleMenu()">
+            &#9776;
+        </button>
+
+    </div>
+
+    <div class="overlay" [class.show]="menuOpen()" (click)="toggleMenu()">
+    </div>
+
+    <div class="layout">
+
+        <aside class="sidebar" [class.open]="menuOpen()">
+            <div class="logo"></div>
+            @if (usuario()) {
+            <div class="usuario">
+                @if (usuario()!.fotoPerfil) {
+                <img class="avatar avatar-img" [src]="usuario()!.fotoPerfil" [alt]="usuario()!.nome" />
+                } @else {
+                <div class="avatar">
+                    {{ usuario()!.nome.charAt(0).toUpperCase() }}
+                </div>
+                }
+                <div class="usuario-info">
+                    <span class="nome">
+                        {{ usuario()!.nome }}
+                    </span>
+                    <small class="nivel">
+                        Nivel {{ usuario()!.nivel }}
+                    </small>
+                </div>
+            </div>
+            }
+            <nav class="menu">
+                <button class="menu-item" [class.active]="isActive('home')" (click)="navigateTo('home')">
+                    Home
+                </button>
+                <button class="menu-item" [class.active]="isActive('account')" (click)="navigateTo('account')">
+                    Minha Conta
+                </button>
+                <button class="menu-item" [class.active]="isActive('mapa')" (click)="navigateTo('mapa')">
+                    Mapa
+                </button>
+                <button class="menu-item" [class.active]="isActive('checklist')" (click)="navigateTo('checklist')">
+                    Checklist
+                </button>
+            </nav>
+            <button class="logout-btn" (click)="logout()">
+                Sair
+            </button>
+        </aside>
+
+        <main class="main-content">
+            <div class="content">
+                <router-outlet />
+            </div>
+        </main>
+
+    </div>
+
+</div>

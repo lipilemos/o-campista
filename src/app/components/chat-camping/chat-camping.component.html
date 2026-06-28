@@ -1,0 +1,88 @@
+@if (!chatAberto()) {
+<button class="btn-chat-flutuante" (click)="abrirChat()" aria-label="Abrir chat do camping">
+  💬
+</button>
+}
+
+@if (chatAberto()) {
+<div class="chat-painel" role="dialog" aria-label="Chat do camping">
+  <div class="chat-header">
+    <div class="chat-header-info">
+      <span class="chat-header-icon">🏕️</span>
+      <div>
+        <h3>Chat do Camping</h3>
+        <div class="chat-status">
+          <span
+            class="status-dot"
+            [class.online]="conectado()"
+            [class.offline]="!conectado()"
+          ></span>
+          {{ conectado() ? 'Online' : 'Reconectando...' }}
+        </div>
+      </div>
+    </div>
+    <button class="btn-close-round btn-close-round--inverse" (click)="fecharChat()" aria-label="Fechar chat">✕</button>
+  </div>
+
+  <div class="chat-mensagens custom-scrollbar" #mensagensContainer>
+    @if (chatService.carregandoHistorico()) {
+    <div class="chat-loading">
+      <span class="loading-icon">⏳</span>
+      <p>Carregando mensagens...</p>
+    </div>
+    }
+
+    @for (msg of mensagens(); track msg.id ?? msg.dataEnvio) {
+    <div class="chat-mensagem" [class.minha]="ehMinhaMensagem(msg)">
+      @if (!ehMinhaMensagem(msg)) {
+      <div class="msg-avatar">
+        @if (msg.fotoUsuario) {
+        <img [src]="msg.fotoUsuario" [alt]="msg.nomeUsuario" />
+        } @else {
+        <div class="avatar-placeholder">
+          {{ msg.nomeUsuario.charAt(0).toUpperCase() }}
+        </div>
+        }
+      </div>
+      }
+      <div class="msg-conteudo">
+        @if (!ehMinhaMensagem(msg)) {
+        <span class="msg-nome">{{ msg.nomeUsuario }}</span>
+        }
+        <p class="msg-texto">{{ msg.texto }}</p>
+        <span class="msg-hora">{{ msg.dataEnvio | date: 'HH:mm' }}</span>
+      </div>
+    </div>
+    } @empty {
+    @if (!chatService.carregandoHistorico()) {
+    <div class="chat-vazio">
+      <span class="vazio-icon">👋</span>
+      <p>Nenhuma mensagem ainda.</p>
+      <span class="vazio-dica">Seja o primeiro a dizer oi!</span>
+    </div>
+    }
+    }
+  </div>
+
+  <div class="chat-input-area">
+    <input
+      type="text"
+      [value]="textoMensagem()"
+      (input)="textoMensagem.set($any($event.target).value)"
+      (keydown.enter)="enviar()"
+      placeholder="Digite sua mensagem..."
+      aria-label="Mensagem do chat"
+      [disabled]="!conectado()"
+      maxlength="500"
+    />
+    <button
+      class="btn-enviar"
+      (click)="enviar()"
+      [disabled]="!textoMensagem().trim() || !conectado()"
+      aria-label="Enviar mensagem"
+    >
+      ➤
+    </button>
+  </div>
+</div>
+}

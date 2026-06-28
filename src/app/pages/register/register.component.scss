@@ -1,41 +1,9 @@
-.register-container {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background:
-    linear-gradient(160deg, rgba(0, 0, 0, 0.5), rgba(110, 18, 23, 0.35)),
-    url('/images/background.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
 .register-card {
   width: 380px;
-  background: rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-2xl);
   padding: var(--space-10);
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  box-shadow: var(--shadow-xl);
-  animation: cardAppear 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes cardAppear {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
 }
 
 .logo {

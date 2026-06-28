@@ -1,9 +1,7 @@
-<div class="profile-overlay" (click)="fecharModal()" (keydown.escape)="fecharModal()">
+<div class="profile-overlay overlay-backdrop" (click)="fecharModal()" (keydown.escape)="fecharModal()">
   <div class="profile-card" (click)="$event.stopPropagation()">
 
-    <button class="close-btn" (click)="fecharModal()" aria-label="Fechar detalhes do perfil">
-      ✖
-    </button>
+    <button class="btn-close-round btn-close-round--light profile-close" (click)="fecharModal()" aria-label="Fechar detalhes do perfil">✕</button>
 
     <div class="photo-section">
       <div class="photo-wrapper" (click)="fileInput.click()" role="button" tabindex="0"

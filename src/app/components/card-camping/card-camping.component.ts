@@ -6,13 +6,13 @@ import { CheckinService } from '../../core/services/checkin.service';
 import { MapStateService } from '../../core/services/map-state.service';
 import { Util } from '../../core/Utils.ts/Util';
 import { AvaliacoesUsuariosComponent } from '../avaliacoes-usuarios/avaliacoes-usuarios.component';
+import { ChatCampingComponent } from '../chat-camping/chat-camping.component';
 
 @Component({
   selector: 'app-card-camping',
-  imports: [AvaliacoesUsuariosComponent],
+  imports: [AvaliacoesUsuariosComponent, ChatCampingComponent],
   templateUrl: './card-camping.component.html',
   styleUrl: './card-camping.component.scss',
-
 })
 export class CardCampingComponent {
   private authService = inject(AuthService);
@@ -71,13 +71,14 @@ export class CardCampingComponent {
       next: (response: CheckinResponseModel) => {
         this.checkinRealizado.set(true);
         this.tipoMensagem.set('sucesso');
-        this.mensagemCheckin.set(
-          response?.mensagem ?? 'Check-in realizado com sucesso! +100 XP',
-        );
+        this.mensagemCheckin.set(response?.mensagem ?? 'Check-in realizado com sucesso! +100 XP');
       },
 
       error: (err: { error?: { mensagem?: string; erro?: string }; message?: string }) => {
         this.tipoMensagem.set('erro');
+        if (err?.error?.mensagem === 'Você já realizou check-in neste camping hoje.') {
+          this.checkinRealizado.set(true);
+        }
         this.mensagemCheckin.set(
           err?.error?.mensagem ?? err?.error?.erro ?? err?.message ?? 'Erro ao realizar check-in.',
         );
