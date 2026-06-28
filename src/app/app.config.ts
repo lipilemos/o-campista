@@ -1,7 +1,9 @@
 import {
   ApplicationConfig,
   ErrorHandler,
+  inject,
   isDevMode,
+  provideAppInitializer,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
 } from '@angular/core';
@@ -12,6 +14,7 @@ import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { GlobalErrorHandler } from './core/services/global-error-handler';
+import { I18nService } from './core/services/i18n.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,5 +27,6 @@ export const appConfig: ApplicationConfig = {
       registrationStrategy: 'registerWhenStable:30000',
     }),
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
+    provideAppInitializer(() => inject(I18nService).init()),
   ],
 };

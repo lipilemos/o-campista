@@ -3,7 +3,7 @@
 
   <div class="camping-header">
     @if (camping().fotoPrincipal) {
-      <img [src]="camping().fotoPrincipal" [alt]="camping().nome" class="camping-image" />
+      <img [src]="camping().fotoPrincipal" [alt]="camping().nome" class="camping-image" appImgFallback />
     }
     <h2>{{ camping().nome }}</h2>
     <p class="location">📍 {{ camping().endereco }}, {{ camping().cidade }}</p>

@@ -5,7 +5,7 @@
     <div class="profile-card clickable" (click)="abrirPerfilDetalhe()" role="button" tabindex="0"
         (keydown.enter)="abrirPerfilDetalhe()" aria-label="Ver detalhes do perfil">
         @if (usuario.fotoPerfil) {
-        <img class="avatar avatar-img" [src]="usuario.fotoPerfil" [alt]="usuario.nome" />
+        <img class="avatar avatar-img" [src]="usuario.fotoPerfil" [alt]="usuario.nome" appImgFallback />
         } @else {
         <div class="avatar">
             {{ usuario.nome.charAt(0).toUpperCase() }}
@@ -173,6 +173,10 @@
     </div>
 
     }
+
+    <div class="danger-zone">
+        <button class="btn-excluir-conta" (click)="excluirConta()">Excluir minha conta</button>
+    </div>
 
     @if (mostrarHistorico) {
         <div class="history-overlay-backdrop overlay-backdrop" (click)="fecharHistoricoCheckins()">

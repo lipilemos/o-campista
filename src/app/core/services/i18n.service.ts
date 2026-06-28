@@ -7,6 +7,7 @@ export type Locale = 'pt-BR' | 'en-US';
 })
 export class I18nService {
   readonly locale = signal<Locale>(this.getInitialLocale());
+  readonly version = signal(0);
 
   private translations: Record<string, string> = {};
   private loaded = false;
@@ -21,6 +22,7 @@ export class I18nService {
     this.locale.set(locale);
     localStorage.setItem('ocampista-locale', locale);
     await this.loadTranslations(locale);
+    this.version.update((v) => v + 1);
   }
 
   t(key: string, fallback?: string): string {

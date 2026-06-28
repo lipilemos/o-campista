@@ -14,13 +14,14 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { MensagemSalaChat, SalaChat } from '../../../core/models/chat-room.model';
+import { ImgFallbackDirective } from '../../../core/directives/img-fallback.directive';
 import { AuthService } from '../../../core/services/auth.service';
 import { ChatNotificationService } from '../../../core/services/chat-notification.service';
 import { ChatRoomService } from '../../../core/services/chat-room.service';
 
 @Component({
   selector: 'app-chat-conversation',
-  imports: [DatePipe],
+  imports: [DatePipe, ImgFallbackDirective],
   templateUrl: './chat-conversation.component.html',
   styleUrl: './chat-conversation.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,10 +41,12 @@ export class ChatConversationComponent {
   salaNome = signal('');
   salaTipo = signal('');
   textoMensagem = signal('');
+  private digitandoTimeout: ReturnType<typeof setTimeout> | null = null;
 
   mensagens = computed(() => this.chatRoomService.mensagens());
   conectado = computed(() => this.chatRoomService.conectado());
   podeEnviar = computed(() => this.chatRoomService.podeEnviar());
+  digitando = computed(() => this.chatRoomService.digitando());
 
   private mensagensContainer = viewChild<ElementRef>('mensagensContainer');
 
@@ -86,6 +89,14 @@ export class ChatConversationComponent {
     if (!texto) return;
     this.chatRoomService.enviarMensagem(texto);
     this.textoMensagem.set('');
+  }
+
+  onDigitando(): void {
+    if (this.digitandoTimeout) return;
+    this.chatRoomService.notificarDigitando();
+    this.digitandoTimeout = setTimeout(() => {
+      this.digitandoTimeout = null;
+    }, 2000);
   }
 
   ehMinhaMensagem(msg: MensagemSalaChat): boolean {

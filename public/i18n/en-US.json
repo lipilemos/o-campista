@@ -26,5 +26,10 @@
   "checkin.success": "Check-in completed!",
   "gift.redeemed": "Gift redeemed!",
   "gift.created": "Gift created!",
-  "chat.typing": "is typing..."
+  "chat.typing": "is typing...",
+  "nav.level": "Level",
+  "auth.or": "or",
+  "auth.login-google": "Sign in with Google",
+  "auth.error.invalid-user": "Invalid user",
+  "auth.error.google": "Failed to sign in with Google. Try again."
 }

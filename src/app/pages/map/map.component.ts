@@ -24,7 +24,6 @@ import { NetworkStatusService } from '../../core/services/network-status.service
 
 @Component({
   selector: 'app-map',
-  standalone: true,
   imports: [
     GoogleMapsModule,
     FormsModule,

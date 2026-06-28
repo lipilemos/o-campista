@@ -34,7 +34,7 @@
         @if (!ehMinhaMensagem(msg)) {
           <div class="msg-avatar">
             @if (msg.fotoUsuario) {
-              <img [src]="msg.fotoUsuario" [alt]="msg.nomeUsuario" />
+              <img [src]="msg.fotoUsuario" [alt]="msg.nomeUsuario" appImgFallback />
             } @else {
               <div class="avatar-placeholder">
                 {{ msg.nomeUsuario.charAt(0).toUpperCase() }}
@@ -61,11 +61,17 @@
     }
   </div>
 
+  @if (digitando()) {
+    <div class="typing-indicator" aria-live="polite">
+      <span>{{ digitando() }} está digitando...</span>
+    </div>
+  }
+
   <div class="chat-input-area">
     <input
       type="text"
       [value]="textoMensagem()"
-      (input)="textoMensagem.set($any($event.target).value)"
+      (input)="textoMensagem.set($any($event.target).value); onDigitando()"
       (keydown.enter)="enviar()"
       placeholder="Digite sua mensagem..."
       aria-label="Mensagem do chat"

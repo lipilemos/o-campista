@@ -7,7 +7,7 @@
     <div class="gift-card">
 
         @if (presenteSelecionado().fotoUrl) {
-        <img class="gift-image" [src]="presenteSelecionado().fotoUrl" [alt]="presenteSelecionado().nome">
+        <img class="gift-image" [src]="presenteSelecionado().fotoUrl" [alt]="presenteSelecionado().nome" appImgFallback>
         }
 
         <div class="gift-content">

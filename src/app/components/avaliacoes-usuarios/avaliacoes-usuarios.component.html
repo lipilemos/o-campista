@@ -11,7 +11,7 @@
             <div class="rating-header">
                 <div class="user-info">
                     @if (avaliacao.usuarioFoto) {
-                    <img [src]="avaliacao.usuarioFoto" [alt]="avaliacao.usuarioNome" class="user-avatar" />
+                    <img [src]="avaliacao.usuarioFoto" [alt]="avaliacao.usuarioNome" class="user-avatar" appImgFallback />
                     } @else {
                     <div class="user-avatar-placeholder">
                         {{ avaliacao.usuarioNome.charAt(0).toUpperCase() }}

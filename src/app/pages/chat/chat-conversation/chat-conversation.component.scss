@@ -253,6 +253,14 @@
   text-align: right;
 }
 
+.typing-indicator {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-style: italic;
+  animation: fadeIn 0.2s ease;
+}
+
 /* ÁREA DE INPUT */
 
 .chat-input-area {

@@ -9,6 +9,7 @@ export class TranslatePipe implements PipeTransform {
   private i18n = inject(I18nService);
 
   transform(key: string, fallback?: string): string {
+    this.i18n.version();
     return this.i18n.t(key, fallback);
   }
 }

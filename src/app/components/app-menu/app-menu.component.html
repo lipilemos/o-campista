@@ -18,7 +18,7 @@
             @if (usuario()) {
             <div class="usuario">
                 @if (usuario()!.fotoPerfil) {
-                <img class="avatar avatar-img" [src]="usuario()!.fotoPerfil" [alt]="usuario()!.nome" />
+                <img class="avatar avatar-img" [src]="usuario()!.fotoPerfil" [alt]="usuario()!.nome" appImgFallback />
                 } @else {
                 <div class="avatar">
                     {{ usuario()!.nome.charAt(0).toUpperCase() }}
@@ -29,42 +29,53 @@
                         {{ usuario()!.nome }}
                     </span>
                     <small class="nivel">
-                        Nivel {{ usuario()!.nivel }}
+                        {{ 'nav.level' | translate }} {{ usuario()!.nivel }}
                     </small>
                 </div>
             </div>
             }
             <nav class="menu">
                 <button class="menu-item" [class.active]="isActive('home')" (click)="navigateTo('home')">
-                    Home
+                    {{ 'nav.home' | translate }}
                 </button>
                 <button class="menu-item" [class.active]="isActive('account')" (click)="navigateTo('account')">
-                    Minha Conta
+                    {{ 'nav.account' | translate }}
                 </button>
                 <button class="menu-item" [class.active]="isActive('mapa')" (click)="navigateTo('mapa')">
-                    Mapa
+                    {{ 'nav.map' | translate }}
                 </button>
                 <button class="menu-item" [class.active]="isActive('chat')" (click)="navigateTo('chat')">
-                    Chat
+                    {{ 'nav.chat' | translate }}
                     @if (chatNotification.totalNaoLidas() > 0) {
                         <span class="badge-nao-lidas">{{ chatNotification.totalNaoLidas() > 99 ? '99+' : chatNotification.totalNaoLidas() }}</span>
                     }
                 </button>
                 <button class="menu-item" [class.active]="isActive('checklist')" (click)="navigateTo('checklist')">
-                    Checklist
+                    {{ 'nav.checklist' | translate }}
                 </button>
             </nav>
-            <button class="theme-toggle" (click)="themeService.toggle()" aria-label="Alternar tema">
+            <button class="action-toggle" (click)="themeService.toggle()" [attr.aria-label]="(themeService.theme() === 'dark' ? 'nav.theme.light' : 'nav.theme.dark') | translate">
                 @if (themeService.theme() === 'dark') {
-                    Tema claro
+                    {{ 'nav.theme.light' | translate }}
                 } @else {
-                    Tema escuro
+                    {{ 'nav.theme.dark' | translate }}
                 }
             </button>
-            <button class="logout-btn" (click)="logout()">
-                Sair
-            </button>
-            <span class="app-version">v{{ appVersion }}</span>
+            <div class="sidebar-bottom">
+                <button class="logout-btn" (click)="logout()">
+                    {{ 'nav.logout' | translate }}
+                </button>
+                <div class="sidebar-footer">
+                    <button class="lang-toggle" (click)="toggleLanguage()" aria-label="Change language">
+                        @if (i18n.locale() === 'pt-BR') {
+                            <img src="/images/flag-br.svg" alt="Português" class="flag-icon" />
+                        } @else {
+                            <img src="/images/flag-us.svg" alt="English" class="flag-icon" />
+                        }
+                    </button>
+                    <span class="app-version">v{{ appVersion }}</span>
+                </div>
+            </div>
         </aside>
 
         <main class="main-content">
