@@ -1,0 +1,31 @@
+@if (dialogService.visivel()) {
+  <div class="overlay-backdrop" (click)="dialogService.responder(false)">
+    <div
+      class="confirm-dialog card-elevated"
+      role="alertdialog"
+      aria-modal="true"
+      [attr.aria-label]="dialogService.dados()?.titulo"
+      (click)="$event.stopPropagation()"
+    >
+      <h3>{{ dialogService.dados()?.titulo }}</h3>
+      <p>{{ dialogService.dados()?.mensagem }}</p>
+
+      <div class="confirm-dialog__actions">
+        <button
+          type="button"
+          class="confirm-dialog__btn confirm-dialog__btn--cancel"
+          (click)="dialogService.responder(false)"
+        >
+          {{ dialogService.dados()?.textoBotaoCancelar ?? 'Cancelar' }}
+        </button>
+        <button
+          type="button"
+          class="confirm-dialog__btn confirm-dialog__btn--confirm"
+          (click)="dialogService.responder(true)"
+        >
+          {{ dialogService.dados()?.textoBotaoConfirmar ?? 'Confirmar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

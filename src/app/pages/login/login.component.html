@@ -1,12 +1,14 @@
 <div class="login-container auth-bg">
   <div class="login-card glass-card">
-    <div class="logo"></div>
+    <div class="logo" role="img" aria-label="Logo O Campista"></div>
 
     <h2>Bem-vindo</h2>
 
-    <input type="email" placeholder="Email" [(ngModel)]="email" />
+    <label for="login-email" class="sr-only">E-mail</label>
+    <input id="login-email" type="email" placeholder="Email" [(ngModel)]="email" autocomplete="email" />
 
-    <input type="password" placeholder="Senha" [(ngModel)]="senha" />
+    <label for="login-senha" class="sr-only">Senha</label>
+    <input id="login-senha" type="password" placeholder="Senha" [(ngModel)]="senha" autocomplete="current-password" />
 
     <button (click)="entrar()" [disabled]="loading">
       @if (loading) {
@@ -30,7 +32,7 @@
     <button type="button" class="btn_hover" (click)="criarConta()">Criar conta</button>
 
     @if (erro) {
-      <p class="erro">
+      <p class="erro" role="alert">
         {{ erro }}
       </p>
     }

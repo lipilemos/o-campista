@@ -9,6 +9,7 @@ import { UsuarioLogado } from '../../core/models/user.model';
 import { AuthService } from '../../core/services/auth.service';
 import { CampingService } from '../../core/services/camping.service';
 import { CheckinService } from '../../core/services/checkin.service';
+import { ToastService } from '../../core/services/toast.service';
 import { UsuarioService } from '../../core/services/usuario.service';
 import { CheckinHistoryComponent } from './checkin-history/checkin-history.component';
 import { ProfileDetailComponent } from './profile-detail/profile-detail.component';
@@ -158,10 +159,12 @@ export class AccountComponent implements OnInit {
   fecharPresente() {
     this.presenteSelecionado = null;
   }
+  private toast = inject(ToastService);
+
   copiarCodigo(codigo: string): void {
     navigator.clipboard.writeText(codigo);
 
-    alert('Código copiado com sucesso!');
+    this.toast.success('Código copiado com sucesso!');
   }
 }
 

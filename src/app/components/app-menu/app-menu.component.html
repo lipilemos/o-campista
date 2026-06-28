@@ -54,6 +54,13 @@
                     Checklist
                 </button>
             </nav>
+            <button class="theme-toggle" (click)="themeService.toggle()" aria-label="Alternar tema">
+                @if (themeService.theme() === 'dark') {
+                    Tema claro
+                } @else {
+                    Tema escuro
+                }
+            </button>
             <button class="logout-btn" (click)="logout()">
                 Sair
             </button>

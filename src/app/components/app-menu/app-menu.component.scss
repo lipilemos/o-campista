@@ -149,6 +149,23 @@
   }
 }
 
+.theme-toggle {
+  border: none;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: var(--transition-base);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--color-text-inverse);
+  }
+}
+
 .logout-btn {
   margin-top: auto;
   border: none;

@@ -27,17 +27,20 @@ npx prettier --write .  # Formatar código
 
 ```
 src/app/
-├── components/          # Componentes compartilhados (weather-card, loading, avaliacoes-usuarios)
+├── components/          # Componentes compartilhados (weather-card, loading, toast, confirm-dialog)
 ├── core/
+│   ├── directives/      # img-fallback.directive.ts — fallback para imagens quebradas
 │   ├── guards/          # auth.guard.ts — proteção de rotas autenticadas
-│   ├── interceptors/    # loading.interceptor.ts — loading global em requests HTTP
+│   ├── interceptors/    # auth.interceptor (token + refresh), loading.interceptor
 │   ├── models/          # Interfaces/tipos de dados
+│   ├── pipes/           # translate.pipe.ts — pipe de tradução i18n
 │   ├── services/        # Serviços de negócio e HTTP
 │   └── Utils.ts         # Util.calcularDistanciaMetros() — fórmula de Haversine
 ├── pages/               # Páginas/features (uma pasta por rota)
 │   ├── login/
 │   ├── register/
 │   ├── forgot-password/
+│   ├── reset-password/  # Redefinição de senha via token
 │   ├── home/            # Shell principal — sidebar, navegação, weather cards
 │   ├── account/         # Perfil, conquistas, presentes, histórico check-ins
 │   │   └── checkin-history/
@@ -48,10 +51,11 @@ src/app/
 │   │   ├── chat-create-group/   # Criar grupo
 │   │   └── chat-join-group/     # Entrar em grupo via convite
 │   ├── checklist/       # Checklist de preparação para camping
-│   └── gift/            # Criação de presentes com upload de foto
+│   ├── gift/            # Criação de presentes com upload de foto
+│   └── not-found/       # Página 404 — rota não encontrada
 ├── app.routes.ts        # Definição de rotas (todas lazy-loaded)
-├── app.config.ts        # Providers (router, httpClient, interceptors)
-└── app.ts               # Componente raiz
+├── app.config.ts        # Providers (router, httpClient, interceptors, GlobalErrorHandler)
+└── app.ts               # Componente raiz (loading, toast, confirm-dialog)
 ```
 
 ## Rotas
@@ -61,6 +65,7 @@ src/app/
 | `/` | LoginComponent | Não |
 | `/register` | RegisterComponent | Não |
 | `/forgot-password` | ForgotPasswordComponent | Não |
+| `/reset-password` | ResetPasswordComponent | Não |
 | `/home` | HomeComponent | Sim (authGuard) |
 | `/account` | AccountComponent | Sim (authGuard) |
 | `/account/checkin-history` | CheckinHistoryComponent | Sim (authGuard) |
@@ -73,7 +78,7 @@ src/app/
 | `/chat/:salaId` | ChatConversationComponent | Sim (authGuard) |
 | `/checklist` | ChecklistComponent | Sim (authGuard) |
 | `/gift` | GiftComponent | Sim (authGuard) |
-| `**` | Redireciona para `/` | — |
+| `**` | NotFoundComponent (404) | — |
 
 ## Convenções de Código
 
@@ -113,19 +118,25 @@ Base URL configurada em `src/environments/environment.ts` (`environment.apiUrl`)
 
 | Serviço | Responsabilidade | Endpoints |
 |---------|-----------------|-----------|
-| **AuthService** | Login, registro, login Google, logout, token/user no localStorage | `POST /auth/login`, `POST /auth/register`, `POST /auth/google` |
+| **AuthService** | Login, registro, login Google, logout, forgot/reset password, token refresh | `POST /auth/login`, `POST /auth/register`, `POST /auth/google`, `POST /auth/forgot-password`, `POST /auth/reset-password`, `POST /auth/refresh` |
 | **GoogleAuthService** | Inicialização do Google Identity Services e renderização do botão Google Sign-In | Sem endpoint — usa GIS client-side |
-| **UsuarioService** | Perfil do usuário | `GET /usuarios/me/{id}` |
+| **UsuarioService** | Perfil do usuário, deleção de conta (LGPD) | `GET /usuarios/me/{id}`, `POST /usuarios/{id}/foto-perfil`, `DELETE /usuarios/{id}` |
 | **CampingService** | Listar campings, avaliações (CRUD) | `GET /mapa/campings`, `GET/POST/PUT /mapa/camping/{id}/avaliacoes`, `POST /avaliacao` |
 | **CheckinService** | Check-in e histórico | `POST /checkin`, `GET /checkin/historico/{usuarioId}` |
-| **GiftService** | Criar, buscar e resgatar presentes | `POST /presentes`, `GET /presentes?lat&lng`, `POST /presentes/resgatar` |
+| **GiftService** | Criar, buscar, resgatar e deletar presentes | `POST /presentes`, `GET /presentes?lat&lng`, `POST /presentes/resgatar`, `DELETE /presentes/{id}` |
 | **WeatherService** | Clima atual e previsão 5 dias | Open-Meteo API (externo), Nominatim (geocoding) |
 | **ChecklistService** | CRUD local de checklists | localStorage (`ocampista-checklists`) — sem backend |
 | **LocationService** | Geolocalização em tempo real | Browser Geolocation API |
 | **LoadingService** | Estado de loading global (Signal) | Sem endpoint — gerenciado pelo interceptor |
 | **MapStateService** | Estado do mapa (modais abertos) | Sem endpoint — Signals locais |
-| **ChatRoomService** | Salas de chat (camping + grupo), mensagens, SignalR | `GET /chat/salas`, `GET /chat/salas/{id}/mensagens`, `POST /chat/grupos`, `POST /chat/grupos/entrar` |
+| **ChatRoomService** | Salas de chat (camping + grupo), mensagens, digitando, SignalR | `GET /chat/salas`, `GET /chat/salas/{id}/mensagens`, `POST /chat/grupos`, `POST /chat/grupos/entrar`, `DELETE /chat/grupos/{salaId}/sair` |
 | **ChatNotificationService** | Contadores de mensagens não-lidas (badge sidebar) | `GET /chat/nao-lidas` + SignalR `/notificationHub` |
+| **ToastService** | Notificações toast globais (success, error, warning, info) | Sem endpoint — Signals locais |
+| **ConfirmDialogService** | Diálogo de confirmação reutilizável para ações destrutivas | Sem endpoint — Signals locais |
+| **ThemeService** | Alternância entre tema claro/escuro | Sem endpoint — localStorage (`ocampista-theme`) |
+| **I18nService** | Internacionalização com arquivos JSON | Sem endpoint — `public/i18n/{locale}.json` |
+| **ImageCompressorService** | Compressão de imagens antes de upload (canvas resize) | Sem endpoint — client-side |
+| **GlobalErrorHandler** | Captura global de erros não tratados | Sem endpoint — ErrorHandler do Angular |
 
 ## Modelos Principais
 

@@ -1,9 +1,9 @@
 <div class="register-container auth-bg">
   <div class="register-card glass-card">
     <button type="button" class="back-button" (click)="voltarParaLogin()">
-      ← Voltar para login
+      &#8592; Voltar para login
     </button>
-    <div class="logo"></div>
+    <div class="logo" role="img" aria-label="Logo O Campista"></div>
 
     <h2>Criar conta</h2>
 
@@ -14,11 +14,20 @@
     </div>
 
     <form [formGroup]="form" (ngSubmit)="register()">
-      <input formControlName="nome" type="text" placeholder="Nome completo" />
-      <input formControlName="usuario" type="text" placeholder="Usuário" />
-      <input formControlName="email" type="email" placeholder="E-mail" />
-      <input formControlName="senha" type="password" placeholder="Senha" />
-      <input formControlName="confirmarSenha" type="password" placeholder="Confirmar senha" />
+      <label for="reg-nome" class="sr-only">Nome completo</label>
+      <input id="reg-nome" formControlName="nome" type="text" placeholder="Nome completo" autocomplete="name" />
+
+      <label for="reg-usuario" class="sr-only">Usuário</label>
+      <input id="reg-usuario" formControlName="usuario" type="text" placeholder="Usuário" autocomplete="username" />
+
+      <label for="reg-email" class="sr-only">E-mail</label>
+      <input id="reg-email" formControlName="email" type="email" placeholder="E-mail" autocomplete="email" />
+
+      <label for="reg-senha" class="sr-only">Senha</label>
+      <input id="reg-senha" formControlName="senha" type="password" placeholder="Senha" autocomplete="new-password" />
+
+      <label for="reg-confirmar" class="sr-only">Confirmar senha</label>
+      <input id="reg-confirmar" formControlName="confirmarSenha" type="password" placeholder="Confirmar senha" autocomplete="new-password" />
 
       <button type="submit" [disabled]="loading">
         @if (loading) {
@@ -29,11 +38,11 @@
       </button>
 
       @if (sucesso) {
-        <p class="sucesso">{{ sucesso }}</p>
+        <p class="sucesso" role="status">{{ sucesso }}</p>
       }
 
       @if (erro) {
-        <p class="erro">{{ erro }}</p>
+        <p class="erro" role="alert">{{ erro }}</p>
       }
     </form>
   </div>

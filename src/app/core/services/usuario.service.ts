@@ -39,4 +39,14 @@ export class UsuarioService {
                 foto
             );
     }
+
+    deletarConta(
+        usuarioId: string
+    ): Observable<{ mensagem: string }> {
+
+        return this.http
+            .delete<{ mensagem: string }>(
+                `${this.apiUrl}/${usuarioId}`
+            );
+    }
 }
