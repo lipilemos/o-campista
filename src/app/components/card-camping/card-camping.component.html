@@ -6,15 +6,39 @@
   }
 
   <div class="camping-content">
-    <h2>
-      {{ campingSelecionado().nome }}
-    </h2>
+    <div class="camping-header-row">
+      <div class="camping-header-info">
+        <h2>
+          {{ campingSelecionado().nome }}
+        </h2>
 
-    <span class="tipo">
-      {{ campingSelecionado().tipo }}
-    </span>
+        <span class="tipo">
+          {{ campingSelecionado().tipo }}
+        </span>
 
-    <p class="avaliacao">⭐ {{ campingSelecionado().avaliacao }}</p>
+        <p class="avaliacao">⭐ {{ campingSelecionado().avaliacao }}</p>
+      </div>
+
+      <div
+        class="camping-presenca"
+        [attr.aria-label]="pessoasRecentes() === 1
+          ? '1 pessoa fez check-in nas últimas 24 horas'
+          : pessoasRecentes() + ' pessoas fizeram check-in nas últimas 24 horas'"
+        role="status"
+      >
+        <span class="presenca-emoji">{{ obterEmojiTipo() }}</span>
+        <span class="presenca-count">{{ pessoasRecentes() }}</span>
+        <div class="presenca-tooltip">
+          @if (pessoasRecentes() === 0) {
+            Nenhum check-in nas últimas 24h
+          } @else if (pessoasRecentes() === 1) {
+            1 pessoa fez check-in nas últimas 24h
+          } @else {
+            {{ pessoasRecentes() }} pessoas fizeram check-in nas últimas 24h
+          }
+        </div>
+      </div>
+    </div>
 
     <p class="descricao">
       {{ campingSelecionado().descricao }}

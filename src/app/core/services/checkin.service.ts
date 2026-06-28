@@ -24,4 +24,8 @@ export class CheckinService {
     obterHistorico(usuarioId: string): Observable<HistoricoCheckin[]> {
         return this.http.get<HistoricoCheckin[]>(`${this.apiUrl}/historico/${usuarioId}`);
     }
+
+    contarCheckinsRecentes(campingId: number): Observable<{ quantidade: number }> {
+        return this.http.get<{ quantidade: number }>(`${this.apiUrl}/camping/${campingId}/recentes`);
+    }
 }

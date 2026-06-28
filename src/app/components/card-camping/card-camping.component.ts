@@ -27,6 +27,7 @@ export class CardCampingComponent {
   tipoMensagem = signal<'sucesso' | 'erro' | ''>('');
   checkinRealizado = signal(false);
   verificandoCheckin = signal(false);
+  pessoasRecentes = signal(0);
 
   constructor() {
     effect(() => {
@@ -34,6 +35,7 @@ export class CardCampingComponent {
       if (camping?.tipo === 'camping') {
         this.verificarCheckinHoje(camping.id);
       }
+      this.carregarCheckinsRecentes(camping.id);
     });
   }
 
@@ -64,6 +66,30 @@ export class CardCampingComponent {
         this.verificandoCheckin.set(false);
       },
     });
+  }
+
+  private carregarCheckinsRecentes(campingId: number) {
+    this.pessoasRecentes.set(0);
+    this.checkinService.contarCheckinsRecentes(campingId).subscribe({
+      next: (res) => this.pessoasRecentes.set(res.quantidade),
+    });
+  }
+
+  obterEmojiTipo(): string {
+    switch (this.campingSelecionado().tipo) {
+      case 'camping':
+        return '🏕️';
+      case 'cachoeira':
+        return '💧';
+      case 'trilha':
+        return '🥾';
+      case 'mirante':
+        return '🌄';
+      case 'pesca':
+        return '🎣';
+      default:
+        return '📍';
+    }
   }
 
   fecharCampingInfo() {
