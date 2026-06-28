@@ -7,7 +7,7 @@
       <div class="photo-wrapper" (click)="fileInput.click()" role="button" tabindex="0"
         (keydown.enter)="fileInput.click()" aria-label="Alterar foto de perfil">
         @if (fotoExibida()) {
-        <img class="profile-photo" [src]="fotoExibida()" [alt]="usuario().nome" />
+        <img class="profile-photo" [src]="fotoExibida()" [alt]="usuario().nome" appImgFallback />
         } @else {
         <div class="avatar-large">
           {{ inicialNome() }}

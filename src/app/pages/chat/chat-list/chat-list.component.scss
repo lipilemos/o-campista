@@ -139,13 +139,6 @@
   min-width: 0;
 }
 
-.sala-nome-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 2px;
-}
-
 .sala-nome {
   font-size: var(--text-sm);
   font-weight: 700;
@@ -153,13 +146,40 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.sala-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.btn-sair-grupo {
+  padding: 2px 8px;
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-error);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: var(--transition-fast);
+
+  &:hover {
+    background: var(--color-error);
+    color: var(--color-text-inverse);
+  }
 }
 
 .sala-hora {
   font-size: var(--text-xs);
   color: var(--color-text-muted);
   flex-shrink: 0;
-  margin-left: var(--space-2);
 }
 
 .sala-preview-row {

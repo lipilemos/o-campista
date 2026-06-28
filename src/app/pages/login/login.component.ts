@@ -6,17 +6,19 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { AuthService } from '../../core/services/auth.service';
 import { GoogleAuthService } from '../../core/services/google-auth.service';
+import { I18nService } from '../../core/services/i18n.service';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
   private authService = inject(AuthService);
   private googleAuthService = inject(GoogleAuthService);
+  private i18n = inject(I18nService);
   private router = inject(Router);
 
   private googleButtonRef = viewChild<ElementRef>('googleButton');
@@ -43,7 +45,7 @@ export class LoginComponent {
       this.authService.loginWithGoogle(token).subscribe({
         next: () => this.router.navigate(['/home']),
         error: () => {
-          this.erro = 'Erro ao entrar com Google. Tente novamente.';
+          this.erro = this.i18n.t('auth.error.google');
           this.googleLoading.set(false);
         },
       });
@@ -58,7 +60,7 @@ export class LoginComponent {
         this.router.navigate(['/home']);
       },
       error: () => {
-        this.erro = 'Usuário inválido';
+        this.erro = this.i18n.t('auth.error.invalid-user');
         this.loading = false;
       },
     });

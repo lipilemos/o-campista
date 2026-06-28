@@ -7,7 +7,9 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { ImgFallbackDirective } from '../../../core/directives/img-fallback.directive';
 import { UsuarioLogado } from '../../../core/models/user.model';
+import { ImageCompressorService } from '../../../core/services/image-compressor.service';
 import { UsuarioService } from '../../../core/services/usuario.service';
 import { AuthService } from '../../../core/services/auth.service';
 
@@ -15,6 +17,7 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 @Component({
   selector: 'app-profile-detail',
+  imports: [ImgFallbackDirective],
   templateUrl: './profile-detail.component.html',
   styleUrl: './profile-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,6 +34,7 @@ export class ProfileDetailComponent {
 
   private usuarioService = inject(UsuarioService);
   private authService = inject(AuthService);
+  private imageCompressor = inject(ImageCompressorService);
 
   imagePreview = signal<string | null>(null);
   selectedFile = signal<File | null>(null);
@@ -46,17 +50,18 @@ export class ProfileDetailComponent {
     return this.usuario().nome.charAt(0).toUpperCase();
   });
 
-  onPhotoSelected(event: Event): void {
+  async onPhotoSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
+    const rawFile = input.files?.[0];
+    if (!rawFile) return;
 
-    if (file.size > MAX_FILE_SIZE) {
+    if (rawFile.size > MAX_FILE_SIZE) {
       this.erro.set(true);
       this.mensagem.set('A foto deve ter no maximo 5MB.');
       return;
     }
 
+    const file = await this.imageCompressor.compress(rawFile);
     this.selectedFile.set(file);
     this.mensagem.set('');
     this.erro.set(false);

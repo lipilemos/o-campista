@@ -9,7 +9,6 @@ import { Weather } from '../../core/models/weather.model';
 
 @Component({
   selector: 'app-weather-card',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './weather-card.component.html',
   styleUrls: ['./weather-card.component.scss']

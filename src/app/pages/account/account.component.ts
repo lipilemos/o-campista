@@ -9,15 +9,16 @@ import { UsuarioLogado } from '../../core/models/user.model';
 import { AuthService } from '../../core/services/auth.service';
 import { CampingService } from '../../core/services/camping.service';
 import { CheckinService } from '../../core/services/checkin.service';
+import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 import { ToastService } from '../../core/services/toast.service';
 import { UsuarioService } from '../../core/services/usuario.service';
+import { ImgFallbackDirective } from '../../core/directives/img-fallback.directive';
 import { CheckinHistoryComponent } from './checkin-history/checkin-history.component';
 import { ProfileDetailComponent } from './profile-detail/profile-detail.component';
 
 @Component({
   selector: 'app-account',
-  standalone: true,
-  imports: [CommonModule, CheckinHistoryComponent, ProfileDetailComponent],
+  imports: [CommonModule, CheckinHistoryComponent, ProfileDetailComponent, ImgFallbackDirective],
   templateUrl: './account.component.html',
   styleUrls: ['./account.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -160,11 +161,34 @@ export class AccountComponent implements OnInit {
     this.presenteSelecionado = null;
   }
   private toast = inject(ToastService);
+  private confirmDialog = inject(ConfirmDialogService);
 
   copiarCodigo(codigo: string): void {
     navigator.clipboard.writeText(codigo);
-
     this.toast.success('Código copiado com sucesso!');
+  }
+
+  excluirConta(): void {
+    this.confirmDialog
+      .confirmar({
+        titulo: 'Excluir conta',
+        mensagem:
+          'Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita e todos os seus dados serão removidos.',
+        textoBotaoConfirmar: 'Excluir',
+        textoBotaoCancelar: 'Cancelar',
+      })
+      .subscribe((confirmado) => {
+        if (!confirmado) return;
+        this.usuarioService.deletarConta(this.usuario.id).subscribe({
+          next: () => {
+            this.toast.success('Conta excluída com sucesso.');
+            this.authService.logout();
+          },
+          error: () => {
+            this.toast.error('Não foi possível excluir a conta. Tente novamente.');
+          },
+        });
+      });
   }
 }
 

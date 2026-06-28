@@ -6,11 +6,12 @@ import { GiftService } from '../../core/services/gift.service';
 import { MapStateService } from '../../core/services/map-state.service';
 import { ToastService } from '../../core/services/toast.service';
 import { UsuarioService } from '../../core/services/usuario.service';
+import { ImgFallbackDirective } from '../../core/directives/img-fallback.directive';
 import { Util } from '../../core/Utils.ts/Util';
 
 @Component({
   selector: 'app-card-gift',
-  imports: [DatePipe],
+  imports: [DatePipe, ImgFallbackDirective],
   templateUrl: './card-gift.component.html',
   styleUrl: './card-gift.component.scss',
 })

@@ -7,11 +7,14 @@ import { AuthService } from '../../core/services/auth.service';
 import { ChatNotificationService } from '../../core/services/chat-notification.service';
 import { MapStateService } from '../../core/services/map-state.service';
 import { ThemeService } from '../../core/services/theme.service';
+import { I18nService } from '../../core/services/i18n.service';
+import { ImgFallbackDirective } from '../../core/directives/img-fallback.directive';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 import { APP_VERSION } from '../../core/version';
 
 @Component({
   selector: 'app-menu',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ImgFallbackDirective, TranslatePipe],
   templateUrl: './app-menu.component.html',
   styleUrls: ['./app-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,6 +25,7 @@ export class AppMenuComponent {
   protected mapState = inject(MapStateService);
   protected chatNotification = inject(ChatNotificationService);
   protected themeService = inject(ThemeService);
+  protected i18n = inject(I18nService);
 
   protected appVersion = APP_VERSION;
   menuOpen = signal(false);
@@ -54,6 +58,11 @@ export class AppMenuComponent {
 
   isActive(path: string) {
     return this.currentUrl().startsWith('/' + path);
+  }
+
+  async toggleLanguage() {
+    const next = this.i18n.locale() === 'pt-BR' ? 'en-US' : 'pt-BR';
+    await this.i18n.setLocale(next);
   }
 
   logout() {

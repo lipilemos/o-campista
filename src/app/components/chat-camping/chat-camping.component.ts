@@ -13,11 +13,12 @@ import {
 } from '@angular/core';
 import { MensagemChat } from '../../core/models/chat.model';
 import { AuthService } from '../../core/services/auth.service';
+import { ImgFallbackDirective } from '../../core/directives/img-fallback.directive';
 import { ChatService } from '../../core/services/chat.service';
 
 @Component({
   selector: 'app-chat-camping',
-  imports: [DatePipe],
+  imports: [DatePipe, ImgFallbackDirective],
   templateUrl: './chat-camping.component.html',
   styleUrl: './chat-camping.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

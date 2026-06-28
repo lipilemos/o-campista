@@ -4,14 +4,16 @@ import { CheckinRequestModel, CheckinResponseModel } from '../../core/models/che
 import { AuthService } from '../../core/services/auth.service';
 import { CheckinService } from '../../core/services/checkin.service';
 import { MapStateService } from '../../core/services/map-state.service';
+import { ToastService } from '../../core/services/toast.service';
 import { UsuarioService } from '../../core/services/usuario.service';
 import { Util } from '../../core/Utils.ts/Util';
+import { ImgFallbackDirective } from '../../core/directives/img-fallback.directive';
 import { AvaliacoesUsuariosComponent } from '../avaliacoes-usuarios/avaliacoes-usuarios.component';
 import { ChatCampingComponent } from '../chat-camping/chat-camping.component';
 
 @Component({
   selector: 'app-card-camping',
-  imports: [AvaliacoesUsuariosComponent, ChatCampingComponent],
+  imports: [AvaliacoesUsuariosComponent, ChatCampingComponent, ImgFallbackDirective],
   templateUrl: './card-camping.component.html',
   styleUrl: './card-camping.component.scss',
 })
@@ -19,6 +21,7 @@ export class CardCampingComponent {
   private authService = inject(AuthService);
   private checkinService = inject(CheckinService);
   private mapState = inject(MapStateService);
+  private toast = inject(ToastService);
   private usuarioService = inject(UsuarioService);
 
   campingSelecionado = input.required<Camping>();
@@ -139,6 +142,7 @@ export class CardCampingComponent {
         this.checkinRealizado.set(true);
         this.tipoMensagem.set('sucesso');
         this.mensagemCheckin.set(response?.mensagem ?? 'Check-in realizado com sucesso! +100 XP');
+        this.toast.success(response?.mensagem ?? 'Check-in realizado com sucesso! +100 XP');
         this.usuarioService.verificarNovasConquistas();
       },
 
@@ -147,9 +151,10 @@ export class CardCampingComponent {
         if (err?.error?.mensagem === 'Você já realizou check-in neste camping hoje.') {
           this.checkinRealizado.set(true);
         }
-        this.mensagemCheckin.set(
-          err?.error?.mensagem ?? err?.error?.erro ?? err?.message ?? 'Erro ao realizar check-in.',
-        );
+        const msg =
+          err?.error?.mensagem ?? err?.error?.erro ?? err?.message ?? 'Erro ao realizar check-in.';
+        this.mensagemCheckin.set(msg);
+        this.toast.error(msg);
       },
     });
   }

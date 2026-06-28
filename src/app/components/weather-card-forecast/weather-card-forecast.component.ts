@@ -5,7 +5,6 @@ import { WeatherForecast } from '../../core/models/weather-forecast.model';
 
 @Component({
   selector: 'app-weather-card-forecast',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './weather-card-forecast.component.html',
   styleUrls: ['./weather-card-forecast.component.scss']

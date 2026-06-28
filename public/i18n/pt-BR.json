@@ -26,5 +26,10 @@
   "checkin.success": "Check-in realizado com sucesso!",
   "gift.redeemed": "Presente resgatado com sucesso!",
   "gift.created": "Presente criado com sucesso!",
-  "chat.typing": "está digitando..."
+  "chat.typing": "está digitando...",
+  "nav.level": "Nivel",
+  "auth.or": "ou",
+  "auth.login-google": "Entrar com Google",
+  "auth.error.invalid-user": "Usuário inválido",
+  "auth.error.google": "Erro ao entrar com Google. Tente novamente."
 }

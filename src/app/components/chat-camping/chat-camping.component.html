@@ -34,7 +34,7 @@
       @if (!ehMinhaMensagem(msg)) {
       <div class="msg-avatar">
         @if (msg.fotoUsuario) {
-        <img [src]="msg.fotoUsuario" [alt]="msg.nomeUsuario" />
+        <img [src]="msg.fotoUsuario" [alt]="msg.nomeUsuario" appImgFallback />
         } @else {
         <div class="avatar-placeholder">
           {{ msg.nomeUsuario.charAt(0).toUpperCase() }}

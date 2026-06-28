@@ -2,7 +2,7 @@
   <button class="btn-close-round btn-fechar" (click)="fecharCampingInfo()">✕</button>
 
   @if (campingSelecionado().fotoPrincipal) {
-    <img [src]="campingSelecionado().fotoPrincipal" [alt]="campingSelecionado().nome" />
+    <img [src]="campingSelecionado().fotoPrincipal" [alt]="campingSelecionado().nome" appImgFallback />
   }
 
   <div class="camping-content">

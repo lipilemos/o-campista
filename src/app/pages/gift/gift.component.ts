@@ -1,17 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { GiftService } from '../../core/services/gift.service';
+import { ImageCompressorService } from '../../core/services/image-compressor.service';
+import { ToastService } from '../../core/services/toast.service';
+
 @Component({
   selector: 'app-gift-form',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule], // Apenas módulos essenciais
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './gift.component.html',
-  styleUrls: ['./gift.component.scss']
+  styleUrls: ['./gift.component.scss'],
 })
 export class GiftComponent implements OnInit {
+  private imageCompressor = inject(ImageCompressorService);
+  private toast = inject(ToastService);
+
   giftForm: FormGroup;
   imagePreview: string | null = null;
   selectedFile: File | null = null;
@@ -25,7 +30,7 @@ export class GiftComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private giftService: GiftService,
-    private router: Router
+    private router: Router,
   ) {
     this.giftForm = this.fb.group({
       nome: ['', [Validators.required, Validators.minLength(3)]],
@@ -70,20 +75,18 @@ export class GiftComponent implements OnInit {
     }
   }
 
-  onPhotoSelected(event: any) {
-    const files: FileList = event.target.files;
+  async onPhotoSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const files = input.files;
 
     if (files && files.length > 0) {
-      const file = files[0];
+      const file = await this.imageCompressor.compress(files[0]);
       this.selectedFile = file;
 
       const reader = new FileReader();
-
       reader.onload = () => {
-        // Define o preview da imagem para o HTML
         this.imagePreview = reader.result as string;
       };
-
       reader.readAsDataURL(file);
     }
   }
@@ -116,34 +119,17 @@ export class GiftComponent implements OnInit {
       usuarioLogado?.id.toString() || ''
     );
 
-    this.giftService.createGift(formData)
-      .subscribe({
-
-        next: () => {
-
-          this.loading = false;
-          this.erro = false;
-
-          this.mensagem =
-            '🎉 Presente deixado com sucesso!';
-
-          setTimeout(() => {
-
-            this.router.navigate(['/home']);
-
-          }, 2000);
-        },
-
-        error: (error) => {
-
-          this.loading = false;
-          this.erro = true;
-
-          this.mensagem =
-            error?.error?.mensagem ||
-            'Não foi possível criar o presente.';
-        }
-      });
+    this.giftService.createGift(formData).subscribe({
+      next: () => {
+        this.loading = false;
+        this.toast.success('Presente deixado com sucesso!');
+        setTimeout(() => this.router.navigate(['/home']), 1500);
+      },
+      error: (error) => {
+        this.loading = false;
+        this.toast.error(error?.error?.mensagem || 'Não foi possível criar o presente.');
+      },
+    });
   }
 
   goBack() {

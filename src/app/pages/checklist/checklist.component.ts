@@ -30,7 +30,6 @@ import {
 
 @Component({
   selector: 'app-checklist',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule

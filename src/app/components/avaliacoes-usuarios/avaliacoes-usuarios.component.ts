@@ -1,11 +1,12 @@
 import { DatePipe } from '@angular/common';
 import { Component, effect, inject, input, signal } from '@angular/core';
 import { AvaliacaoComUsuario } from '../../core/models/avaliacao.model';
+import { ImgFallbackDirective } from '../../core/directives/img-fallback.directive';
 import { CampingService } from '../../core/services/camping.service';
 
 @Component({
   selector: 'app-avaliacoes-usuarios',
-  imports: [DatePipe],
+  imports: [DatePipe, ImgFallbackDirective],
   templateUrl: './avaliacoes-usuarios.component.html',
   styleUrl: './avaliacoes-usuarios.component.scss',
 })
