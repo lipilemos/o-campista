@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -10,10 +11,9 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { MensagemChat } from '../../core/models/chat.model';
 import { AuthService } from '../../core/services/auth.service';
 import { ChatService } from '../../core/services/chat.service';
-import { MensagemChat } from '../../core/models/chat.model';
 
 @Component({
   selector: 'app-chat-camping',
@@ -26,7 +26,6 @@ export class ChatCampingComponent {
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
   chatService = inject(ChatService);
-
   campingId = input.required<number>();
 
   chatAberto = signal(false);
@@ -66,7 +65,9 @@ export class ChatCampingComponent {
     this.textoMensagem.set('');
   }
 
+  private usuarioIdAtual = String(this.authService.getUser()?.id ?? '').toLowerCase();
+
   ehMinhaMensagem(msg: MensagemChat): boolean {
-    return msg.usuarioId === this.authService.getUser()?.id;
+    return String(msg.usuarioId).toLowerCase() === this.usuarioIdAtual;
   }
 }

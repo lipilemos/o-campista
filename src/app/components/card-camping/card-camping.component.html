@@ -57,10 +57,14 @@
     }
   </div>
 
-  @if (campingSelecionado().tipo === 'camping') {
+  @if (campingSelecionado().tipo === 'camping' && !checkinRealizado()) {
     @if (podeFazerCheckin()) {
-      <button class="btn-checkin" [disabled]="checkinRealizado()" (click)="fazerCheckin()">
-        Fazer Check-in
+      <button
+        class="btn-checkin"
+        [disabled]="verificandoCheckin()"
+        (click)="fazerCheckin()"
+      >
+        {{ verificandoCheckin() ? 'Verificando...' : 'Fazer Check-in' }}
       </button>
     } @else {
       <p class="checkin-info">

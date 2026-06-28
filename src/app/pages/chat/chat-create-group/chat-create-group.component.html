@@ -1,0 +1,49 @@
+<div class="grupo-page">
+  <div class="grupo-header">
+    <button class="btn-voltar" (click)="voltar()" aria-label="Voltar">←</button>
+    <h2>Criar Grupo</h2>
+  </div>
+
+  @if (!codigoCriado()) {
+    <div class="grupo-form">
+      <label for="nomeGrupo">Nome do grupo</label>
+      <input
+        id="nomeGrupo"
+        type="text"
+        [value]="nomeGrupo()"
+        (input)="nomeGrupo.set($any($event.target).value)"
+        (keydown.enter)="criar()"
+        placeholder="Ex: Campistas do Sul"
+        maxlength="100"
+        [disabled]="criando()"
+      />
+
+      @if (erro()) {
+        <p class="erro">{{ erro() }}</p>
+      }
+
+      <button
+        class="btn-criar"
+        (click)="criar()"
+        [disabled]="!nomeGrupo().trim() || criando()"
+      >
+        {{ criando() ? 'Criando...' : 'Criar Grupo' }}
+      </button>
+    </div>
+  } @else {
+    <div class="grupo-sucesso">
+      <span class="sucesso-icon">🎉</span>
+      <h3>Grupo criado!</h3>
+      <p>Compartilhe o código abaixo para convidar pessoas:</p>
+      <div class="codigo-box">
+        <span class="codigo">{{ codigoCriado() }}</span>
+        <button class="btn-copiar" (click)="copiarCodigo()" aria-label="Copiar código">
+          Copiar
+        </button>
+      </div>
+      <button class="btn-ir-grupo" (click)="irParaGrupo()">
+        Ir para Chats
+      </button>
+    </div>
+  }
+</div>

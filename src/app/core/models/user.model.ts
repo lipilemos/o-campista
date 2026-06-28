@@ -2,7 +2,7 @@ import { Conquista } from "./conquista.model";
 import { Presente } from "./presente.model";
 
 export interface UsuarioLogado {
-  id: number;
+  id: string;
   nome: string;
   email: string;
   fotoPerfil: string;

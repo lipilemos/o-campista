@@ -21,7 +21,7 @@ export class CheckinService {
         );
     }
 
-    obterHistorico(usuarioId: number): Observable<HistoricoCheckin[]> {
+    obterHistorico(usuarioId: string): Observable<HistoricoCheckin[]> {
         return this.http.get<HistoricoCheckin[]>(`${this.apiUrl}/historico/${usuarioId}`);
     }
 }

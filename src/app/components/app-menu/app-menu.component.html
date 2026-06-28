@@ -44,6 +44,12 @@
                 <button class="menu-item" [class.active]="isActive('mapa')" (click)="navigateTo('mapa')">
                     Mapa
                 </button>
+                <button class="menu-item" [class.active]="isActive('chat')" (click)="navigateTo('chat')">
+                    Chat
+                    @if (chatNotification.totalNaoLidas() > 0) {
+                        <span class="badge-nao-lidas">{{ chatNotification.totalNaoLidas() > 99 ? '99+' : chatNotification.totalNaoLidas() }}</span>
+                    }
+                </button>
                 <button class="menu-item" [class.active]="isActive('checklist')" (click)="navigateTo('checklist')">
                     Checklist
                 </button>

@@ -76,6 +76,9 @@
   text-align: left;
   padding: 0 var(--space-4);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   transition:
     background var(--transition-fast),
     color var(--transition-fast),
@@ -250,6 +253,21 @@
   .banner {
     height: 240px;
   }
+}
+
+.badge-nao-lidas {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-error);
+  color: var(--color-text-inverse);
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(198, 40, 40, 0.4);
 }
 
 .hidden {

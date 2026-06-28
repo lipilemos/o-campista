@@ -1,0 +1,82 @@
+<div class="chat-page">
+  <div class="chat-header-page">
+    <h2>Chats</h2>
+    <div class="header-actions">
+      <button class="btn-action" (click)="criarGrupo()" aria-label="Criar grupo">
+        Criar Grupo
+      </button>
+      <button class="btn-action btn-action--outline" (click)="entrarGrupo()" aria-label="Entrar em grupo">
+        Entrar em Grupo
+      </button>
+    </div>
+  </div>
+
+  <div class="chat-busca">
+    <input
+      type="text"
+      [value]="filtro()"
+      (input)="filtro.set($any($event.target).value)"
+      placeholder="Buscar conversa..."
+      aria-label="Buscar conversa"
+    />
+  </div>
+
+  @if (carregando()) {
+    <div class="chat-loading">
+      <span class="loading-icon">⏳</span>
+      <p>Carregando conversas...</p>
+    </div>
+  }
+
+  <div class="chat-lista custom-scrollbar">
+    @for (sala of salasFiltradas(); track sala.id) {
+      <button
+        class="sala-item"
+        (click)="abrirSala(sala)"
+        [attr.aria-label]="sala.nome + (naoLidas(sala) > 0 ? ', ' + naoLidas(sala) + ' mensagens não lidas' : '')"
+      >
+        <div class="sala-avatar">
+          @if (sala.fotoCapa) {
+            <img [src]="sala.fotoCapa" [alt]="sala.nome" />
+          } @else {
+            <div class="avatar-placeholder" [class.grupo]="sala.tipo === 'grupo'">
+              {{ sala.tipo === 'camping' ? '🏕️' : '👥' }}
+            </div>
+          }
+        </div>
+
+        <div class="sala-info">
+          <div class="sala-nome-row">
+            <span class="sala-nome">{{ sala.nome }}</span>
+            @if (sala.ultimaMensagem) {
+              <span class="sala-hora">{{ sala.ultimaMensagem.dataEnvio | date: 'HH:mm' }}</span>
+            }
+          </div>
+          <div class="sala-preview-row">
+            @if (sala.ultimaMensagem) {
+              <p class="sala-preview">
+                <span class="preview-autor">{{ sala.ultimaMensagem.nomeUsuario }}:</span>
+                {{ sala.ultimaMensagem.texto }}
+              </p>
+            } @else {
+              <p class="sala-preview sala-preview--vazio">Nenhuma mensagem ainda</p>
+            }
+            @if (naoLidas(sala) > 0) {
+              <span class="badge-nao-lidas" aria-live="polite">
+                {{ naoLidas(sala) > 99 ? '99+' : naoLidas(sala) }}
+              </span>
+            }
+          </div>
+        </div>
+      </button>
+    } @empty {
+      @if (!carregando()) {
+        <div class="chat-vazio">
+          <span class="vazio-icon">💬</span>
+          <p>Nenhuma conversa ainda</p>
+          <span class="vazio-dica">Faça check-in em um camping ou crie um grupo para começar!</span>
+        </div>
+      }
+    }
+  </div>
+</div>

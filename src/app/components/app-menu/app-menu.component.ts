@@ -4,6 +4,7 @@ import { filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UsuarioLogado } from '../../core/models/user.model';
 import { AuthService } from '../../core/services/auth.service';
+import { ChatNotificationService } from '../../core/services/chat-notification.service';
 import { MapStateService } from '../../core/services/map-state.service';
 
 @Component({
@@ -17,6 +18,7 @@ export class AppMenuComponent {
   private router = inject(Router);
   private authService = inject(AuthService);
   protected mapState = inject(MapStateService);
+  protected chatNotification = inject(ChatNotificationService);
 
   menuOpen = signal(false);
   usuario = signal<UsuarioLogado | null>(null);
@@ -31,7 +33,10 @@ export class AppMenuComponent {
       .subscribe((e) => this.currentUrl.set(e.urlAfterRedirects));
 
     const user = this.authService.obterUsuarioLogado();
-    if (user) this.usuario.set(user);
+    if (user) {
+      this.usuario.set(user);
+      this.chatNotification.iniciar();
+    }
   }
 
   toggleMenu() {

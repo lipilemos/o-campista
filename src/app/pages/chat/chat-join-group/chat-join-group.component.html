@@ -1,0 +1,32 @@
+<div class="grupo-page">
+  <div class="grupo-header">
+    <button class="btn-voltar" (click)="voltar()" aria-label="Voltar">←</button>
+    <h2>Entrar em Grupo</h2>
+  </div>
+
+  <div class="grupo-form">
+    <label for="codigoConvite">Código de convite</label>
+    <input
+      id="codigoConvite"
+      type="text"
+      [value]="codigoConvite()"
+      (input)="codigoConvite.set($any($event.target).value)"
+      (keydown.enter)="entrar()"
+      placeholder="Ex: ABC12345"
+      maxlength="8"
+      [disabled]="entrando()"
+    />
+
+    @if (erro()) {
+      <p class="erro">{{ erro() }}</p>
+    }
+
+    <button
+      class="btn-entrar"
+      (click)="entrar()"
+      [disabled]="!codigoConvite().trim() || entrando()"
+    >
+      {{ entrando() ? 'Entrando...' : 'Entrar no Grupo' }}
+    </button>
+  </div>
+</div>

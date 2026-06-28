@@ -1,7 +1,7 @@
 export interface Avaliacao {
   id?: number;
   checkinId?: number;
-  usuarioId: number;
+  usuarioId: string;
   campingId: number;
   nota: number;
   comentario: string;

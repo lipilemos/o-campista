@@ -1,5 +1,5 @@
 export interface CheckinRequestModel {
-    usuarioId: number;
+    usuarioId: string;
     campingId: number;
     latitude: number;
     longitude: number;
@@ -8,7 +8,7 @@ export interface CheckinResponseModel {
     mensagem: string;
 }
 export interface Checkin {
-    usuarioId: number;
+    usuarioId: string;
     campingId: number;
     latitude: number;
     longitude: number;

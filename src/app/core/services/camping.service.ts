@@ -40,7 +40,7 @@ export class CampingService {
 
   obterAvaliacaoUsuario(
     campingId: number,
-    usuarioId: number,
+    usuarioId: string,
     checkinId?: number,
   ): Observable<Avaliacao[] | []> {
     let url = `${this.apiUrl}/camping/${campingId}/avaliacoes/${usuarioId}`;

@@ -42,6 +42,11 @@ src/app/
 │   ├── account/         # Perfil, conquistas, presentes, histórico check-ins
 │   │   └── checkin-history/
 │   ├── map/             # Mapa interativo com markers, check-in, presentes
+│   ├── chat/            # Chat de salas (camping + grupo)
+│   │   ├── chat-list/           # Lista de conversas
+│   │   ├── chat-conversation/   # Conversa individual
+│   │   ├── chat-create-group/   # Criar grupo
+│   │   └── chat-join-group/     # Entrar em grupo via convite
 │   ├── checklist/       # Checklist de preparação para camping
 │   └── gift/            # Criação de presentes com upload de foto
 ├── app.routes.ts        # Definição de rotas (todas lazy-loaded)
@@ -60,6 +65,12 @@ src/app/
 | `/account` | AccountComponent | Sim (authGuard) |
 | `/account/checkin-history` | CheckinHistoryComponent | Sim (authGuard) |
 | `/mapa` | MapComponent | Sim (authGuard) |
+| `/chat` | ChatComponent (container) | Sim (authGuard) |
+| `/chat` (child `''`) | ChatListComponent | Sim (authGuard) |
+| `/chat/criar-grupo` | ChatCreateGroupComponent | Sim (authGuard) |
+| `/chat/entrar-grupo` | ChatJoinGroupComponent | Sim (authGuard) |
+| `/chat/entrar-grupo/:codigo` | ChatJoinGroupComponent | Sim (authGuard) |
+| `/chat/:salaId` | ChatConversationComponent | Sim (authGuard) |
 | `/checklist` | ChecklistComponent | Sim (authGuard) |
 | `/gift` | GiftComponent | Sim (authGuard) |
 | `**` | Redireciona para `/` | — |
@@ -113,6 +124,8 @@ Base URL configurada em `src/environments/environment.ts` (`environment.apiUrl`)
 | **LocationService** | Geolocalização em tempo real | Browser Geolocation API |
 | **LoadingService** | Estado de loading global (Signal) | Sem endpoint — gerenciado pelo interceptor |
 | **MapStateService** | Estado do mapa (modais abertos) | Sem endpoint — Signals locais |
+| **ChatRoomService** | Salas de chat (camping + grupo), mensagens, SignalR | `GET /chat/salas`, `GET /chat/salas/{id}/mensagens`, `POST /chat/grupos`, `POST /chat/grupos/entrar` |
+| **ChatNotificationService** | Contadores de mensagens não-lidas (badge sidebar) | `GET /chat/nao-lidas` + SignalR `/notificationHub` |
 
 ## Modelos Principais
 
@@ -126,6 +139,8 @@ Definidos em `src/app/core/models/`:
 - **Weather/WeatherForecast/DadosClima** — temperatura, umidade, vento, chuva, statusCamping
 - **Checklist/ChecklistCategoria/ChecklistItem** — progresso, categorias com itens
 - **Conquista** — id, nome, descricao, icone, dataConquista
+- **SalaChat** — id, nome, tipo ('camping'|'grupo'), campingId?, totalNaoLidas, podeEnviar, ultimaMensagem?
+- **MensagemSalaChat** — id, salaId, usuarioId, nomeUsuario, fotoUsuario, texto, dataEnvio
 
 ## Regras de Negócio
 
@@ -138,6 +153,10 @@ Definidos em `src/app/core/models/`:
 - **Cache de posição:** 5 minutos (maxAge: 300000ms)
 - **Status camping (clima):** chuva > 60% = "Ruim", vento > 35km/h = "Atenção", temp < 16°C = "Atenção", senão = "Excelente"
 - **Gamificação:** XP por check-ins, níveis progressivos, conquistas desbloqueáveis
+- **Chat de camping:** envio de mensagens só com check-in nas últimas **24 horas** (leitura sempre disponível)
+- **Chat de grupo:** independente de campings, sem restrição de 24h, convite por código alfanumérico de 8 chars
+- **Salas automáticas:** ao fazer check-in, sala de chat do camping é criada automaticamente e o usuário é adicionado como membro
+- **Rate limit chat:** máximo 10 mensagens por minuto por usuário (via MemoryCache no backend)
 
 ## Gerenciamento de Estado
 

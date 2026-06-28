@@ -41,6 +41,48 @@ export const routes: Routes = [
           import('./pages/map/map.component').then((m) => m.MapComponent),
       },
       {
+        path: 'chat',
+        loadComponent: () =>
+          import('./pages/chat/chat.component').then((m) => m.ChatComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./pages/chat/chat-list/chat-list.component').then(
+                (m) => m.ChatListComponent,
+              ),
+          },
+          {
+            path: 'criar-grupo',
+            loadComponent: () =>
+              import('./pages/chat/chat-create-group/chat-create-group.component').then(
+                (m) => m.ChatCreateGroupComponent,
+              ),
+          },
+          {
+            path: 'entrar-grupo',
+            loadComponent: () =>
+              import('./pages/chat/chat-join-group/chat-join-group.component').then(
+                (m) => m.ChatJoinGroupComponent,
+              ),
+          },
+          {
+            path: 'entrar-grupo/:codigo',
+            loadComponent: () =>
+              import('./pages/chat/chat-join-group/chat-join-group.component').then(
+                (m) => m.ChatJoinGroupComponent,
+              ),
+          },
+          {
+            path: ':salaId',
+            loadComponent: () =>
+              import('./pages/chat/chat-conversation/chat-conversation.component').then(
+                (m) => m.ChatConversationComponent,
+              ),
+          },
+        ],
+      },
+      {
         path: 'checklist',
         loadComponent: () =>
           import('./pages/checklist/checklist.component').then((m) => m.ChecklistComponent),

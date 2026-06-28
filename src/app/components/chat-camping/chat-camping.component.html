@@ -11,12 +11,9 @@
       <span class="chat-header-icon">🏕️</span>
       <div>
         <h3>Chat do Camping</h3>
+        <h4>Chat com os campistas que estão neste camping.</h4>
         <div class="chat-status">
-          <span
-            class="status-dot"
-            [class.online]="conectado()"
-            [class.offline]="!conectado()"
-          ></span>
+          <span class="status-dot" [class.online]="conectado()" [class.offline]="!conectado()"></span>
           {{ conectado() ? 'Online' : 'Reconectando...' }}
         </div>
       </div>
@@ -65,22 +62,11 @@
   </div>
 
   <div class="chat-input-area">
-    <input
-      type="text"
-      [value]="textoMensagem()"
-      (input)="textoMensagem.set($any($event.target).value)"
-      (keydown.enter)="enviar()"
-      placeholder="Digite sua mensagem..."
-      aria-label="Mensagem do chat"
-      [disabled]="!conectado()"
-      maxlength="500"
-    />
-    <button
-      class="btn-enviar"
-      (click)="enviar()"
-      [disabled]="!textoMensagem().trim() || !conectado()"
-      aria-label="Enviar mensagem"
-    >
+    <input type="text" [value]="textoMensagem()" (input)="textoMensagem.set($any($event.target).value)"
+      (keydown.enter)="enviar()" placeholder="Digite sua mensagem..." aria-label="Mensagem do chat"
+      [disabled]="!conectado()" maxlength="500" />
+    <button class="btn-enviar" (click)="enviar()" [disabled]="!textoMensagem().trim() || !conectado()"
+      aria-label="Enviar mensagem">
       ➤
     </button>
   </div>

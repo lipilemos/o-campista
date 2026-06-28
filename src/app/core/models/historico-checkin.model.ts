@@ -2,7 +2,7 @@ import { Camping } from './camping.model';
 
 export interface HistoricoCheckin {
   id?: number;
-  usuarioId: number;
+  usuarioId: string;
   campingId: number;
   camping: Camping;
   dataCriacao: string;
