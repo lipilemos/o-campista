@@ -8,42 +8,16 @@
   right: 0;
   bottom: 0;
   z-index: 1001;
-  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
   .close-btn {
     position: absolute;
     top: var(--space-3);
     right: var(--space-3);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    font-size: 22px;
-    cursor: pointer;
-    color: var(--color-text-secondary);
-    transition: var(--transition-fast);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &:hover {
-      color: var(--color-text);
-      background: var(--color-surface-alt);
-    }
+    z-index: 1;
   }
 }
 
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
 
 .camping-header {
   margin-bottom: var(--space-6);

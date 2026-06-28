@@ -102,22 +102,7 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(4px);
-  color: var(--color-text-inverse);
-  cursor: pointer;
-  transition: var(--transition-fast);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.65);
-  }
+  z-index: 1;
 }
 
 .btn-checkin {
@@ -218,11 +203,14 @@
   }
 
   .btn-fechar {
+    top: var(--space-5);
+    right: var(--space-5);
+  }
+
+  .btn-close-round {
     width: 48px;
     height: 48px;
     font-size: 18px;
-    top: var(--space-5);
-    right: var(--space-5);
   }
 
   .btn-checkin,
@@ -231,12 +219,3 @@
   }
 }
 
-@keyframes slideUp {
-  from {
-    transform: translateY(100%);
-  }
-
-  to {
-    transform: translateY(0);
-  }
-}

@@ -29,7 +29,7 @@ export class UsuarioService {
     }
 
     uploadFotoPerfil(
-        usuarioId: number,
+        usuarioId: string,
         foto: FormData
     ): Observable<UsuarioLogado> {
 

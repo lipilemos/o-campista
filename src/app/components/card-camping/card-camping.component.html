@@ -1,84 +1,79 @@
 <div class="camping-info">
+  <button class="btn-close-round btn-fechar" (click)="fecharCampingInfo()">✕</button>
 
-    <button class="btn-fechar" (click)="fecharCampingInfo()">
-        ✖
-    </button>
+  @if (campingSelecionado().fotoPrincipal) {
+    <img [src]="campingSelecionado().fotoPrincipal" [alt]="campingSelecionado().nome" />
+  }
 
-    @if (campingSelecionado().fotoPrincipal) {
-    <img [src]="campingSelecionado().fotoPrincipal" [alt]="campingSelecionado().nome">
-    }
+  <div class="camping-content">
+    <h2>
+      {{ campingSelecionado().nome }}
+    </h2>
 
-    <div class="camping-content">
+    <span class="tipo">
+      {{ campingSelecionado().tipo }}
+    </span>
 
-        <h2>
-            {{ campingSelecionado().nome }}
-        </h2>
+    <p class="avaliacao">⭐ {{ campingSelecionado().avaliacao }}</p>
 
-        <span class="tipo">
-            {{ campingSelecionado().tipo }}
-        </span>
+    <p class="descricao">
+      {{ campingSelecionado().descricao }}
+    </p>
 
-        <p class="avaliacao">
-            ⭐ {{ campingSelecionado().avaliacao }}
-        </p>
-
-        <p class="descricao">
-            {{ campingSelecionado().descricao }}
-        </p>
-
-        <div class="info-item">
-            📍 {{ campingSelecionado().cidade }} - {{ campingSelecionado().estado }}
-        </div>
-
-        <div class="info-item">
-            🛣️ {{ campingSelecionado().endereco }}
-        </div>
-
-        <div class="info-item">
-            📞 {{ campingSelecionado().telefone }}
-        </div>
-
-        <h4>Recursos</h4>
-
-        <div class="recursos">
-
-            @for (recurso of campingSelecionado().recursos; track recurso.nome) {
-
-            <div class="recurso" [class.disponivel]="recurso.disponivel" [class.indisponivel]="!recurso.disponivel">
-
-                {{ recurso.disponivel ? '✅' : '❌' }}
-                {{ recurso.nome }}
-
-            </div>
-
-            }
-
-        </div>
-
-        @if(campingSelecionado().tipo === 'camping') {
-        @if(mensagemCheckin()) {
-        <div class="checkin-message" [class.success]="tipoMensagem() === 'sucesso'"
-            [class.error]="tipoMensagem() === 'erro'">
-
-            {{ mensagemCheckin() }}
-
-        </div>
-        }
-        <app-avaliacoes-usuarios [campingId]="campingSelecionado().id"></app-avaliacoes-usuarios>
-        }
-
+    <div class="info-item">
+      📍 {{ campingSelecionado().cidade }} - {{ campingSelecionado().estado }}
     </div>
 
-    @if(campingSelecionado().tipo === 'camping') {
-    @if(podeFazerCheckin()) {
-    <button class="btn-checkin" [disabled]="checkinRealizado()" (click)="fazerCheckin()">
-        Fazer Check-in
-    </button>
-    } @else {
-    <p class="checkin-info">
-        Voce precisa estar a menos de 250 metros do camping para fazer check-in.
-    </p>
-    }
-    }
+    <div class="info-item">🛣️ {{ campingSelecionado().endereco }}</div>
 
+    <div class="info-item">📞 {{ campingSelecionado().telefone }}</div>
+
+    <h4>Recursos</h4>
+
+    <div class="recursos">
+      @for (recurso of campingSelecionado().recursos; track recurso.nome) {
+        <div
+          class="recurso"
+          [class.disponivel]="recurso.disponivel"
+          [class.indisponivel]="!recurso.disponivel"
+        >
+          {{ recurso.disponivel ? '✅' : '❌' }}
+          {{ recurso.nome }}
+        </div>
+      }
+    </div>
+
+    @if (campingSelecionado().tipo === 'camping') {
+      @if (mensagemCheckin()) {
+        <div
+          class="checkin-message"
+          [class.success]="tipoMensagem() === 'sucesso'"
+          [class.error]="tipoMensagem() === 'erro'"
+        >
+          {{ mensagemCheckin() }}
+        </div>
+      }
+      <app-avaliacoes-usuarios [campingId]="campingSelecionado().id"></app-avaliacoes-usuarios>
+    }
+  </div>
+
+  @if (campingSelecionado().tipo === 'camping' && !checkinRealizado()) {
+    @if (podeFazerCheckin()) {
+      <button
+        class="btn-checkin"
+        [disabled]="verificandoCheckin()"
+        (click)="fazerCheckin()"
+      >
+        {{ verificandoCheckin() ? 'Verificando...' : 'Fazer Check-in' }}
+      </button>
+    } @else {
+      <p class="checkin-info">
+        Voce precisa estar a menos de 250 metros do camping para fazer check-in.
+      </p>
+    }
+  }
+
+  @if (checkinRealizado()) {
+    <app-chat-camping [campingId]="campingSelecionado().id" />
+  }
 </div>

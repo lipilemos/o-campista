@@ -7,7 +7,7 @@ export interface Presente {
     fotoUrl: string;
     latitude: number;
     longitude: number;
-    usuarioCriadorId: number;
+    usuarioCriadorId: string;
     estaDisponivel: boolean;
     criadoEm: Date;
 }

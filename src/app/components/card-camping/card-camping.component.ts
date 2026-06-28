@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { Camping } from '../../core/models/camping.model';
 import { CheckinRequestModel, CheckinResponseModel } from '../../core/models/checkin.model';
 import { AuthService } from '../../core/services/auth.service';
@@ -6,13 +6,13 @@ import { CheckinService } from '../../core/services/checkin.service';
 import { MapStateService } from '../../core/services/map-state.service';
 import { Util } from '../../core/Utils.ts/Util';
 import { AvaliacoesUsuariosComponent } from '../avaliacoes-usuarios/avaliacoes-usuarios.component';
+import { ChatCampingComponent } from '../chat-camping/chat-camping.component';
 
 @Component({
   selector: 'app-card-camping',
-  imports: [AvaliacoesUsuariosComponent],
+  imports: [AvaliacoesUsuariosComponent, ChatCampingComponent],
   templateUrl: './card-camping.component.html',
   styleUrl: './card-camping.component.scss',
-
 })
 export class CardCampingComponent {
   private authService = inject(AuthService);
@@ -26,6 +26,45 @@ export class CardCampingComponent {
   mensagemCheckin = signal('');
   tipoMensagem = signal<'sucesso' | 'erro' | ''>('');
   checkinRealizado = signal(false);
+  verificandoCheckin = signal(false);
+
+  constructor() {
+    effect(() => {
+      const camping = this.campingSelecionado();
+      if (camping?.tipo === 'camping') {
+        this.verificarCheckinHoje(camping.id);
+      }
+    });
+  }
+
+  private verificarCheckinHoje(campingId: number) {
+    const usuario = this.authService.getUser();
+    if (!usuario) return;
+
+    this.verificandoCheckin.set(true);
+    this.checkinRealizado.set(false);
+    this.mensagemCheckin.set('');
+    this.tipoMensagem.set('');
+
+    const hoje = new Date().toISOString().split('T')[0];
+
+    this.checkinService.obterHistorico(usuario.id).subscribe({
+      next: (historico) => {
+        const checkinHoje = historico.some(
+          (h) => h.campingId === campingId && h.dataCriacao?.split('T')[0] === hoje,
+        );
+        if (checkinHoje) {
+          this.checkinRealizado.set(true);
+          this.tipoMensagem.set('sucesso');
+          this.mensagemCheckin.set('Você já realizou check-in neste camping hoje.');
+        }
+        this.verificandoCheckin.set(false);
+      },
+      error: () => {
+        this.verificandoCheckin.set(false);
+      },
+    });
+  }
 
   fecharCampingInfo() {
     this.mapState.campingAberto.set(false);
@@ -71,13 +110,14 @@ export class CardCampingComponent {
       next: (response: CheckinResponseModel) => {
         this.checkinRealizado.set(true);
         this.tipoMensagem.set('sucesso');
-        this.mensagemCheckin.set(
-          response?.mensagem ?? 'Check-in realizado com sucesso! +100 XP',
-        );
+        this.mensagemCheckin.set(response?.mensagem ?? 'Check-in realizado com sucesso! +100 XP');
       },
 
       error: (err: { error?: { mensagem?: string; erro?: string }; message?: string }) => {
         this.tipoMensagem.set('erro');
+        if (err?.error?.mensagem === 'Você já realizou check-in neste camping hoje.') {
+          this.checkinRealizado.set(true);
+        }
         this.mensagemCheckin.set(
           err?.error?.mensagem ?? err?.error?.erro ?? err?.message ?? 'Erro ao realizar check-in.',
         );

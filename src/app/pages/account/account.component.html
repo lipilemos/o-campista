@@ -60,7 +60,7 @@
 
     <div class="section">
         <h2>🏆 Conquistas</h2>
-        <div class="cards scrollable-cards">
+        <div class="cards scrollable-cards custom-scrollbar">
             @for(
             conquista of usuario.conquistas.slice().reverse();
             track conquista.id
@@ -82,7 +82,7 @@
     <hr />
     <div class="section">
         <h2>🎁 Presentes</h2>
-        <div class="cards scrollable-cards">
+        <div class="cards scrollable-cards custom-scrollbar">
             @for (
             presente of usuario.presentes.slice().reverse();
             track presente.id
@@ -124,13 +124,11 @@
     </div>
     @if (presenteSelecionado) {
 
-    <div class="profile-gift-overlay">
+    <div class="profile-gift-overlay overlay-backdrop">
 
         <div class="profile-gift-view">
 
-            <button class="profile-gift-close" (click)="fecharPresente()">
-                ✖
-            </button>
+            <button class="btn-close-round btn-close-round--light profile-gift-close" (click)="fecharPresente()">✕</button>
 
 
             @if (presenteSelecionado.fotoUrl) {
@@ -177,7 +175,7 @@
     }
 
     @if (mostrarHistorico) {
-        <div class="history-overlay-backdrop" (click)="fecharHistoricoCheckins()">
+        <div class="history-overlay-backdrop overlay-backdrop" (click)="fecharHistoricoCheckins()">
             <div class="history-overlay-container" (click)="$event.stopPropagation()">
                 <app-checkin-history [historico]="historicoCheckins" [campingSelecionado]="campingSelecionado" [checkinsAvaliados]="checkinsAvaliados" (selecionarCampingEvent)="onSelecionarCamping($event)" (fecharDetalhesEvent)="onFecharDetalhes()" (fecharHistoricoEvent)="fecharHistoricoCheckins()" (avaliacaoSalvaEvent)="onAvaliacaoSalva()"></app-checkin-history>
             </div>

@@ -1,102 +1,20 @@
-<div class="home">
+<h1>Bem-vindo ao O Campista</h1>
+<p>
+    Seu portal de aventuras e campings.
+</p>
 
-    <div class="banner">
+@if (weather) {
 
-        <button class="menu-toggle" [class.hidden]="mapState.campingAberto()" (click)="toggleMenu()">
-            ☰
-        </button>
+<app-weather-card [weather]="weather">
+</app-weather-card>
 
-    </div>
+}
 
-    <div class="overlay" [class.show]="menuOpen" (click)="toggleMenu()">
-    </div>
+<div style="margin: var(--space-4) 0;"></div>
 
-    <div class="layout">
+@if (previsao3Dias.length) {
 
-        <aside class="sidebar" [class.open]="menuOpen">
-            <div class="logo"></div>
-            <div class="usuario" *ngIf="usuario">
-                @if (usuario.fotoPerfil) {
-                <img class="avatar avatar-img" [src]="usuario.fotoPerfil" [alt]="usuario.nome" />
-                } @else {
-                <div class="avatar">
-                    {{ usuario.nome.charAt(0).toUpperCase() }}
-                </div>
-                }
-                <div class="usuario-info">
-                    <span class="nome">
-                        {{ usuario.nome }}
-                    </span>
-                    <small class="nivel">
-                        Nível {{ usuario.nivel }}
-                    </small>
-                </div>
-            </div>
-            <nav class="menu">
-                <button class="menu-item" [class.active]="telaAtual === 'home'" (click)="abrirHome()">
-                    Home
-                </button>
-                <button class="menu-item" [class.active]="telaAtual === 'account'" (click)="abrirMinhaConta()">
-                    Minha Conta
-                </button>
-                <button class="menu-item" [class.active]="telaAtual === 'mapa'" (click)="abrirMapa()">
-                    Mapa
-                </button>
-                <button class="menu-item" [class.active]="telaAtual === 'checklist'" (click)="abrirChecklist()">
-                    Checklist
-                </button>
-            </nav>
-            <button class="logout-btn" (click)="logout()">
-                Sair
-            </button>
-        </aside>
+<app-weather-card-forecast [previsoes]="previsao3Dias">
+</app-weather-card-forecast>
 
-        <main class="main-content">
-            <div class="content">
-
-                @if (telaAtual === 'home') {
-
-                <h1>Bem-vindo ao O Campista 🏕️</h1>
-                <p>
-                    Seu portal de aventuras e campings.
-                </p>
-                @if (weather) {
-
-                <app-weather-card [weather]="weather">
-                </app-weather-card>
-
-                }
-                <div style="margin: var(--space-4) 0;"></div>
-                @if (previsao3Dias.length) {
-
-                <app-weather-card-forecast [previsoes]="previsao3Dias">
-                </app-weather-card-forecast>
-
-                }
-                }
-
-                @if (telaAtual === 'mapa') {
-
-                <app-map />
-
-                }
-
-                @if (telaAtual === 'checklist') {
-
-                <h2>Checklist</h2>
-                <app-checklist />
-
-                }
-                @if (telaAtual === 'account') {
-
-                <app-account />
-
-                }
-
-            </div>
-
-        </main>
-
-    </div>
-
-</div>
+}
