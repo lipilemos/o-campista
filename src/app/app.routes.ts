@@ -73,13 +73,6 @@ export const routes: Routes = [
                 (m) => m.ChatJoinGroupComponent,
               ),
           },
-          {
-            path: ':salaId',
-            loadComponent: () =>
-              import('./pages/chat/chat-conversation/chat-conversation.component').then(
-                (m) => m.ChatConversationComponent,
-              ),
-          },
         ],
       },
       {
@@ -93,6 +86,14 @@ export const routes: Routes = [
           import('./pages/gift/gift.component').then((m) => m.GiftComponent),
       },
     ],
+  },
+  {
+    path: 'chat/:salaId',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/chat/chat-conversation/chat-conversation.component').then(
+        (m) => m.ChatConversationComponent,
+      ),
   },
   {
     path: '**',
