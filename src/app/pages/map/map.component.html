@@ -36,17 +36,38 @@
     }
     @else {
     <div class="filtros">
-        <input type="text" placeholder="Buscar cidade, estado ou camping..." [(ngModel)]="busca"
-            (input)="aplicarFiltros()">
-        <select [(ngModel)]="categoriaSelecionada" (change)="aplicarFiltros()">
-            <option value="">Todas categorias</option>
-            <option value="camping">🏕️ Camping</option>
-            <option value="cachoeira">💧 Cachoeira</option>
-            <option value="trilha">🥾 Trilha</option>
-            <option value="mirante">🌄 Mirante</option>
-            <option value="pesca">🎣 Pesca</option>
-            <option value="presente">🎁 Presentes</option>
-        </select>
+        <div class="filtros-linha">
+            <input type="text" placeholder="Buscar cidade, estado ou camping..." [(ngModel)]="busca"
+                (input)="aplicarFiltros()">
+            <select [(ngModel)]="categoriaSelecionada" (change)="aplicarFiltrosImediato()">
+                <option value="">Todas categorias</option>
+                <option value="camping">🏕️ Camping</option>
+                <option value="cachoeira">💧 Cachoeira</option>
+                <option value="trilha">🥾 Trilha</option>
+                <option value="mirante">🌄 Mirante</option>
+                <option value="pesca">🎣 Pesca</option>
+                <option value="presente">🎁 Presentes</option>
+            </select>
+            <select [(ngModel)]="recursoSelectValue" (change)="onRecursoSelect(recursoSelectValue)"
+                aria-label="Filtrar por recursos">
+                <option value="">Filtrar recursos</option>
+                @for (recurso of recursosDisponiveis; track recurso) {
+                <option [value]="recurso">
+                    {{ recursosSelecionados.has(recurso) ? '✓ ' : '' }}{{ recurso }}
+                </option>
+                }
+            </select>
+        </div>
+        @if (recursosSelecionados.size > 0) {
+        <div class="tags-recursos">
+            @for (recurso of recursosSelecionados; track recurso) {
+            <span class="tag-recurso">
+                {{ recurso }}
+                <button (click)="removerRecurso(recurso)" aria-label="Remover filtro {{ recurso }}">✕</button>
+            </span>
+            }
+        </div>
+        }
     </div>
 
     <div #mapContainer class="map-container">
