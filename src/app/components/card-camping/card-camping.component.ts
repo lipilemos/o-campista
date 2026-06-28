@@ -4,6 +4,7 @@ import { CheckinRequestModel, CheckinResponseModel } from '../../core/models/che
 import { AuthService } from '../../core/services/auth.service';
 import { CheckinService } from '../../core/services/checkin.service';
 import { MapStateService } from '../../core/services/map-state.service';
+import { UsuarioService } from '../../core/services/usuario.service';
 import { Util } from '../../core/Utils.ts/Util';
 import { AvaliacoesUsuariosComponent } from '../avaliacoes-usuarios/avaliacoes-usuarios.component';
 import { ChatCampingComponent } from '../chat-camping/chat-camping.component';
@@ -18,6 +19,7 @@ export class CardCampingComponent {
   private authService = inject(AuthService);
   private checkinService = inject(CheckinService);
   private mapState = inject(MapStateService);
+  private usuarioService = inject(UsuarioService);
 
   campingSelecionado = input.required<Camping>();
   minhaPosicao = input<google.maps.LatLngLiteral>();
@@ -137,6 +139,7 @@ export class CardCampingComponent {
         this.checkinRealizado.set(true);
         this.tipoMensagem.set('sucesso');
         this.mensagemCheckin.set(response?.mensagem ?? 'Check-in realizado com sucesso! +100 XP');
+        this.usuarioService.verificarNovasConquistas();
       },
 
       error: (err: { error?: { mensagem?: string; erro?: string }; message?: string }) => {

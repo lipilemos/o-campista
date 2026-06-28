@@ -5,6 +5,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { GiftService } from '../../core/services/gift.service';
 import { MapStateService } from '../../core/services/map-state.service';
 import { ToastService } from '../../core/services/toast.service';
+import { UsuarioService } from '../../core/services/usuario.service';
 import { Util } from '../../core/Utils.ts/Util';
 
 @Component({
@@ -18,6 +19,7 @@ export class CardGiftComponent {
   private giftService = inject(GiftService);
   private mapState = inject(MapStateService);
   private toast = inject(ToastService);
+  private usuarioService = inject(UsuarioService);
 
   presenteSelecionado = input.required<Presente>();
   minhaPosicao = input<google.maps.LatLngLiteral>();
@@ -79,6 +81,7 @@ export class CardGiftComponent {
       next: () => {
         this.toast.success('🎉 Você encontrou um presente! +XP');
         presente.estaDisponivel = false;
+        this.usuarioService.verificarNovasConquistas();
       },
 
       error: (erro: { error?: { mensagem?: string } }) => {
