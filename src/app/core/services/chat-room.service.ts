@@ -39,6 +39,10 @@ export class ChatRoomService {
   private readonly _podeEnviar = signal(true);
   readonly podeEnviar = this._podeEnviar.asReadonly();
 
+  private readonly _digitando = signal('');
+  readonly digitando = this._digitando.asReadonly();
+  private digitandoTimeout: ReturnType<typeof setTimeout> | null = null;
+
   carregarSalas(): void {
     this._carregandoSalas.set(true);
     this.http.get<SalaChat[]>(`${environment.apiUrl}/chat/salas`).subscribe({
@@ -65,6 +69,13 @@ export class ChatRoomService {
 
     this.connection.on('ReceberMensagem', (mensagem: MensagemSalaChat) => {
       this._mensagens.update((msgs) => [...msgs, mensagem]);
+      this._digitando.set('');
+    });
+
+    this.connection.on('UsuarioDigitando', (nomeUsuario: string) => {
+      this._digitando.set(nomeUsuario);
+      if (this.digitandoTimeout) clearTimeout(this.digitandoTimeout);
+      this.digitandoTimeout = setTimeout(() => this._digitando.set(''), 3000);
     });
 
     this.connection.onreconnecting(() => this._conectado.set(false));
@@ -90,11 +101,17 @@ export class ChatRoomService {
     this._mensagens.set([]);
     this._conectado.set(false);
     this._podeEnviar.set(true);
+    this._digitando.set('');
   }
 
   enviarMensagem(texto: string): void {
     if (!this.connection || !texto.trim()) return;
     this.connection.invoke('EnviarMensagem', texto.trim());
+  }
+
+  notificarDigitando(): void {
+    if (!this.connection) return;
+    this.connection.invoke('Digitando');
   }
 
   criarGrupo(request: CriarGrupoRequest): Observable<CriarGrupoResponse> {
@@ -113,6 +130,12 @@ export class ChatRoomService {
 
   obterMembros(salaId: number): Observable<MembroSala[]> {
     return this.http.get<MembroSala[]>(`${environment.apiUrl}/chat/grupos/${salaId}/membros`);
+  }
+
+  sairDoGrupo(salaId: number): Observable<{ mensagem: string }> {
+    return this.http.delete<{ mensagem: string }>(
+      `${environment.apiUrl}/chat/grupos/${salaId}/sair`,
+    );
   }
 
   private carregarMensagens(salaId: number): void {

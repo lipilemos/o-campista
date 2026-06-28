@@ -20,6 +20,14 @@ import {
   ChecklistService
 } from '../../core/services/checklist.service';
 
+import {
+  ConfirmDialogService
+} from '../../core/services/confirm-dialog.service';
+
+import {
+  ToastService
+} from '../../core/services/toast.service';
+
 @Component({
   selector: 'app-checklist',
   standalone: true,
@@ -35,6 +43,12 @@ export class ChecklistComponent
 
   private checklistService =
     inject(ChecklistService);
+
+  private confirmDialog =
+    inject(ConfirmDialogService);
+
+  private toast =
+    inject(ToastService);
 
   checklists: Checklist[] = [];
   totalItens = 0;
@@ -153,15 +167,21 @@ export class ChecklistComponent
   }
   confirmarRestauracao(): void {
 
-    const confirmar =
-      confirm(
-        'Deseja realmente restaurar todo o checklist?'
-      );
-
-    if (!confirmar)
-      return;
-
-    this.restaurarChecklist();
+    this.confirmDialog
+      .confirmar({
+        titulo: 'Restaurar checklist',
+        mensagem:
+          'Deseja realmente restaurar todo o checklist?',
+        textoBotaoConfirmar: 'Restaurar',
+      })
+      .subscribe((confirmado) => {
+        if (confirmado) {
+          this.restaurarChecklist();
+          this.toast.success(
+            'Checklist restaurado com sucesso!'
+          );
+        }
+      });
   }
 
   restaurarChecklist(): void {

@@ -1,10 +1,19 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, throwError } from 'rxjs';
+import { catchError, switchMap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../services/auth.service';
 
-const AUTH_URLS = ['/auth/login', '/auth/register', '/auth/google'];
+const SKIP_REFRESH_URLS = [
+  '/auth/login',
+  '/auth/register',
+  '/auth/google',
+  '/auth/refresh',
+  '/auth/forgot-password',
+  '/auth/reset-password',
+];
+
+let isRefreshing = false;
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
@@ -17,10 +26,31 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(request).pipe(
     catchError((error: HttpErrorResponse) => {
-      const isAuthUrl = AUTH_URLS.some((url) => req.url.includes(url));
-      if (error.status === 401 && !isAuthUrl) {
+      const shouldSkip = SKIP_REFRESH_URLS.some((url) => req.url.includes(url));
+
+      if (error.status === 401 && !shouldSkip && !isRefreshing) {
+        isRefreshing = true;
+
+        return authService.refreshToken().pipe(
+          switchMap((user) => {
+            isRefreshing = false;
+            const retryReq = req.clone({
+              setHeaders: { Authorization: `Bearer ${user.token}` },
+            });
+            return next(retryReq);
+          }),
+          catchError((refreshError) => {
+            isRefreshing = false;
+            authService.logout();
+            return throwError(() => refreshError);
+          }),
+        );
+      }
+
+      if (error.status === 401 && !shouldSkip) {
         authService.logout();
       }
+
       return throwError(() => error);
     }),
   );

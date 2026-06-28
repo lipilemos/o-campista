@@ -1,6 +1,6 @@
 {
   "name": "o-campista",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -11,6 +11,7 @@
   "private": true,
   "packageManager": "npm@10.9.8",
   "dependencies": {
+    "@angular/cdk": "^21.2.14",
     "@angular/common": "^21.2.14",
     "@angular/compiler": "^21.2.0",
     "@angular/core": "^21.2.0",

@@ -15,6 +15,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./pages/reset-password/reset-password.component').then(
+        (m) => m.ResetPasswordComponent,
+      ),
+  },
+  {
     path: 'register',
     loadComponent: () =>
       import('./pages/register/register.component').then((m) => m.RegisterComponent),
@@ -73,13 +80,6 @@ export const routes: Routes = [
                 (m) => m.ChatJoinGroupComponent,
               ),
           },
-          {
-            path: ':salaId',
-            loadComponent: () =>
-              import('./pages/chat/chat-conversation/chat-conversation.component').then(
-                (m) => m.ChatConversationComponent,
-              ),
-          },
         ],
       },
       {
@@ -95,7 +95,16 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'chat/:salaId',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/chat/chat-conversation/chat-conversation.component').then(
+        (m) => m.ChatConversationComponent,
+      ),
+  },
+  {
     path: '**',
-    redirectTo: '',
+    loadComponent: () =>
+      import('./pages/not-found/not-found.component').then((m) => m.NotFoundComponent),
   },
 ];

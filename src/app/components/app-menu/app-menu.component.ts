@@ -6,6 +6,8 @@ import { UsuarioLogado } from '../../core/models/user.model';
 import { AuthService } from '../../core/services/auth.service';
 import { ChatNotificationService } from '../../core/services/chat-notification.service';
 import { MapStateService } from '../../core/services/map-state.service';
+import { ThemeService } from '../../core/services/theme.service';
+import { APP_VERSION } from '../../core/version';
 
 @Component({
   selector: 'app-menu',
@@ -19,7 +21,9 @@ export class AppMenuComponent {
   private authService = inject(AuthService);
   protected mapState = inject(MapStateService);
   protected chatNotification = inject(ChatNotificationService);
+  protected themeService = inject(ThemeService);
 
+  protected appVersion = APP_VERSION;
   menuOpen = signal(false);
   usuario = signal<UsuarioLogado | null>(null);
   private currentUrl = signal(this.router.url);

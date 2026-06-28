@@ -4,6 +4,7 @@ import { Avaliacao } from '../../core/models/avaliacao.model';
 import { Camping } from '../../core/models/camping.model';
 import { AuthService } from '../../core/services/auth.service';
 import { CampingService } from '../../core/services/camping.service';
+import { UsuarioService } from '../../core/services/usuario.service';
 import { AvaliacoesUsuariosComponent } from '../avaliacoes-usuarios/avaliacoes-usuarios.component';
 
 const XP_ESTRELAS = 100;
@@ -32,6 +33,7 @@ export class FormularioAvaliacaoComponent implements OnChanges {
 
   private campingService = inject(CampingService);
   private authService = inject(AuthService);
+  private usuarioService = inject(UsuarioService);
 
   readonly estrelas = [1, 2, 3, 4, 5];
 
@@ -104,6 +106,7 @@ export class FormularioAvaliacaoComponent implements OnChanges {
           this.carregando = false;
           this.minhaAvaliacao = resultado;
           this.avaliacaoSalva.emit(resultado);
+          this.usuarioService.verificarNovasConquistas();
         },
         error: (error) => {
           this.carregando = false;

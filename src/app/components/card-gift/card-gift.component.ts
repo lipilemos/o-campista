@@ -4,6 +4,8 @@ import { Presente } from '../../core/models/presente.model';
 import { AuthService } from '../../core/services/auth.service';
 import { GiftService } from '../../core/services/gift.service';
 import { MapStateService } from '../../core/services/map-state.service';
+import { ToastService } from '../../core/services/toast.service';
+import { UsuarioService } from '../../core/services/usuario.service';
 import { Util } from '../../core/Utils.ts/Util';
 
 @Component({
@@ -16,6 +18,8 @@ export class CardGiftComponent {
   private authService = inject(AuthService);
   private giftService = inject(GiftService);
   private mapState = inject(MapStateService);
+  private toast = inject(ToastService);
+  private usuarioService = inject(UsuarioService);
 
   presenteSelecionado = input.required<Presente>();
   minhaPosicao = input<google.maps.LatLngLiteral>();
@@ -64,7 +68,7 @@ export class CardGiftComponent {
 
   copiarCodigo() {
     navigator.clipboard.writeText(this.presenteSelecionado().codigoResgate);
-    alert('Código copiado!');
+    this.toast.success('Código copiado!');
   }
 
   resgatarPresente() {
@@ -75,12 +79,13 @@ export class CardGiftComponent {
 
     this.giftService.resgatar(presente.id, usuario.id.toString()).subscribe({
       next: () => {
-        alert('🎉 Você encontrou um presente! +XP');
+        this.toast.success('🎉 Você encontrou um presente! +XP');
         presente.estaDisponivel = false;
+        this.usuarioService.verificarNovasConquistas();
       },
 
       error: (erro: { error?: { mensagem?: string } }) => {
-        alert(erro.error?.mensagem ?? 'Erro ao resgatar presente');
+        this.toast.error(erro.error?.mensagem ?? 'Erro ao resgatar presente');
       },
     });
   }
