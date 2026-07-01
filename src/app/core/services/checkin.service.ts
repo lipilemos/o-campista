@@ -23,8 +23,6 @@ export class CheckinService {
   }
 
   contarCheckinsRecentes(campingId: number): Observable<{ quantidade: number }> {
-    return this.http.get<{ quantidade: number }>(
-      `${this.apiUrl}/camping/${campingId}/recentes`,
-    );
+    return this.http.get<{ quantidade: number }>(`${this.apiUrl}/camping/${campingId}/recentes`);
   }
 }

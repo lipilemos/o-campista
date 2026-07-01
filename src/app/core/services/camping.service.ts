@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, catchError, from, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Avaliacao, AvaliacaoComUsuario } from '../models/avaliacao.model';
+import { CampingFoto } from '../models/camping-foto.model';
 import { Camping } from '../models/camping.model';
 import { OfflineStorageService } from './offline-storage.service';
 
@@ -43,21 +44,28 @@ export class CampingService {
     );
   }
 
-  obterAvaliacoesCamping(campingId: number): Observable<AvaliacaoComUsuario[]> {
-    return this.http.get<AvaliacaoComUsuario[]>(
-      `${this.apiUrl}/camping/${campingId}/avaliacoes`,
-    );
+  obterFotos(campingId: number): Observable<CampingFoto[]> {
+    return this.http.get<CampingFoto[]>(`${this.apiUrl}/camping/${campingId}/fotos`);
   }
 
-  criarAvaliacao(avaliacao: Avaliacao): Observable<Avaliacao> {
-    return this.http.post<Avaliacao>(`${environment.apiUrl}/avaliacao`, avaliacao);
+  obterAvaliacoesCamping(campingId: number): Observable<AvaliacaoComUsuario[]> {
+    return this.http.get<AvaliacaoComUsuario[]>(`${this.apiUrl}/camping/${campingId}/avaliacoes`);
+  }
+
+  criarAvaliacao(avaliacao: Avaliacao, foto?: File): Observable<Avaliacao> {
+    const formData = new FormData();
+    formData.append('usuarioId', avaliacao.usuarioId);
+    formData.append('campingId', (avaliacao.campingId ?? 0).toString());
+    formData.append('checkinId', (avaliacao.checkinId ?? 0).toString());
+    formData.append('nota', avaliacao.nota.toString());
+    formData.append('comentario', avaliacao.comentario);
+    formData.append('xpGanho', (avaliacao.xpGanho ?? 0).toString());
+    if (foto) formData.append('foto', foto);
+    return this.http.post<Avaliacao>(`${environment.apiUrl}/avaliacao`, formData);
   }
 
   atualizarAvaliacao(avaliacaoId: number, avaliacao: Avaliacao): Observable<Avaliacao> {
-    return this.http.put<Avaliacao>(
-      `${this.apiUrl}/camping/avaliacoes/${avaliacaoId}`,
-      avaliacao,
-    );
+    return this.http.put<Avaliacao>(`${this.apiUrl}/camping/avaliacoes/${avaliacaoId}`, avaliacao);
   }
 
   obterAvaliacaoUsuario(

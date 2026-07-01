@@ -1,53 +1,29 @@
-import {
-  Component,
-  OnInit,
-  inject
-} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
-import {
-  CommonModule
-} from '@angular/common';
+import { CommonModule } from '@angular/common';
 
-import {
-  FormsModule
-} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
-import {
-  Checklist
-} from '../../core/models/checklist.model';
+import { Checklist } from '../../core/models/checklist.model';
 
-import {
-  ChecklistService
-} from '../../core/services/checklist.service';
+import { ChecklistService } from '../../core/services/checklist.service';
 
-import {
-  ConfirmDialogService
-} from '../../core/services/confirm-dialog.service';
+import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 
-import {
-  ToastService
-} from '../../core/services/toast.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-checklist',
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
+  imports: [CommonModule, FormsModule],
   templateUrl: './checklist.component.html',
-  styleUrls: ['./checklist.component.scss']
+  styleUrls: ['./checklist.component.scss'],
 })
-export class ChecklistComponent
-  implements OnInit {
+export class ChecklistComponent implements OnInit {
+  private checklistService = inject(ChecklistService);
 
-  private checklistService =
-    inject(ChecklistService);
+  private confirmDialog = inject(ConfirmDialogService);
 
-  private confirmDialog =
-    inject(ConfirmDialogService);
-
-  private toast =
-    inject(ToastService);
+  private toast = inject(ToastService);
 
   checklists: Checklist[] = [];
   totalItens = 0;
@@ -56,153 +32,94 @@ export class ChecklistComponent
   totalCategorias = 0;
 
   ngOnInit(): void {
-
-    this.checklists =
-      this.checklistService.listar();
+    this.checklists = this.checklistService.listar();
 
     this.calcularProgresso();
   }
 
   toggleItem(): void {
-
     this.calcularProgresso();
 
     if (this.checklistService.salvar) {
-
-      this.checklistService.salvar(
-        this.checklists
-      );
+      this.checklistService.salvar(this.checklists);
     }
   }
 
   private calcularProgresso(): void {
-
     this.totalItens = 0;
     this.totalConcluidos = 0;
     this.totalCategorias = 0;
 
-    this.checklists.forEach(checklist => {
+    this.checklists.forEach((checklist) => {
+      this.totalCategorias += checklist.categorias.length;
 
-      this.totalCategorias +=
-        checklist.categorias.length;
+      const itens = checklist.categorias.flatMap((categoria) => categoria.itens);
 
-      const itens =
-        checklist.categorias
-          .flatMap(categoria => categoria.itens);
+      const concluidos = itens.filter((item) => item.concluido).length;
 
-      const concluidos =
-        itens.filter(
-          item => item.concluido
-        ).length;
+      checklist.progresso = itens.length > 0 ? Math.round((concluidos * 100) / itens.length) : 0;
 
-      checklist.progresso =
-        itens.length > 0
-          ? Math.round(
-            (concluidos * 100) /
-            itens.length
-          )
-          : 0;
+      this.totalItens += itens.length;
 
-      this.totalItens +=
-        itens.length;
-
-      this.totalConcluidos +=
-        concluidos;
+      this.totalConcluidos += concluidos;
     });
 
     this.progressoGeral =
-      this.totalItens > 0
-        ? Math.round(
-          (this.totalConcluidos * 100) /
-          this.totalItens
-        )
-        : 0;
+      this.totalItens > 0 ? Math.round((this.totalConcluidos * 100) / this.totalItens) : 0;
   }
 
-  obterQuantidadeItens(
-    checklist: Checklist
-  ): number {
+  obterQuantidadeItens(checklist: Checklist): number {
+    return checklist.categorias.flatMap((categoria) => categoria.itens).length;
+  }
 
+  obterQuantidadeConcluidos(checklist: Checklist): number {
     return checklist.categorias
-      .flatMap(categoria => categoria.itens)
-      .length;
+      .flatMap((categoria) => categoria.itens)
+      .filter((item) => item.concluido).length;
   }
 
-  obterQuantidadeConcluidos(
-    checklist: Checklist
-  ): number {
-
-    return checklist.categorias
-      .flatMap(categoria => categoria.itens)
-      .filter(item => item.concluido)
-      .length;
-  }
-
-  obterQuantidadeCategorias(
-    checklist: Checklist
-  ): number {
-
+  obterQuantidadeCategorias(checklist: Checklist): number {
     return checklist.categorias.length;
   }
 
-  checklistConcluido(
-    checklist: Checklist
-  ): boolean {
-
+  checklistConcluido(checklist: Checklist): boolean {
     return checklist.progresso === 100;
   }
 
   obterTextoProgresso(): string {
-
     return `${this.totalConcluidos}/${this.totalItens}`;
   }
   resetarChecklist(): void {
-
-    this.checklists =
-      this.checklistService
-        .restaurarPadrao();
+    this.checklists = this.checklistService.restaurarPadrao();
 
     this.calcularProgresso();
   }
   confirmarRestauracao(): void {
-
     this.confirmDialog
       .confirmar({
         titulo: 'Restaurar checklist',
-        mensagem:
-          'Deseja realmente restaurar todo o checklist?',
+        mensagem: 'Deseja realmente restaurar todo o checklist?',
         textoBotaoConfirmar: 'Restaurar',
       })
       .subscribe((confirmado) => {
         if (confirmado) {
           this.restaurarChecklist();
-          this.toast.success(
-            'Checklist restaurado com sucesso!'
-          );
+          this.toast.success('Checklist restaurado com sucesso!');
         }
       });
   }
 
   restaurarChecklist(): void {
-
-    this.checklists.forEach(checklist => {
-
-      checklist.categorias.forEach(categoria => {
-
-        categoria.itens.forEach(item => {
-
+    this.checklists.forEach((checklist) => {
+      checklist.categorias.forEach((categoria) => {
+        categoria.itens.forEach((item) => {
           item.concluido = false;
-
         });
-
       });
-
     });
 
     this.calcularProgresso();
 
-    this.checklistService.salvar(
-      this.checklists
-    );
+    this.checklistService.salvar(this.checklists);
   }
 }

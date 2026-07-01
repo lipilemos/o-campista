@@ -1,8 +1,7 @@
 export interface ChecklistItem {
+  id: number;
 
-    id: number;
+  descricao: string;
 
-    descricao: string;
-
-    concluido: boolean;
+  concluido: boolean;
 }

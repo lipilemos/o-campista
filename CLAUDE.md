@@ -60,33 +60,35 @@ src/app/
 
 ## Rotas
 
-| Rota | Componente | Protegida |
-|------|-----------|-----------|
-| `/` | LoginComponent | Não |
-| `/register` | RegisterComponent | Não |
-| `/forgot-password` | ForgotPasswordComponent | Não |
-| `/reset-password` | ResetPasswordComponent | Não |
-| `/home` | HomeComponent | Sim (authGuard) |
-| `/account` | AccountComponent | Sim (authGuard) |
-| `/account/checkin-history` | CheckinHistoryComponent | Sim (authGuard) |
-| `/mapa` | MapComponent | Sim (authGuard) |
-| `/chat` | ChatComponent (container) | Sim (authGuard) |
-| `/chat` (child `''`) | ChatListComponent | Sim (authGuard) |
-| `/chat/criar-grupo` | ChatCreateGroupComponent | Sim (authGuard) |
-| `/chat/entrar-grupo` | ChatJoinGroupComponent | Sim (authGuard) |
-| `/chat/entrar-grupo/:codigo` | ChatJoinGroupComponent | Sim (authGuard) |
-| `/chat/:salaId` | ChatConversationComponent | Sim (authGuard) |
-| `/checklist` | ChecklistComponent | Sim (authGuard) |
-| `/gift` | GiftComponent | Sim (authGuard) |
-| `**` | NotFoundComponent (404) | — |
+| Rota                         | Componente                | Protegida       |
+| ---------------------------- | ------------------------- | --------------- |
+| `/`                          | LoginComponent            | Não             |
+| `/register`                  | RegisterComponent         | Não             |
+| `/forgot-password`           | ForgotPasswordComponent   | Não             |
+| `/reset-password`            | ResetPasswordComponent    | Não             |
+| `/home`                      | HomeComponent             | Sim (authGuard) |
+| `/account`                   | AccountComponent          | Sim (authGuard) |
+| `/account/checkin-history`   | CheckinHistoryComponent   | Sim (authGuard) |
+| `/mapa`                      | MapComponent              | Sim (authGuard) |
+| `/chat`                      | ChatComponent (container) | Sim (authGuard) |
+| `/chat` (child `''`)         | ChatListComponent         | Sim (authGuard) |
+| `/chat/criar-grupo`          | ChatCreateGroupComponent  | Sim (authGuard) |
+| `/chat/entrar-grupo`         | ChatJoinGroupComponent    | Sim (authGuard) |
+| `/chat/entrar-grupo/:codigo` | ChatJoinGroupComponent    | Sim (authGuard) |
+| `/chat/:salaId`              | ChatConversationComponent | Sim (authGuard) |
+| `/checklist`                 | ChecklistComponent        | Sim (authGuard) |
+| `/gift`                      | GiftComponent             | Sim (authGuard) |
+| `**`                         | NotFoundComponent (404)   | —               |
 
 ## Convenções de Código
 
 ### TypeScript
+
 - Strict type checking ativado — nunca usar `any`, preferir `unknown`
 - Preferir inferência de tipo quando óbvio
 
 ### Angular
+
 - Sempre standalone components (não usar NgModules). Não setar `standalone: true` — é o padrão no Angular 21+
 - `inject()` ao invés de injeção por construtor
 - `input()` e `output()` ao invés de decorators `@Input`/`@Output`
@@ -103,11 +105,13 @@ src/app/
 - Async pipe para observables nos templates
 
 ### Acessibilidade
+
 - WCAG AA mínimo obrigatório
 - Deve passar todos os checks AXE
 - Gerenciamento de foco, contraste de cor e atributos ARIA
 
 ### Formatação (Prettier)
+
 - `printWidth: 100`
 - `singleQuote: true`
 - Parser `angular` para arquivos `.html`
@@ -116,27 +120,27 @@ src/app/
 
 Base URL configurada em `src/environments/environment.ts` (`environment.apiUrl`).
 
-| Serviço | Responsabilidade | Endpoints |
-|---------|-----------------|-----------|
-| **AuthService** | Login, registro, login Google, logout, forgot/reset password, token refresh | `POST /auth/login`, `POST /auth/register`, `POST /auth/google`, `POST /auth/forgot-password`, `POST /auth/reset-password`, `POST /auth/refresh` |
-| **GoogleAuthService** | Inicialização do Google Identity Services e renderização do botão Google Sign-In | Sem endpoint — usa GIS client-side |
-| **UsuarioService** | Perfil do usuário, deleção de conta (LGPD) | `GET /usuarios/me/{id}`, `POST /usuarios/{id}/foto-perfil`, `DELETE /usuarios/{id}` |
-| **CampingService** | Listar campings, avaliações (CRUD) | `GET /mapa/campings`, `GET/POST/PUT /mapa/camping/{id}/avaliacoes`, `POST /avaliacao` |
-| **CheckinService** | Check-in e histórico | `POST /checkin`, `GET /checkin/historico/{usuarioId}` |
-| **GiftService** | Criar, buscar, resgatar e deletar presentes | `POST /presentes`, `GET /presentes?lat&lng`, `POST /presentes/resgatar`, `DELETE /presentes/{id}` |
-| **WeatherService** | Clima atual e previsão 5 dias | Open-Meteo API (externo), Nominatim (geocoding) |
-| **ChecklistService** | CRUD local de checklists | localStorage (`ocampista-checklists`) — sem backend |
-| **LocationService** | Geolocalização em tempo real | Browser Geolocation API |
-| **LoadingService** | Estado de loading global (Signal) | Sem endpoint — gerenciado pelo interceptor |
-| **MapStateService** | Estado do mapa (modais abertos) | Sem endpoint — Signals locais |
-| **ChatRoomService** | Salas de chat (camping + grupo), mensagens, digitando, SignalR | `GET /chat/salas`, `GET /chat/salas/{id}/mensagens`, `POST /chat/grupos`, `POST /chat/grupos/entrar`, `DELETE /chat/grupos/{salaId}/sair` |
-| **ChatNotificationService** | Contadores de mensagens não-lidas (badge sidebar) | `GET /chat/nao-lidas` + SignalR `/notificationHub` |
-| **ToastService** | Notificações toast globais (success, error, warning, info) | Sem endpoint — Signals locais |
-| **ConfirmDialogService** | Diálogo de confirmação reutilizável para ações destrutivas | Sem endpoint — Signals locais |
-| **ThemeService** | Alternância entre tema claro/escuro | Sem endpoint — localStorage (`ocampista-theme`) |
-| **I18nService** | Internacionalização com arquivos JSON | Sem endpoint — `public/i18n/{locale}.json` |
-| **ImageCompressorService** | Compressão de imagens antes de upload (canvas resize) | Sem endpoint — client-side |
-| **GlobalErrorHandler** | Captura global de erros não tratados | Sem endpoint — ErrorHandler do Angular |
+| Serviço                     | Responsabilidade                                                                 | Endpoints                                                                                                                                       |
+| --------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **AuthService**             | Login, registro, login Google, logout, forgot/reset password, token refresh      | `POST /auth/login`, `POST /auth/register`, `POST /auth/google`, `POST /auth/forgot-password`, `POST /auth/reset-password`, `POST /auth/refresh` |
+| **GoogleAuthService**       | Inicialização do Google Identity Services e renderização do botão Google Sign-In | Sem endpoint — usa GIS client-side                                                                                                              |
+| **UsuarioService**          | Perfil do usuário, deleção de conta (LGPD)                                       | `GET /usuarios/me/{id}`, `POST /usuarios/{id}/foto-perfil`, `DELETE /usuarios/{id}`                                                             |
+| **CampingService**          | Listar campings, avaliações (CRUD)                                               | `GET /mapa/campings`, `GET/POST/PUT /mapa/camping/{id}/avaliacoes`, `POST /avaliacao`                                                           |
+| **CheckinService**          | Check-in e histórico                                                             | `POST /checkin`, `GET /checkin/historico/{usuarioId}`                                                                                           |
+| **GiftService**             | Criar, buscar, resgatar e deletar presentes                                      | `POST /presentes`, `GET /presentes?lat&lng`, `POST /presentes/resgatar`, `DELETE /presentes/{id}`                                               |
+| **WeatherService**          | Clima atual e previsão 5 dias                                                    | Open-Meteo API (externo), Nominatim (geocoding)                                                                                                 |
+| **ChecklistService**        | CRUD local de checklists                                                         | localStorage (`ocampista-checklists`) — sem backend                                                                                             |
+| **LocationService**         | Geolocalização em tempo real                                                     | Browser Geolocation API                                                                                                                         |
+| **LoadingService**          | Estado de loading global (Signal)                                                | Sem endpoint — gerenciado pelo interceptor                                                                                                      |
+| **MapStateService**         | Estado do mapa (modais abertos)                                                  | Sem endpoint — Signals locais                                                                                                                   |
+| **ChatRoomService**         | Salas de chat (camping + grupo), mensagens, digitando, SignalR                   | `GET /chat/salas`, `GET /chat/salas/{id}/mensagens`, `POST /chat/grupos`, `POST /chat/grupos/entrar`, `DELETE /chat/grupos/{salaId}/sair`       |
+| **ChatNotificationService** | Contadores de mensagens não-lidas (badge sidebar)                                | `GET /chat/nao-lidas` + SignalR `/notificationHub`                                                                                              |
+| **ToastService**            | Notificações toast globais (success, error, warning, info)                       | Sem endpoint — Signals locais                                                                                                                   |
+| **ConfirmDialogService**    | Diálogo de confirmação reutilizável para ações destrutivas                       | Sem endpoint — Signals locais                                                                                                                   |
+| **ThemeService**            | Alternância entre tema claro/escuro                                              | Sem endpoint — localStorage (`ocampista-theme`)                                                                                                 |
+| **I18nService**             | Internacionalização com arquivos JSON                                            | Sem endpoint — `public/i18n/{locale}.json`                                                                                                      |
+| **ImageCompressorService**  | Compressão de imagens antes de upload (canvas resize)                            | Sem endpoint — client-side                                                                                                                      |
+| **GlobalErrorHandler**      | Captura global de erros não tratados                                             | Sem endpoint — ErrorHandler do Angular                                                                                                          |
 
 ## Modelos Principais
 
@@ -191,22 +195,23 @@ Definidos em `src/app/core/models/`:
 
 Estilos compartilhados entre componentes — usar nos templates para evitar duplicação:
 
-| Classe | Uso |
-|--------|-----|
-| `.btn-close-round` | Botão fechar redondo (40×40, fundo escuro, para overlays/imagens) |
-| `.btn-close-round--light` | Variante clara (fundo surface, borda, para painéis) |
-| `.btn-close-round--inverse` | Variante inversa (fundo branco translúcido, para headers escuros) |
-| `.overlay-backdrop` | Backdrop escuro com blur para modais/overlays |
-| `.glass-card` | Card com glassmorphism (blur, borda translúcida, animação cardAppear) |
-| `.auth-bg` | Fundo de tela cheia com gradient + imagem de background |
-| `.custom-scrollbar` | Scrollbar estilizada fina (6px, cor de borda) |
-| `.card-elevated` | Card branco elevado com sombra e borda sutil |
+| Classe                      | Uso                                                                   |
+| --------------------------- | --------------------------------------------------------------------- |
+| `.btn-close-round`          | Botão fechar redondo (40×40, fundo escuro, para overlays/imagens)     |
+| `.btn-close-round--light`   | Variante clara (fundo surface, borda, para painéis)                   |
+| `.btn-close-round--inverse` | Variante inversa (fundo branco translúcido, para headers escuros)     |
+| `.overlay-backdrop`         | Backdrop escuro com blur para modais/overlays                         |
+| `.glass-card`               | Card com glassmorphism (blur, borda translúcida, animação cardAppear) |
+| `.auth-bg`                  | Fundo de tela cheia com gradient + imagem de background               |
+| `.custom-scrollbar`         | Scrollbar estilizada fina (6px, cor de borda)                         |
+| `.card-elevated`            | Card branco elevado com sombra e borda sutil                          |
 
 Animações globais disponíveis: `fadeIn`, `cardAppear`, `slideUp`, `slideIn`
 
 ## Ambientes
 
 Configurados em `src/environments/`:
+
 - **environment.ts** — desenvolvimento (apiUrl via ngrok)
 - **environment.prod.ts** — produção (apiUrl a configurar)
 

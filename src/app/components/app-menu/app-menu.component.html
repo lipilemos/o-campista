@@ -1,89 +1,101 @@
 <div class="app-shell">
+  <div class="banner">
+    <button class="menu-toggle" [class.hidden]="mapState.campingAberto()" (click)="toggleMenu()">
+      &#9776;
+    </button>
+  </div>
 
-    <div class="banner">
+  <div class="overlay" [class.show]="menuOpen()" (click)="toggleMenu()"></div>
 
-        <button class="menu-toggle" [class.hidden]="mapState.campingAberto()" (click)="toggleMenu()">
-            &#9776;
+  <div class="layout">
+    <aside class="sidebar" [class.open]="menuOpen()">
+      <div class="logo"></div>
+      @if (usuario()) {
+        <div class="usuario">
+          @if (usuario()!.fotoPerfil) {
+            <img
+              class="avatar avatar-img"
+              [src]="usuario()!.fotoPerfil"
+              [alt]="usuario()!.nome"
+              appImgFallback
+            />
+          } @else {
+            <div class="avatar">
+              {{ usuario()!.nome.charAt(0).toUpperCase() }}
+            </div>
+          }
+          <div class="usuario-info">
+            <span class="nome">
+              {{ usuario()!.nome }}
+            </span>
+            <small class="nivel"> {{ 'nav.level' | translate }} {{ usuario()!.nivel }} </small>
+          </div>
+        </div>
+      }
+      <nav class="menu">
+        <button class="menu-item" [class.active]="isActive('home')" (click)="navigateTo('home')">
+          {{ 'nav.home' | translate }}
         </button>
-
-    </div>
-
-    <div class="overlay" [class.show]="menuOpen()" (click)="toggleMenu()">
-    </div>
-
-    <div class="layout">
-
-        <aside class="sidebar" [class.open]="menuOpen()">
-            <div class="logo"></div>
-            @if (usuario()) {
-            <div class="usuario">
-                @if (usuario()!.fotoPerfil) {
-                <img class="avatar avatar-img" [src]="usuario()!.fotoPerfil" [alt]="usuario()!.nome" appImgFallback />
-                } @else {
-                <div class="avatar">
-                    {{ usuario()!.nome.charAt(0).toUpperCase() }}
-                </div>
-                }
-                <div class="usuario-info">
-                    <span class="nome">
-                        {{ usuario()!.nome }}
-                    </span>
-                    <small class="nivel">
-                        {{ 'nav.level' | translate }} {{ usuario()!.nivel }}
-                    </small>
-                </div>
-            </div>
+        <button
+          class="menu-item"
+          [class.active]="isActive('account')"
+          (click)="navigateTo('account')"
+        >
+          {{ 'nav.account' | translate }}
+        </button>
+        <button class="menu-item" [class.active]="isActive('mapa')" (click)="navigateTo('mapa')">
+          {{ 'nav.map' | translate }}
+        </button>
+        <button class="menu-item" [class.active]="isActive('chat')" (click)="navigateTo('chat')">
+          {{ 'nav.chat' | translate }}
+          @if (chatNotification.totalNaoLidas() > 0) {
+            <span class="badge-nao-lidas">{{
+              chatNotification.totalNaoLidas() > 99 ? '99+' : chatNotification.totalNaoLidas()
+            }}</span>
+          }
+        </button>
+        <button
+          class="menu-item"
+          [class.active]="isActive('checklist')"
+          (click)="navigateTo('checklist')"
+        >
+          {{ 'nav.checklist' | translate }}
+        </button>
+      </nav>
+      <button
+        class="action-toggle"
+        (click)="themeService.toggle()"
+        [attr.aria-label]="
+          (themeService.theme() === 'dark' ? 'nav.theme.light' : 'nav.theme.dark') | translate
+        "
+      >
+        @if (themeService.theme() === 'dark') {
+          {{ 'nav.theme.light' | translate }}
+        } @else {
+          {{ 'nav.theme.dark' | translate }}
+        }
+      </button>
+      <div class="sidebar-bottom">
+        <button class="logout-btn" (click)="logout()">
+          {{ 'nav.logout' | translate }}
+        </button>
+        <div class="sidebar-footer">
+          <button class="lang-toggle" (click)="toggleLanguage()" aria-label="Change language">
+            @if (i18n.locale() === 'pt-BR') {
+              <img src="/images/flag-br.svg" alt="Português" class="flag-icon" />
+            } @else {
+              <img src="/images/flag-us.svg" alt="English" class="flag-icon" />
             }
-            <nav class="menu">
-                <button class="menu-item" [class.active]="isActive('home')" (click)="navigateTo('home')">
-                    {{ 'nav.home' | translate }}
-                </button>
-                <button class="menu-item" [class.active]="isActive('account')" (click)="navigateTo('account')">
-                    {{ 'nav.account' | translate }}
-                </button>
-                <button class="menu-item" [class.active]="isActive('mapa')" (click)="navigateTo('mapa')">
-                    {{ 'nav.map' | translate }}
-                </button>
-                <button class="menu-item" [class.active]="isActive('chat')" (click)="navigateTo('chat')">
-                    {{ 'nav.chat' | translate }}
-                    @if (chatNotification.totalNaoLidas() > 0) {
-                        <span class="badge-nao-lidas">{{ chatNotification.totalNaoLidas() > 99 ? '99+' : chatNotification.totalNaoLidas() }}</span>
-                    }
-                </button>
-                <button class="menu-item" [class.active]="isActive('checklist')" (click)="navigateTo('checklist')">
-                    {{ 'nav.checklist' | translate }}
-                </button>
-            </nav>
-            <button class="action-toggle" (click)="themeService.toggle()" [attr.aria-label]="(themeService.theme() === 'dark' ? 'nav.theme.light' : 'nav.theme.dark') | translate">
-                @if (themeService.theme() === 'dark') {
-                    {{ 'nav.theme.light' | translate }}
-                } @else {
-                    {{ 'nav.theme.dark' | translate }}
-                }
-            </button>
-            <div class="sidebar-bottom">
-                <button class="logout-btn" (click)="logout()">
-                    {{ 'nav.logout' | translate }}
-                </button>
-                <div class="sidebar-footer">
-                    <button class="lang-toggle" (click)="toggleLanguage()" aria-label="Change language">
-                        @if (i18n.locale() === 'pt-BR') {
-                            <img src="/images/flag-br.svg" alt="Português" class="flag-icon" />
-                        } @else {
-                            <img src="/images/flag-us.svg" alt="English" class="flag-icon" />
-                        }
-                    </button>
-                    <span class="app-version">v{{ appVersion }}</span>
-                </div>
-            </div>
-        </aside>
+          </button>
+          <span class="app-version">v{{ appVersion }}</span>
+        </div>
+      </div>
+    </aside>
 
-        <main class="main-content">
-            <div class="content">
-                <router-outlet />
-            </div>
-        </main>
-
-    </div>
-
+    <main class="main-content">
+      <div class="content">
+        <router-outlet />
+      </div>
+    </main>
+  </div>
 </div>

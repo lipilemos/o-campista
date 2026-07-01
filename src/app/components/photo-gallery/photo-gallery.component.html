@@ -1,0 +1,69 @@
+@if (fotos().length > 0) {
+  <div class="gallery">
+    <div class="gallery-main">
+      <img
+        [src]="fotos()[currentIndex()].url"
+        [alt]="'Foto ' + (currentIndex() + 1)"
+        class="gallery-img"
+        appImgFallback
+        (click)="openFullscreen(currentIndex())"
+      />
+
+      @if (fotos().length > 1) {
+        <button class="gallery-nav gallery-nav--prev" (click)="prev()" aria-label="Foto anterior">
+          ‹
+        </button>
+        <button class="gallery-nav gallery-nav--next" (click)="next()" aria-label="Próxima foto">
+          ›
+        </button>
+
+        <div class="gallery-dots" role="tablist">
+          @for (foto of fotos(); track foto.id; let i = $index) {
+            <button
+              class="gallery-dot"
+              [class.active]="i === currentIndex()"
+              (click)="currentIndex.set(i)"
+              role="tab"
+              [attr.aria-selected]="i === currentIndex()"
+              [attr.aria-label]="'Foto ' + (i + 1)"
+            ></button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}
+
+@if (fullscreen()) {
+  <div
+    class="gallery-fullscreen overlay-backdrop"
+    (click)="closeFullscreen()"
+    role="dialog"
+    aria-modal="true"
+  >
+    <button class="btn-close-round" (click)="closeFullscreen()" aria-label="Fechar foto">✕</button>
+    <img
+      [src]="fotos()[currentIndex()].url"
+      [alt]="'Foto ' + (currentIndex() + 1)"
+      class="gallery-fullscreen-img"
+      appImgFallback
+      (click)="$event.stopPropagation()"
+    />
+    @if (fotos().length > 1) {
+      <button
+        class="gallery-nav gallery-nav--prev gallery-nav--fs"
+        (click)="prev(); $event.stopPropagation()"
+        aria-label="Foto anterior"
+      >
+        ‹
+      </button>
+      <button
+        class="gallery-nav gallery-nav--next gallery-nav--fs"
+        (click)="next(); $event.stopPropagation()"
+        aria-label="Próxima foto"
+      >
+        ›
+      </button>
+    }
+  </div>
+}

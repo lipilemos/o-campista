@@ -1,32 +1,45 @@
 <div class="all-ratings-section">
-    <h3>Avaliações dos Usuários</h3>
-    @if (carregando()) {
+  <h3>Avaliações dos Usuários</h3>
+  @if (carregando()) {
     <p class="loading">Carregando avaliações...</p>
-    } @else if (avaliacoesCamping().length === 0) {
+  } @else if (avaliacoesCamping().length === 0) {
     <p class="no-ratings">Nenhuma avaliação ainda. Seja o primeiro a avaliar!</p>
-    } @else {
+  } @else {
     <div class="ratings-list">
-        @for (avaliacao of avaliacoesCamping(); track avaliacao.id) {
+      @for (avaliacao of avaliacoesCamping(); track avaliacao.id) {
         <div class="rating-item">
-            <div class="rating-header">
-                <div class="user-info">
-                    @if (avaliacao.usuarioFoto) {
-                    <img [src]="avaliacao.usuarioFoto" [alt]="avaliacao.usuarioNome" class="user-avatar" appImgFallback />
-                    } @else {
-                    <div class="user-avatar-placeholder">
-                        {{ avaliacao.usuarioNome.charAt(0).toUpperCase() }}
-                    </div>
-                    }
-                    <div>
-                        <p class="user-name">{{ avaliacao.usuarioNome }}</p>
-                        <p class="rating-date">{{ avaliacao.dataCriacao | date: 'dd/MM/yyyy' }}</p>
-                    </div>
+          <div class="rating-header">
+            <div class="user-info">
+              @if (avaliacao.usuarioFoto) {
+                <img
+                  [src]="avaliacao.usuarioFoto"
+                  [alt]="avaliacao.usuarioNome"
+                  class="user-avatar"
+                  appImgFallback
+                />
+              } @else {
+                <div class="user-avatar-placeholder">
+                  {{ avaliacao.usuarioNome.charAt(0).toUpperCase() }}
                 </div>
-                <p class="rating-stars">{{ avaliacao.nota }} ⭐</p>
+              }
+              <div>
+                <p class="user-name">{{ avaliacao.usuarioNome }}</p>
+                <p class="rating-date">{{ avaliacao.dataCriacao | date: 'dd/MM/yyyy' }}</p>
+              </div>
             </div>
-            <p class="rating-comment">{{ avaliacao.comentario }}</p>
+            <p class="rating-stars">{{ avaliacao.nota }} ⭐</p>
+          </div>
+          <p class="rating-comment">{{ avaliacao.comentario }}</p>
+          @if (avaliacao.fotoUrl) {
+            <img
+              [src]="avaliacao.fotoUrl"
+              alt="Foto da avaliação"
+              class="rating-foto"
+              appImgFallback
+            />
+          }
         </div>
-        }
+      }
     </div>
-    }
+  }
 </div>

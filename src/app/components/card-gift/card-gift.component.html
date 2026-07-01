@@ -1,95 +1,81 @@
 <div class="gift-overlay">
+  <button class="btn-close-round gift-close" (click)="fecharInfo()">✕</button>
 
-    <button class="btn-close-round gift-close" (click)="fecharInfo()">
-        ✕
-    </button>
+  <div class="gift-card">
+    @if (presenteSelecionado().fotoUrl) {
+      <img
+        class="gift-image"
+        [src]="presenteSelecionado().fotoUrl"
+        [alt]="presenteSelecionado().nome"
+        appImgFallback
+      />
+    }
 
-    <div class="gift-card">
+    <div class="gift-content">
+      <h2>
+        {{ presenteSelecionado().nome }}
+      </h2>
 
-        @if (presenteSelecionado().fotoUrl) {
-        <img class="gift-image" [src]="presenteSelecionado().fotoUrl" [alt]="presenteSelecionado().nome" appImgFallback>
+      <span class="gift-type"> 🎁 Presente escondido </span>
+
+      <p class="gift-description">
+        {{ presenteSelecionado().descricao }}
+      </p>
+
+      <div class="gift-code">
+        <label>Código do presente</label>
+
+        <input
+          type="text"
+          [value]="presenteSelecionado().codigoResgate"
+          readonly
+          (click)="copiarCodigo()"
+        />
+      </div>
+
+      <div class="gift-info">
+        <strong>Status:</strong>
+        {{ presenteSelecionado().estaDisponivel ? '🟢 Disponível' : '🔴 Já resgatado' }}
+      </div>
+
+      <div class="gift-info">
+        Criado em
+        {{ presenteSelecionado().criadoEm | date: 'dd/MM/yyyy HH:mm' }}
+      </div>
+
+      <div
+        class="gift-distance"
+        [class.perto]="classeDistancia() === 'perto'"
+        [class.medio]="classeDistancia() === 'medio'"
+        [class.longe]="classeDistancia() === 'longe'"
+      >
+        <h3>{{ mensagemDistancia() }}</h3>
+
+        <p>
+          Distância atual:
+          <strong>{{ distanciaPresente() }} metros</strong>
+        </p>
+      </div>
+
+      @if (presenteSelecionado().estaDisponivel && !ehMeuPresente()) {
+        @if (podeResgatar()) {
+          <button class="gift-button" (click)="resgatarPresente()">🎁 Resgatar Presente</button>
         }
+      }
 
-        <div class="gift-content">
+      @if (distanciaPresente() !== null && distanciaPresente()! > 150) {
+        <p>Você precisa estar a menos de 150 metros do presente para resgatá-lo.</p>
+      }
 
-            <h2>
-                {{ presenteSelecionado().nome }}
-            </h2>
+      @if (ehMeuPresente()) {
+        <p class="gift-message">
+          Este presente foi deixado por você. Apenas outros campistas podem resgatá-lo.
+        </p>
+      }
 
-            <span class="gift-type">
-                🎁 Presente escondido
-            </span>
-
-            <p class="gift-description">
-                {{ presenteSelecionado().descricao }}
-            </p>
-
-            <div class="gift-code">
-                <label>Código do presente</label>
-
-                <input type="text" [value]="presenteSelecionado().codigoResgate" readonly (click)="copiarCodigo()">
-            </div>
-
-
-            <div class="gift-info">
-                <strong>Status:</strong>
-                {{ presenteSelecionado().estaDisponivel
-                ? '🟢 Disponível'
-                : '🔴 Já resgatado' }}
-            </div>
-
-
-            <div class="gift-info">
-                Criado em
-                {{ presenteSelecionado().criadoEm | date:'dd/MM/yyyy HH:mm' }}
-            </div>
-
-            <div class="gift-distance" [class.perto]="classeDistancia() === 'perto'"
-                [class.medio]="classeDistancia() === 'medio'" [class.longe]="classeDistancia() === 'longe'">
-
-                <h3>{{ mensagemDistancia() }}</h3>
-
-                <p>
-                    Distância atual:
-                    <strong>{{ distanciaPresente() }} metros</strong>
-                </p>
-
-            </div>
-
-            @if (presenteSelecionado().estaDisponivel && !ehMeuPresente()) {
-            @if (podeResgatar()) {
-            <button class="gift-button" (click)="resgatarPresente()">
-                🎁 Resgatar Presente
-            </button>
-            }
-            }
-
-            @if (distanciaPresente() !== null && distanciaPresente()! > 150) {
-            <p>
-                Você precisa estar a menos de 150 metros do presente para resgatá-lo.
-            </p>
-            }
-
-            @if (ehMeuPresente()) {
-
-            <p class="gift-message">
-                Este presente foi deixado por você.
-                Apenas outros campistas podem resgatá-lo.
-            </p>
-
-            }
-
-
-            @if (!presenteSelecionado().estaDisponivel) {
-
-            <p class="gift-message">
-                Este presente já foi encontrado por outro campista.
-            </p>
-
-            }
-
-        </div>
-
+      @if (!presenteSelecionado().estaDisponivel) {
+        <p class="gift-message">Este presente já foi encontrado por outro campista.</p>
+      }
     </div>
-
+  </div>
 </div>

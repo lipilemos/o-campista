@@ -1,70 +1,71 @@
 <div class="gift-container auth-bg">
-    <div class="gift-card glass-card">
-        <header class="gift-header">
-            <div class="header-icon">
-                🎁
-            </div>
-            <h2>Deixar um Presente</h2>
-            <p>
-                Tire uma foto e marque sua localização para que outro campista possa encontrá-lo.
-            </p>
-        </header>
+  <div class="gift-card glass-card">
+    <header class="gift-header">
+      <div class="header-icon">🎁</div>
+      <h2>Deixar um Presente</h2>
+      <p>Tire uma foto e marque sua localização para que outro campista possa encontrá-lo.</p>
+    </header>
 
-        <form [formGroup]="giftForm" (ngSubmit)="onSubmit()" class="gift-form">
-            <!-- Nome -->
-            <div class="form-group">
-                <label for="nome">Nome do Presente</label>
-                <input id="nome" type="text" formControlName="nome" placeholder="Ex: Lanterna de Led">
-                <span class="error" *ngIf="giftForm.get('nome')?.invalid && giftForm.get('nome')?.touched">
-                    O nome é obrigatório (mín. 3 caracteres).
-                </span>
-            </div>
+    <form [formGroup]="giftForm" (ngSubmit)="onSubmit()" class="gift-form">
+      <!-- Nome -->
+      <div class="form-group">
+        <label for="nome">Nome do Presente</label>
+        <input id="nome" type="text" formControlName="nome" placeholder="Ex: Lanterna de Led" />
+        <span class="error" *ngIf="giftForm.get('nome')?.invalid && giftForm.get('nome')?.touched">
+          O nome é obrigatório (mín. 3 caracteres).
+        </span>
+      </div>
 
-            <!-- Descrição -->
-            <div class="form-group">
-                <label for="descricao">Descrição / Dica</label>
-                <textarea id="descricao" formControlName="descricao"
-                    placeholder="Dê uma dica para o próximo campista..."></textarea>
-            </div>
+      <!-- Descrição -->
+      <div class="form-group">
+        <label for="descricao">Descrição / Dica</label>
+        <textarea
+          id="descricao"
+          formControlName="descricao"
+          placeholder="Dê uma dica para o próximo campista..."
+        ></textarea>
+      </div>
 
-            <div class="camera-area">
+      <div class="camera-area">
+        <div class="upload-card" (click)="fileInput.click()">
+          <ng-container *ngIf="!imagePreview">
+            <div class="upload-icon">📷</div>
+            <h4>Adicionar Foto</h4>
+            <span>Toque para tirar ou selecionar uma foto</span>
+          </ng-container>
 
-                <div class="upload-card" (click)="fileInput.click()">
+          <img *ngIf="imagePreview" [src]="imagePreview" alt="Preview" />
+        </div>
 
-                    <ng-container *ngIf="!imagePreview">
-                        <div class="upload-icon">📷</div>
-                        <h4>Adicionar Foto</h4>
-                        <span>Toque para tirar ou selecionar uma foto</span>
-                    </ng-container>
+        <input
+          #fileInput
+          type="file"
+          accept="image/*"
+          capture="environment"
+          (change)="onPhotoSelected($event)"
+          hidden
+        />
+      </div>
 
-                    <img *ngIf="imagePreview" [src]="imagePreview" alt="Preview">
-                </div>
-
-                <input #fileInput type="file" accept="image/*" capture="environment" (change)="onPhotoSelected($event)"
-                    hidden>
-
-            </div>
-
-            <!-- GPS Status -->
-            <div class="gps-status" [class.active]="hasLocation">
-                <span class="dot"></span>
-                {{ hasLocation ? 'Localização via GPS ativa' : 'Buscando sinal de GPS...' }}
-            </div>
-            <div *ngIf="mensagem" class="feedback" [class.erro]="erro" [class.sucesso]="!erro">
-
-                {{ mensagem }}
-
-            </div>
-            <!-- Ações -->
-            <div class="form-actions">
-                <button type="button" class="btn-link" (click)="goBack()">Cancelar</button>
-                <button type="submit" class="btn-primary"
-                    [disabled]="giftForm.invalid || !hasLocation || !selectedFile || loading">
-
-                    {{ loading ? 'Publicando...' : 'Publicar Presente' }}
-
-                </button>
-            </div>
-        </form>
-    </div>
+      <!-- GPS Status -->
+      <div class="gps-status" [class.active]="hasLocation">
+        <span class="dot"></span>
+        {{ hasLocation ? 'Localização via GPS ativa' : 'Buscando sinal de GPS...' }}
+      </div>
+      <div *ngIf="mensagem" class="feedback" [class.erro]="erro" [class.sucesso]="!erro">
+        {{ mensagem }}
+      </div>
+      <!-- Ações -->
+      <div class="form-actions">
+        <button type="button" class="btn-link" (click)="goBack()">Cancelar</button>
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="giftForm.invalid || !hasLocation || !selectedFile || loading"
+        >
+          {{ loading ? 'Publicando...' : 'Publicar Presente' }}
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

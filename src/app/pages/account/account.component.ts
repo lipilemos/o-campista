@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin, Observable } from 'rxjs';
 import { Avaliacao } from '../../core/models/avaliacao.model';
@@ -50,11 +56,12 @@ export class AccountComponent implements OnInit {
     private usuarioService: UsuarioService,
     private checkinService: CheckinService,
     private campingService: CampingService,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.usuarioService.obterPerfil(this.authService.getUser()?.id.toString()!)
-      .subscribe(usuario => {
+    this.usuarioService
+      .obterPerfil(this.authService.getUser()?.id.toString()!)
+      .subscribe((usuario) => {
         this.usuario = usuario;
         this.cdr.markForCheck();
         this.carregarHistoricoCheckins();
@@ -65,12 +72,12 @@ export class AccountComponent implements OnInit {
     const usuarioId = this.authService.getUser()?.id;
     if (usuarioId) {
       this.checkinService.obterHistorico(usuarioId).subscribe(
-        historico => {
+        (historico) => {
           this.historicoCheckins = historico;
           this.cdr.markForCheck();
           this.carregarStatusAvaliacoes();
         },
-        error => console.error('Erro ao carregar histórico de check-ins:', error)
+        (error) => console.error('Erro ao carregar histórico de check-ins:', error),
       );
     }
   }
@@ -79,18 +86,21 @@ export class AccountComponent implements OnInit {
     const usuarioId = this.authService.getUser()?.id;
     if (!usuarioId || this.historicoCheckins.length === 0) return;
 
-    const campingIdsUnicos = [...new Set(this.historicoCheckins.map(h => h.campingId))];
+    const campingIdsUnicos = [...new Set(this.historicoCheckins.map((h) => h.campingId))];
 
     const requisicoes: Record<string, Observable<Avaliacao[] | []>> = {};
-    campingIdsUnicos.forEach(campingId => {
-      requisicoes[campingId.toString()] = this.campingService.obterAvaliacaoUsuario(campingId, usuarioId);
+    campingIdsUnicos.forEach((campingId) => {
+      requisicoes[campingId.toString()] = this.campingService.obterAvaliacaoUsuario(
+        campingId,
+        usuarioId,
+      );
     });
 
     forkJoin(requisicoes).subscribe({
       next: (resultados) => {
         const avaliados = new Set<number>();
-        Object.values(resultados).forEach(avaliacoes => {
-          avaliacoes.forEach(avaliacao => {
+        Object.values(resultados).forEach((avaliacoes) => {
+          avaliacoes.forEach((avaliacao) => {
             if (avaliacao.checkinId) {
               avaliados.add(avaliacao.checkinId);
             }
@@ -104,19 +114,14 @@ export class AccountComponent implements OnInit {
   }
 
   get percentualXp(): number {
-
     if (!this.usuario) {
       return 0;
     }
 
-    return (
-      this.usuario.xp /
-      this.usuario.xpProximoNivel
-    ) * 100;
+    return (this.usuario.xp / this.usuario.xpProximoNivel) * 100;
   }
   openGiftForm() {
     this.router.navigate(['/gift']);
-
   }
 
   abrirHistoricoCheckins(): void {
@@ -130,8 +135,9 @@ export class AccountComponent implements OnInit {
     document.body.style.overflow = '';
     this.campingSelecionado = null;
 
-    this.usuarioService.obterPerfil(this.authService.getUser()?.id.toString()!)
-      .subscribe(usuario => {
+    this.usuarioService
+      .obterPerfil(this.authService.getUser()?.id.toString()!)
+      .subscribe((usuario) => {
         this.usuario = usuario;
         this.cdr.markForCheck();
       });
@@ -155,7 +161,6 @@ export class AccountComponent implements OnInit {
   abrirPresente(presente: Presente) {
     this.presenteSelecionado = presente;
   }
-
 
   fecharPresente() {
     this.presenteSelecionado = null;
@@ -191,4 +196,3 @@ export class AccountComponent implements OnInit {
       });
   }
 }
-

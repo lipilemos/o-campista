@@ -1,12 +1,11 @@
 export interface WeatherForecast {
+  dia: string;
 
-    dia: string;
+  temperaturaMaxima: number;
 
-    temperaturaMaxima: number;
+  temperaturaMinima: number;
 
-    temperaturaMinima: number;
+  descricao: string;
 
-    descricao: string;
-
-    icone: string;
+  icone: string;
 }

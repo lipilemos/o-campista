@@ -15,19 +15,49 @@
 
     <form [formGroup]="form" (ngSubmit)="register()">
       <label for="reg-nome" class="sr-only">Nome completo</label>
-      <input id="reg-nome" formControlName="nome" type="text" placeholder="Nome completo" autocomplete="name" />
+      <input
+        id="reg-nome"
+        formControlName="nome"
+        type="text"
+        placeholder="Nome completo"
+        autocomplete="name"
+      />
 
       <label for="reg-usuario" class="sr-only">Usuário</label>
-      <input id="reg-usuario" formControlName="usuario" type="text" placeholder="Usuário" autocomplete="username" />
+      <input
+        id="reg-usuario"
+        formControlName="usuario"
+        type="text"
+        placeholder="Usuário"
+        autocomplete="username"
+      />
 
       <label for="reg-email" class="sr-only">E-mail</label>
-      <input id="reg-email" formControlName="email" type="email" placeholder="E-mail" autocomplete="email" />
+      <input
+        id="reg-email"
+        formControlName="email"
+        type="email"
+        placeholder="E-mail"
+        autocomplete="email"
+      />
 
       <label for="reg-senha" class="sr-only">Senha</label>
-      <input id="reg-senha" formControlName="senha" type="password" placeholder="Senha" autocomplete="new-password" />
+      <input
+        id="reg-senha"
+        formControlName="senha"
+        type="password"
+        placeholder="Senha"
+        autocomplete="new-password"
+      />
 
       <label for="reg-confirmar" class="sr-only">Confirmar senha</label>
-      <input id="reg-confirmar" formControlName="confirmarSenha" type="password" placeholder="Confirmar senha" autocomplete="new-password" />
+      <input
+        id="reg-confirmar"
+        formControlName="confirmarSenha"
+        type="password"
+        placeholder="Confirmar senha"
+        autocomplete="new-password"
+      />
 
       <button type="submit" [disabled]="loading">
         @if (loading) {

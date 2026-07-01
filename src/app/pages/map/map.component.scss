@@ -13,34 +13,92 @@
   height: 100%;
 }
 
-/* FILTROS */
+/* FILTROS — aba lateral direita */
 
-.filtros {
+.filtros-wrapper {
   position: absolute;
-  top: 55px;
-  left: 15px;
-  right: 15px;
+  top: 10%;
+  right: 0;
+  z-index: 1000;
   display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-3);
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+/* aba sempre visível no canto direito */
+.btn-filtros-toggle {
+  position: relative;
+  order: 2;
+  flex-shrink: 0;
+  width: 26px;
+  height: 64px;
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: var(--radius-lg);
+  border-right: none;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-primary);
+  transition: background 0.2s;
+
+  &:hover {
+    background: #fff;
+  }
+}
+
+/* badge de filtros ativos — fica no canto superior da aba */
+.filtros-badge-tab {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* painel de filtros — aparece à esquerda da aba */
+.filtros {
+  order: 1;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
   box-shadow: var(--shadow-lg);
-  z-index: 1000;
+  animation: slideInRight 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
   input,
   select {
-    height: 44px;
+    width: 100%;
+    height: 40px;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
-    padding: 0 var(--space-4);
+    padding: 0 var(--space-3);
     font-size: var(--text-sm);
     outline: none;
     background: var(--color-surface);
+    box-sizing: border-box;
     transition: var(--transition-fast);
 
     &:focus {
@@ -48,19 +106,24 @@
       box-shadow: 0 0 0 3px rgba(249, 153, 32, 0.15);
     }
   }
+}
 
-  input {
-    flex: 1;
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
   }
 
-  select {
-    width: 220px;
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
 .filtros-linha {
   display: flex;
-  gap: var(--space-3);
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
 .tags-recursos {
@@ -91,6 +154,26 @@
     &:hover {
       opacity: 1;
     }
+  }
+}
+
+.btn-criar-trilha {
+  position: absolute;
+  bottom: var(--space-5);
+  left: var(--space-5);
+  z-index: 1000;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: var(--space-3) var(--space-4);
+  background: #4CAF50;
+  color: white;
+  font-weight: 700;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+
+  &:hover {
+    background: #388E3C;
   }
 }
 
@@ -128,28 +211,23 @@
     border-radius: 0;
   }
 
-  .filtros {
-    top: 75px;
-    left: 10px;
-    right: 10px;
-    padding: var(--space-3);
-
-    input {
-      font-size: var(--text-lg);
-    }
-
-    ::placeholder {
-      font-size: var(--text-sm);
-    }
-
-    select {
-      font-size: var(--text-lg);
-      width: 100%;
-    }
+  .filtros-wrapper {
+    top: 10%;
   }
 
-  .filtros-linha {
-    flex-direction: column;
+  .btn-filtros-toggle {
+    width: 32px;
+    height: 72px;
+    font-size: var(--text-xl);
+  }
+
+  .filtros {
+    width: min(300px, 85vw);
+
+    input,
+    select {
+      font-size: var(--text-base);
+    }
   }
 }
 
@@ -297,5 +375,34 @@
     inset: 0;
     z-index: 1000;
     padding: 15px;
+  }
+}
+
+.trilha-detail-overlay {
+  position: absolute;
+  bottom: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(420px, calc(100% - var(--space-8)));
+  z-index: 300;
+  animation: slideUp 0.25s ease;
+}
+
+@media (max-width: 768px) {
+
+  /* quando o card está aberto, move o botão de localização para cima da bottom sheet */
+  .map-wrapper.card-aberto .btn-localizacao {
+    bottom: calc(58vh + var(--space-4));
+    transition: bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* detalhe da trilha fica no topo do espaço visível acima da bottom sheet */
+  .map-wrapper.card-aberto .trilha-detail-overlay {
+    position: fixed;
+    bottom: calc(58vh + var(--space-3));
+    left: var(--space-4);
+    right: var(--space-4);
+    width: auto;
+    transform: none;
   }
 }

@@ -1,7 +1,10 @@
 import { Component, effect, inject, input, output, signal } from '@angular/core';
+import { CampingFoto } from '../../core/models/camping-foto.model';
 import { Camping } from '../../core/models/camping.model';
 import { CheckinRequestModel, CheckinResponseModel } from '../../core/models/checkin.model';
+import { Trilha } from '../../core/models/trilha.model';
 import { AuthService } from '../../core/services/auth.service';
+import { CampingService } from '../../core/services/camping.service';
 import { CheckinService } from '../../core/services/checkin.service';
 import { MapStateService } from '../../core/services/map-state.service';
 import { ToastService } from '../../core/services/toast.service';
@@ -10,16 +13,25 @@ import { Util } from '../../core/Utils.ts/Util';
 import { ImgFallbackDirective } from '../../core/directives/img-fallback.directive';
 import { AvaliacoesUsuariosComponent } from '../avaliacoes-usuarios/avaliacoes-usuarios.component';
 import { ChatCampingComponent } from '../chat-camping/chat-camping.component';
+import { PhotoGalleryComponent } from '../photo-gallery/photo-gallery.component';
+import { TrilhaListComponent } from '../trilha-list/trilha-list.component';
 
 @Component({
   selector: 'app-card-camping',
-  imports: [AvaliacoesUsuariosComponent, ChatCampingComponent, ImgFallbackDirective],
+  imports: [
+    AvaliacoesUsuariosComponent,
+    ChatCampingComponent,
+    ImgFallbackDirective,
+    TrilhaListComponent,
+    PhotoGalleryComponent,
+  ],
   templateUrl: './card-camping.component.html',
   styleUrl: './card-camping.component.scss',
 })
 export class CardCampingComponent {
   private authService = inject(AuthService);
   private checkinService = inject(CheckinService);
+  private campingService = inject(CampingService);
   private mapState = inject(MapStateService);
   private toast = inject(ToastService);
   private usuarioService = inject(UsuarioService);
@@ -27,12 +39,22 @@ export class CardCampingComponent {
   campingSelecionado = input.required<Camping>();
   minhaPosicao = input<google.maps.LatLngLiteral>();
   fechar = output<void>();
+  trilhaSelecionada = output<Trilha>();
 
   mensagemCheckin = signal('');
   tipoMensagem = signal<'sucesso' | 'erro' | ''>('');
   checkinRealizado = signal(false);
   verificandoCheckin = signal(false);
   pessoasRecentes = signal(0);
+  fotos = signal<CampingFoto[]>([]);
+
+  // --- drag (bottom sheet mobile) ---
+  alturaCard = signal<string | null>(null);
+  isDragging = signal(false);
+
+  private readonly SNAPS = [30, 58, 88]; // vh: colapsado, padrão, expandido
+  private startY = 0;
+  private startVh = 58;
 
   constructor() {
     effect(() => {
@@ -41,7 +63,15 @@ export class CardCampingComponent {
         this.verificarCheckinHoje(camping.id);
       }
       this.carregarCheckinsRecentes(camping.id);
+      this.campingService.obterFotos(camping.id).subscribe({
+        next: (f) => this.fotos.set(f),
+        error: () => this.fotos.set([]),
+      });
     });
+
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      this.alturaCard.set('58vh');
+    }
   }
 
   private verificarCheckinHoje(campingId: number) {
@@ -157,5 +187,37 @@ export class CardCampingComponent {
         this.toast.error(msg);
       },
     });
+  }
+
+  // --- drag handlers (bottom sheet mobile) ---
+
+  onDragStart(event: TouchEvent): void {
+    this.isDragging.set(true);
+    this.startY = event.touches[0].clientY;
+    this.startVh = parseFloat(this.alturaCard() ?? '58');
+  }
+
+  onDragMove(event: TouchEvent): void {
+    if (!this.isDragging()) return;
+    const deltaVh = (this.startY - event.touches[0].clientY) / (window.innerHeight / 100);
+    const next = Math.min(Math.max(this.startVh + deltaVh, 15), 92);
+    this.alturaCard.set(`${next}vh`);
+  }
+
+  onDragEnd(): void {
+    if (!this.isDragging()) return;
+    this.isDragging.set(false);
+
+    const current = parseFloat(this.alturaCard() ?? '58');
+
+    if (current < 25) {
+      this.fecharCampingInfo();
+      return;
+    }
+
+    const nearest = this.SNAPS.reduce((prev, snap) =>
+      Math.abs(snap - current) < Math.abs(prev - current) ? snap : prev,
+    );
+    this.alturaCard.set(`${nearest}vh`);
   }
 }

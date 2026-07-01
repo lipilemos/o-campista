@@ -1,14 +1,22 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { FormularioAvaliacaoComponent } from '../../../components/formulario-avaliacao/formulario-avaliacao.component';
 import { Avaliacao } from '../../../core/models/avaliacao.model';
 import { HistoricoCheckin } from '../../../core/models/historico-checkin.model';
 
 @Component({
   selector: 'app-checkin-history',
-  imports: [CommonModule, FormularioAvaliacaoComponent],
+  imports: [DatePipe, FormularioAvaliacaoComponent],
   templateUrl: './checkin-history.component.html',
   styleUrls: ['./checkin-history.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckinHistoryComponent implements OnInit {
   @Input() historico: HistoricoCheckin[] = [];
@@ -23,7 +31,7 @@ export class CheckinHistoryComponent implements OnInit {
 
   ngOnInit() {
     this.historico.sort(
-      (a, b) => new Date(b.dataCriacao).getTime() - new Date(a.dataCriacao).getTime()
+      (a, b) => new Date(b.dataCriacao).getTime() - new Date(a.dataCriacao).getTime(),
     );
   }
 
@@ -32,6 +40,7 @@ export class CheckinHistoryComponent implements OnInit {
   }
 
   selecionarCamping(historico: HistoricoCheckin): void {
+    if (!historico.camping) return;
     this.mostrarDetalhes = true;
     this.selecionarCampingEvent.emit(historico);
   }

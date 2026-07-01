@@ -1,7 +1,4 @@
-import {
-  Component,
-  Input
-} from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 
@@ -11,20 +8,14 @@ import { Weather } from '../../core/models/weather.model';
   selector: 'app-weather-card',
   imports: [CommonModule],
   templateUrl: './weather-card.component.html',
-  styleUrls: ['./weather-card.component.scss']
+  styleUrls: ['./weather-card.component.scss'],
 })
 export class WeatherCardComponent {
-
   @Input()
   weather!: Weather;
 
-
-  protected obterEmojiStatus(
-    status: string
-  ): string {
-
+  protected obterEmojiStatus(status: string): string {
     switch (status) {
-
       case 'Excelente':
         return '🟢';
 
@@ -39,4 +30,3 @@ export class WeatherCardComponent {
     }
   }
 }
-

@@ -22,11 +22,7 @@
         <p class="erro">{{ erro() }}</p>
       }
 
-      <button
-        class="btn-criar"
-        (click)="criar()"
-        [disabled]="!nomeGrupo().trim() || criando()"
-      >
+      <button class="btn-criar" (click)="criar()" [disabled]="!nomeGrupo().trim() || criando()">
         {{ criando() ? 'Criando...' : 'Criar Grupo' }}
       </button>
     </div>
@@ -41,9 +37,7 @@
           Copiar
         </button>
       </div>
-      <button class="btn-ir-grupo" (click)="irParaGrupo()">
-        Ir para Chats
-      </button>
+      <button class="btn-ir-grupo" (click)="irParaGrupo()">Ir para Chats</button>
     </div>
   }
 </div>

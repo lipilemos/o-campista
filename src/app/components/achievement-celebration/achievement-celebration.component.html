@@ -1,0 +1,27 @@
+@if (service.current(); as conquista) {
+  <div
+    class="achievement-backdrop"
+    (click)="service.dismiss()"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="'Conquista desbloqueada: ' + conquista.nome"
+  >
+    <div class="achievement-card glass-card" (click)="$event.stopPropagation()">
+      <button
+        class="achievement-close btn-close-round--inverse"
+        (click)="service.dismiss()"
+        aria-label="Fechar"
+      >
+        ✕
+      </button>
+
+      <div class="achievement-icon" aria-hidden="true">{{ conquista.icone }}</div>
+
+      <p class="achievement-label">🏆 Conquista Desbloqueada!</p>
+      <h2 class="achievement-name">{{ conquista.nome }}</h2>
+      <p class="achievement-desc">{{ conquista.descricao }}</p>
+
+      <button class="achievement-btn" (click)="service.dismiss()">Incrível!</button>
+    </div>
+  </div>
+}

@@ -6,6 +6,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { GiftService } from '../../core/services/gift.service';
 import { ImageCompressorService } from '../../core/services/image-compressor.service';
 import { ToastService } from '../../core/services/toast.service';
+import { UsuarioService } from '../../core/services/usuario.service';
 
 @Component({
   selector: 'app-gift-form',
@@ -16,6 +17,7 @@ import { ToastService } from '../../core/services/toast.service';
 export class GiftComponent implements OnInit {
   private imageCompressor = inject(ImageCompressorService);
   private toast = inject(ToastService);
+  private usuarioService = inject(UsuarioService);
 
   giftForm: FormGroup;
   imagePreview: string | null = null;
@@ -34,7 +36,7 @@ export class GiftComponent implements OnInit {
   ) {
     this.giftForm = this.fb.group({
       nome: ['', [Validators.required, Validators.minLength(3)]],
-      descricao: ['']
+      descricao: [''],
     });
   }
 
@@ -50,7 +52,7 @@ export class GiftComponent implements OnInit {
       const options = {
         enableHighAccuracy: true,
         timeout: 5000,
-        maximumAge: 0
+        maximumAge: 0,
       };
 
       navigator.geolocation.getCurrentPosition(
@@ -64,9 +66,8 @@ export class GiftComponent implements OnInit {
 
           //this.coords = undefined; // Atribui a mesma posição default no fallback
           this.hasLocation = false; // Mantemos como true para permitir o envio do formulário
-
         },
-        options
+        options,
       );
     } else {
       // Caso o navegador não suporte Geolocation
@@ -97,7 +98,6 @@ export class GiftComponent implements OnInit {
   }
 
   onSubmit() {
-
     const usuarioLogado = this.authService.getUser();
 
     if (!this.giftForm.valid || !this.selectedFile) {
@@ -114,15 +114,13 @@ export class GiftComponent implements OnInit {
     formData.append('latitude', this.coords.lat.toString());
     formData.append('longitude', this.coords.lng.toString());
     formData.append('foto', this.selectedFile);
-    formData.append(
-      'usuariocriadorid',
-      usuarioLogado?.id.toString() || ''
-    );
+    formData.append('usuariocriadorid', usuarioLogado?.id.toString() || '');
 
     this.giftService.createGift(formData).subscribe({
       next: () => {
         this.loading = false;
         this.toast.success('Presente deixado com sucesso!');
+        this.usuarioService.verificarNovasConquistas();
         setTimeout(() => this.router.navigate(['/home']), 1500);
       },
       error: (error) => {

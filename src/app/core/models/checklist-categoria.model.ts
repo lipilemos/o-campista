@@ -1,6 +1,6 @@
-import { ChecklistItem } from "./checklist-item.model";
+import { ChecklistItem } from './checklist-item.model';
 
 export interface ChecklistCategoria {
-    nome: string;
-    itens: ChecklistItem[];
+  nome: string;
+  itens: ChecklistItem[];
 }

@@ -1,0 +1,40 @@
+<div class="trilha-detail">
+  <div class="trilha-detail-header">
+    <button
+      class="btn-close-round btn-close-round--light"
+      (click)="fechar.emit()"
+      aria-label="Fechar trilha"
+    >
+      ✕
+    </button>
+    <h3 class="trilha-detail-nome">🥾 {{ trilha().nome }}</h3>
+  </div>
+
+  <div class="trilha-detail-meta">
+    <span class="meta-item">📏 {{ trilha().distanciaKm }} km</span>
+    @if (trilha().dificuldade) {
+      <span class="meta-item">⚡ {{ trilha().dificuldade }}</span>
+    }
+    @if (trilha().concluidaPeloUsuario) {
+      <span class="meta-item concluida">✅ Concluída</span>
+    }
+  </div>
+
+  @if (trilha().descricao) {
+    <p class="trilha-detail-desc">{{ trilha().descricao }}</p>
+  }
+
+  <p class="trilha-pontos-info">{{ trilha().pontos.length }} pontos de rota carregados no mapa.</p>
+
+  @if (!trilha().concluidaPeloUsuario) {
+    @if (podeConclur()) {
+      <button class="btn-concluir" [disabled]="concluindo()" (click)="concluirTrilha()">
+        {{ concluindo() ? 'Concluindo...' : '🏁 Marcar como Concluída' }}
+      </button>
+    } @else {
+      <p class="trilha-aviso">
+        Aproxime-se do início ou fim da trilha (até 500m) para marcá-la como concluída.
+      </p>
+    }
+  }
+</div>

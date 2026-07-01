@@ -1,5 +1,5 @@
-import { Conquista } from "./conquista.model";
-import { Presente } from "./presente.model";
+import { Conquista } from './conquista.model';
+import { Presente } from './presente.model';
 
 export interface UsuarioLogado {
   id: string;
