@@ -10,6 +10,7 @@ import { DatePipe } from '@angular/common';
 import { FormularioAvaliacaoComponent } from '../../../components/formulario-avaliacao/formulario-avaliacao.component';
 import { Avaliacao } from '../../../core/models/avaliacao.model';
 import { HistoricoCheckin } from '../../../core/models/historico-checkin.model';
+import { Trilha } from '../../../core/models/trilha.model';
 
 @Component({
   selector: 'app-checkin-history',
@@ -20,7 +21,28 @@ import { HistoricoCheckin } from '../../../core/models/historico-checkin.model';
 })
 export class CheckinHistoryComponent implements OnInit {
   @Input() historico: HistoricoCheckin[] = [];
-  @Input() campingSelecionado: HistoricoCheckin | null = null;
+
+  private _campingSelecionado: HistoricoCheckin | null = null;
+  private _trilhaSelecionada: Trilha | undefined;
+
+  @Input()
+  set campingSelecionado(value: HistoricoCheckin | null) {
+    this._campingSelecionado = value;
+    this._trilhaSelecionada = value?.trilhaId
+      ? {
+          id: value.trilhaId,
+          nome: value.trilhaNome ?? '',
+          distanciaKm: 0,
+          pontos: [],
+          concluidaPeloUsuario: false,
+          criadoEm: '',
+        }
+      : undefined;
+  }
+  get campingSelecionado(): HistoricoCheckin | null {
+    return this._campingSelecionado;
+  }
+
   @Input() checkinsAvaliados: Set<number> = new Set();
   @Output() selecionarCampingEvent = new EventEmitter<HistoricoCheckin>();
   @Output() fecharDetalhesEvent = new EventEmitter<void>();
@@ -39,8 +61,12 @@ export class CheckinHistoryComponent implements OnInit {
     return this.checkinsAvaliados.has(item.id || 0);
   }
 
+  get trilhaSelecionada(): Trilha | undefined {
+    return this._trilhaSelecionada;
+  }
+
   selecionarCamping(historico: HistoricoCheckin): void {
-    if (!historico.camping) return;
+    if (!historico.camping && !historico.trilhaId) return;
     this.mostrarDetalhes = true;
     this.selecionarCampingEvent.emit(historico);
   }

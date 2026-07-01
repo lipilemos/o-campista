@@ -41,6 +41,7 @@
     @if (campingSelecionado) {
       <app-formulario-avaliacao
         [camping]="campingSelecionado.camping ?? undefined"
+        [trilha]="trilhaSelecionada"
         [checkinId]="campingSelecionado.id"
         [jaAvaliado]="isAvaliado(campingSelecionado)"
         (fechar)="fecharDetalhes()"

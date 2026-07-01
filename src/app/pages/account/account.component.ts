@@ -7,13 +7,14 @@ import {
   OnInit,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { forkJoin, Observable } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { Avaliacao } from '../../core/models/avaliacao.model';
 import { HistoricoCheckin } from '../../core/models/historico-checkin.model';
 import { Presente } from '../../core/models/presente.model';
 import { UsuarioLogado } from '../../core/models/user.model';
 import { AuthService } from '../../core/services/auth.service';
 import { CampingService } from '../../core/services/camping.service';
+import { TrilhaService } from '../../core/services/trilha.service';
 import { CheckinService } from '../../core/services/checkin.service';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 import { ToastService } from '../../core/services/toast.service';
@@ -86,25 +87,44 @@ export class AccountComponent implements OnInit {
     const usuarioId = this.authService.getUser()?.id;
     if (!usuarioId || this.historicoCheckins.length === 0) return;
 
-    const campingIdsUnicos = [...new Set(this.historicoCheckins.map((h) => h.campingId))];
+    const campingIdsUnicos = [
+      ...new Set(this.historicoCheckins.filter((h) => h.camping !== null).map((h) => h.campingId)),
+    ];
+    const trilhaIdsUnicos = [
+      ...new Set(
+        this.historicoCheckins.filter((h) => h.trilhaId).map((h) => h.trilhaId!),
+      ),
+    ];
 
-    const requisicoes: Record<string, Observable<Avaliacao[] | []>> = {};
-    campingIdsUnicos.forEach((campingId) => {
-      requisicoes[campingId.toString()] = this.campingService.obterAvaliacaoUsuario(
-        campingId,
-        usuarioId,
-      );
+    const campingReqs: Record<string, Observable<Avaliacao[] | []>> = {};
+    campingIdsUnicos.forEach((id) => {
+      campingReqs[id.toString()] = this.campingService.obterAvaliacaoUsuario(id, usuarioId);
     });
 
-    forkJoin(requisicoes).subscribe({
-      next: (resultados) => {
+    const trilhaReqs: Record<string, Observable<Avaliacao[] | []>> = {};
+    trilhaIdsUnicos.forEach((id) => {
+      trilhaReqs[id.toString()] = this.trilhaService.obterAvaliacoes(id);
+    });
+
+    const campingObs =
+      campingIdsUnicos.length > 0
+        ? forkJoin(campingReqs)
+        : of({} as Record<string, Avaliacao[]>);
+    const trilhaObs =
+      trilhaIdsUnicos.length > 0
+        ? forkJoin(trilhaReqs)
+        : of({} as Record<string, Avaliacao[]>);
+
+    forkJoin({ campings: campingObs, trilhas: trilhaObs }).subscribe({
+      next: ({ campings, trilhas }) => {
         const avaliados = new Set<number>();
-        Object.values(resultados).forEach((avaliacoes) => {
-          avaliacoes.forEach((avaliacao) => {
-            if (avaliacao.checkinId) {
-              avaliados.add(avaliacao.checkinId);
-            }
-          });
+        Object.values(campings).forEach((avaliacoes) => {
+          avaliacoes.forEach((av) => { if (av.checkinId) avaliados.add(av.checkinId); });
+        });
+        Object.values(trilhas).forEach((avaliacoes) => {
+          avaliacoes
+            .filter((av) => av.usuarioId === usuarioId)
+            .forEach((av) => { if (av.checkinId) avaliados.add(av.checkinId); });
         });
         this.checkinsAvaliados = avaliados;
         this.cdr.markForCheck();
@@ -165,6 +185,7 @@ export class AccountComponent implements OnInit {
   fecharPresente() {
     this.presenteSelecionado = null;
   }
+  private trilhaService = inject(TrilhaService);
   private toast = inject(ToastService);
   private confirmDialog = inject(ConfirmDialogService);
 
