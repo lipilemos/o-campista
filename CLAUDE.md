@@ -1,6 +1,6 @@
 # O Campista
 
-Plataforma web para entusiastas de camping. Permite descobrir campings no mapa, fazer check-ins por geolocalização, deixar/resgatar presentes, avaliar campings, acompanhar clima e gerenciar checklists de preparação.
+Plataforma web para entusiastas de camping. Permite descobrir campings no mapa, fazer check-ins por geolocalização, reportar status de ocupação do camping, deixar/resgatar presentes, avaliar campings, acompanhar clima e gerenciar checklists de preparação.
 
 ## Stack
 
@@ -126,7 +126,7 @@ Base URL configurada em `src/environments/environment.ts` (`environment.apiUrl`)
 | **GoogleAuthService**       | Inicialização do Google Identity Services e renderização do botão Google Sign-In | Sem endpoint — usa GIS client-side                                                                                                              |
 | **UsuarioService**          | Perfil do usuário, deleção de conta (LGPD)                                       | `GET /usuarios/me/{id}`, `POST /usuarios/{id}/foto-perfil`, `DELETE /usuarios/{id}`                                                             |
 | **CampingService**          | Listar campings, avaliações (CRUD)                                               | `GET /mapa/campings`, `GET/POST/PUT /mapa/camping/{id}/avaliacoes`, `POST /avaliacao`                                                           |
-| **CheckinService**          | Check-in e histórico                                                             | `POST /checkin`, `GET /checkin/historico/{usuarioId}`                                                                                           |
+| **CheckinService**          | Check-in (com campo `ocupacao?`) e histórico                                     | `POST /checkin`, `GET /checkin/historico/{usuarioId}`, `GET /checkin/camping/{id}/recentes`                                                     |
 | **GiftService**             | Criar, buscar, resgatar e deletar presentes                                      | `POST /presentes`, `GET /presentes?lat&lng`, `POST /presentes/resgatar`, `DELETE /presentes/{id}`                                               |
 | **WeatherService**          | Clima atual e previsão 5 dias                                                    | Open-Meteo API (externo), Nominatim (geocoding)                                                                                                 |
 | **ChecklistService**        | CRUD local de checklists                                                         | localStorage (`ocampista-checklists`) — sem backend                                                                                             |
@@ -147,9 +147,11 @@ Base URL configurada em `src/environments/environment.ts` (`environment.apiUrl`)
 Definidos em `src/app/core/models/`:
 
 - **UsuarioLogado** — id, nome, email, token, nivel, xp, conquistas[], presentes[]
-- **Camping** — id, nome, descricao, lat/lng, cidade, estado, tipo, avaliacao, recursos[]
+- **Camping** — id, nome, descricao, lat/lng, cidade, estado, tipo, avaliacao, recursos[], statusOcupacao? (nivel, atualizadoEm)
+- **StatusOcupacao** — nivel: `'tranquilo' | 'movimentado' | 'lotado'`, atualizadoEm
 - **Presente** — id, nome, descricao, codigoResgate, fotoUrl, lat/lng, estaDisponivel
 - **Checkin/HistoricoCheckin** — usuarioId, campingId, lat/lng, dataCriacao, camping (nested)
+- **OcupacaoStatus** — tipo `'tranquilo' | 'movimentado' | 'lotado'` (campo `ocupacao?` no CheckinRequestModel)
 - **Avaliacao/AvaliacaoComUsuario** — nota, comentario, usuarioNome, usuarioFoto
 - **Weather/WeatherForecast/DadosClima** — temperatura, umidade, vento, chuva, statusCamping
 - **Checklist/ChecklistCategoria/ChecklistItem** — progresso, categorias com itens
@@ -167,6 +169,7 @@ Definidos em `src/app/core/models/`:
 - **Timeout geolocalização:** 10s (LocationService), 2s (WeatherService)
 - **Cache de posição:** 5 minutos (maxAge: 300000ms)
 - **Status camping (clima):** chuva > 60% = "Ruim", vento > 35km/h = "Atenção", temp < 16°C = "Atenção", senão = "Excelente"
+- **Status de ocupação:** ao fazer check-in o usuário reporta `tranquilo | movimentado | lotado` — enviado no payload do `POST /checkin` (campo `ocupacao`). O backend deve agregar a moda das últimas **6 horas** por camping e retornar `statusOcupacao` no `GET /mapa/campings`. O frontend exibe badge colorido no card (verde/laranja/vermelho) e armazena localmente via signal `ocupacaoLocal` após o check-in da sessão atual.
 - **Gamificação:** XP por check-ins, níveis progressivos, conquistas desbloqueáveis
 - **Chat de camping:** envio de mensagens só com check-in nas últimas **24 horas** (leitura sempre disponível)
 - **Chat de grupo:** independente de campings, sem restrição de 24h, convite por código alfanumérico de 8 chars

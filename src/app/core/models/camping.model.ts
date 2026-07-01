@@ -1,3 +1,8 @@
+export interface StatusOcupacao {
+  nivel: 'tranquilo' | 'movimentado' | 'lotado';
+  atualizadoEm: string;
+}
+
 export interface Camping {
   id: number;
   nome: string;
@@ -12,6 +17,7 @@ export interface Camping {
   avaliacao: number;
   fotoPrincipal: string;
   recursos: Recurso[];
+  statusOcupacao?: StatusOcupacao;
 }
 export interface Recurso {
   nome: string;

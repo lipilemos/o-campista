@@ -1,7 +1,11 @@
 import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { CampingFoto } from '../../core/models/camping-foto.model';
 import { Camping } from '../../core/models/camping.model';
-import { CheckinRequestModel, CheckinResponseModel } from '../../core/models/checkin.model';
+import {
+  CheckinRequestModel,
+  CheckinResponseModel,
+  OcupacaoStatus,
+} from '../../core/models/checkin.model';
 import { Trilha } from '../../core/models/trilha.model';
 import { AuthService } from '../../core/services/auth.service';
 import { CampingService } from '../../core/services/camping.service';
@@ -47,6 +51,8 @@ export class CardCampingComponent {
   verificandoCheckin = signal(false);
   pessoasRecentes = signal(0);
   fotos = signal<CampingFoto[]>([]);
+  aguardandoOcupacao = signal(false);
+  ocupacaoLocal = signal<OcupacaoStatus | null>(null);
 
   // --- drag (bottom sheet mobile) ---
   alturaCard = signal<string | null>(null);
@@ -151,6 +157,11 @@ export class CardCampingComponent {
   }
 
   fazerCheckin() {
+    this.aguardandoOcupacao.set(true);
+  }
+
+  confirmarCheckin(ocupacao: OcupacaoStatus) {
+    this.aguardandoOcupacao.set(false);
     this.mensagemCheckin.set('');
     this.tipoMensagem.set('');
 
@@ -165,11 +176,13 @@ export class CardCampingComponent {
       campingId: camping.id,
       latitude: pos.lat,
       longitude: pos.lng,
+      ocupacao,
     };
 
     this.checkinService.checkin(request).subscribe({
       next: (response: CheckinResponseModel) => {
         this.checkinRealizado.set(true);
+        this.ocupacaoLocal.set(ocupacao);
         this.tipoMensagem.set('sucesso');
         this.mensagemCheckin.set(response?.mensagem ?? 'Check-in realizado com sucesso! +100 XP');
         this.toast.success(response?.mensagem ?? 'Check-in realizado com sucesso! +100 XP');
@@ -187,6 +200,21 @@ export class CardCampingComponent {
         this.toast.error(msg);
       },
     });
+  }
+
+  cancelarOcupacao() {
+    this.aguardandoOcupacao.set(false);
+  }
+
+  statusOcupacaoAtual(): { nivel: OcupacaoStatus; emoji: string; label: string } | null {
+    const nivel = this.ocupacaoLocal() ?? this.campingSelecionado().statusOcupacao?.nivel ?? null;
+    if (!nivel) return null;
+    const map: Record<OcupacaoStatus, { emoji: string; label: string }> = {
+      tranquilo: { emoji: '😌', label: 'Tranquilo' },
+      movimentado: { emoji: '🙂', label: 'Movimentado' },
+      lotado: { emoji: '😬', label: 'Lotado' },
+    };
+    return { nivel, ...map[nivel] };
   }
 
   // --- drag handlers (bottom sheet mobile) ---
