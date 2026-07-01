@@ -15,6 +15,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 import { ToastService } from '../../core/services/toast.service';
 import { TrilhaService } from '../../core/services/trilha.service';
+import { UsuarioService } from '../../core/services/usuario.service';
 import { Util } from '../../core/Utils.ts/Util';
 
 @Component({
@@ -33,6 +34,7 @@ export class CriarTrilhaComponent implements OnInit, OnDestroy {
 
   private trilhaService = inject(TrilhaService);
   private authService = inject(AuthService);
+  private usuarioService = inject(UsuarioService);
   private confirmDialog = inject(ConfirmDialogService);
   private toast = inject(ToastService);
   private cdr = inject(ChangeDetectorRef);
@@ -137,6 +139,7 @@ export class CriarTrilhaComponent implements OnInit, OnDestroy {
       next: (trilha) => {
         this.salvando.set(false);
         this.toast.success('Trilha criada! +500 XP 🥾');
+        this.usuarioService.verificarNovasConquistas();
         this.trilhaCriada.emit(trilha);
       },
       error: (err) => {
