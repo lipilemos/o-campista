@@ -1,7 +1,7 @@
 # Features Pré-Lançamento — O Campista
 
-> Gerado em 2026-07-01. Baseado na análise do codebase + documento de marketing.
-> Features já implementadas: auth, mapa, check-in GPS, clima, presentes, chat, checklist, trilhas, conquistas, offline cache.
+> Gerado em 2026-07-01. Última atualização: 2026-07-01.
+> Features já implementadas: auth, mapa, check-in GPS, clima, presentes, chat, checklist, trilhas, conquistas, offline cache, **status de ocupação do camping** ✅
 
 ---
 
@@ -47,14 +47,15 @@ Após check-in ou conclusão de trilha, gerar card compartilhável:
 - Endpoint backend: `POST/DELETE /usuarios/{id}/favoritos/{campingId}`
 - **Motivo:** feature básica de qualquer app de descoberta — ausência gera frustração
 
-### 6. Status de Ocupação do Camping
+### 6. Status de Ocupação do Camping ✅ IMPLEMENTADO (2026-07-01)
 No momento do check-in, o usuário reporta a lotação atual:
 - Opções: "Tranquilo 😌", "Movimentado 🙂", "Lotado 😬"
-- Exibido no card do camping com timestamp ("Lotado · há 2h")
-- Expira após 6 horas (sem check-ins recentes = sem status)
-- Agregado: se 3+ check-ins na última hora, mostra a moda dos reports
-- Endpoint: `POST /checkin` já existe, adicionar campo `ocupacao` no payload
-- Exibição: badge colorido no mapa e na ficha do camping
+- Exibido no card do camping como badge colorido (verde/laranja/vermelho)
+- Expira após 6 horas sem check-ins — backend deve implementar agregação
+- Agregado: moda dos reports das últimas 6h por camping
+- **Frontend:** seletor de 3 botões inserido no fluxo de check-in (`card-camping.component`)
+- **Modelos atualizados:** `OcupacaoStatus` em `checkin.model.ts`, `StatusOcupacao` em `camping.model.ts`
+- **Pendente no backend:** aceitar campo `ocupacao` no `POST /checkin` e retornar `statusOcupacao` no `GET /mapa/campings`
 - **Motivo:** informação que nenhum app de camping tem, alta utilidade prática
 
 ### 7. Ranking / Leaderboard
@@ -106,15 +107,17 @@ Timeline acessível pela sidebar com:
 
 ## Ordem de Implementação Recomendada
 
-1. PWA (bloqueia nada, alto impacto imediato)
-2. Landing Page Pública (necessária antes de qualquer campanha)
-3. Onboarding Interativo (retém usuários novos que chegarem pela landing)
-4. Compartilhamento Social (ativa o loop viral)
-5. Favoritos de Campings
-6. Status de Ocupação
-7. Estatísticas Avançadas do Perfil
-8. Ranking / Leaderboard
-9. Feed de Atividades
-10. Modo SOS
-11. Alertas de Clima
-12. QR Code por Camping
+| # | Feature | Status |
+|---|---|---|
+| 1 | PWA (bloqueia nada, alto impacto imediato) | ⬜ Pendente |
+| 2 | Landing Page Pública (necessária antes de qualquer campanha) | ⬜ Pendente |
+| 3 | Onboarding Interativo (retém usuários novos) | ⬜ Pendente |
+| 4 | Compartilhamento Social (ativa o loop viral) | ⬜ Pendente |
+| 5 | Favoritos de Campings | ⬜ Pendente |
+| 6 | **Status de Ocupação** | ✅ Frontend pronto — backend pendente |
+| 7 | Estatísticas Avançadas do Perfil | ⬜ Pendente |
+| 8 | Ranking / Leaderboard | ⬜ Pendente |
+| 9 | Feed de Atividades | ⬜ Pendente |
+| 10 | Modo SOS | ⬜ Pendente |
+| 11 | Alertas de Clima | ⬜ Pendente |
+| 12 | QR Code por Camping | ⬜ Pendente |

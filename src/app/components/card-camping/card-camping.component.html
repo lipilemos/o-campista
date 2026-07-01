@@ -39,25 +39,39 @@
         <p class="avaliacao">⭐ {{ campingSelecionado().avaliacao }}</p>
       </div>
 
-      <div
-        class="camping-presenca"
-        [attr.aria-label]="
-          pessoasRecentes() === 1
-            ? '1 pessoa fez check-in nas últimas 24 horas'
-            : pessoasRecentes() + ' pessoas fizeram check-in nas últimas 24 horas'
-        "
-        role="status"
-      >
-        <span class="presenca-emoji">{{ obterEmojiTipo() }}</span>
-        <span class="presenca-count">{{ pessoasRecentes() }}</span>
-        <div class="presenca-tooltip">
-          @if (pessoasRecentes() === 0) {
-            Nenhum check-in nas últimas 24h
-          } @else if (pessoasRecentes() === 1) {
-            1 pessoa fez check-in nas últimas 24h
-          } @else {
-            {{ pessoasRecentes() }} pessoas fizeram check-in nas últimas 24h
-          }
+      <div class="camping-presenca-grupo">
+        @if (statusOcupacaoAtual(); as status) {
+          <div
+            class="badge-ocupacao"
+            [class]="'badge-ocupacao--' + status.nivel"
+            [attr.aria-label]="'Ocupação atual: ' + status.label"
+            role="status"
+          >
+            <span>{{ status.emoji }}</span>
+            <span class="badge-ocupacao__label">{{ status.label }}</span>
+          </div>
+        }
+
+        <div
+          class="camping-presenca"
+          [attr.aria-label]="
+            pessoasRecentes() === 1
+              ? '1 pessoa fez check-in nas últimas 24 horas'
+              : pessoasRecentes() + ' pessoas fizeram check-in nas últimas 24 horas'
+          "
+          role="status"
+        >
+          <span class="presenca-emoji">{{ obterEmojiTipo() }}</span>
+          <span class="presenca-count">{{ pessoasRecentes() }}</span>
+          <div class="presenca-tooltip">
+            @if (pessoasRecentes() === 0) {
+              Nenhum check-in nas últimas 24h
+            } @else if (pessoasRecentes() === 1) {
+              1 pessoa fez check-in nas últimas 24h
+            } @else {
+              {{ pessoasRecentes() }} pessoas fizeram check-in nas últimas 24h
+            }
+          </div>
         </div>
       </div>
     </div>
@@ -110,13 +124,32 @@
   </div>
 
   @if (campingSelecionado().tipo === 'camping' && !checkinRealizado()) {
-    @if (podeFazerCheckin()) {
+    @if (aguardandoOcupacao()) {
+      <div class="ocupacao-selector" role="group" aria-label="Como está o camping agora?">
+        <p class="ocupacao-pergunta">Como está o camping agora?</p>
+        <div class="ocupacao-opcoes">
+          <button class="btn-ocupacao btn-ocupacao--tranquilo" (click)="confirmarCheckin('tranquilo')">
+            <span class="ocupacao-emoji">😌</span>
+            <span>Tranquilo</span>
+          </button>
+          <button class="btn-ocupacao btn-ocupacao--movimentado" (click)="confirmarCheckin('movimentado')">
+            <span class="ocupacao-emoji">🙂</span>
+            <span>Movimentado</span>
+          </button>
+          <button class="btn-ocupacao btn-ocupacao--lotado" (click)="confirmarCheckin('lotado')">
+            <span class="ocupacao-emoji">😬</span>
+            <span>Lotado</span>
+          </button>
+        </div>
+        <button class="btn-ocupacao-cancelar" (click)="cancelarOcupacao()">Cancelar</button>
+      </div>
+    } @else if (podeFazerCheckin()) {
       <button class="btn-checkin" [disabled]="verificandoCheckin()" (click)="fazerCheckin()">
         {{ verificandoCheckin() ? 'Verificando...' : 'Fazer Check-in' }}
       </button>
     } @else {
       <p class="checkin-info">
-        Voce precisa estar a menos de 250 metros do camping para fazer check-in.
+        Você precisa estar a menos de 250 metros do camping para fazer check-in.
       </p>
     }
   }

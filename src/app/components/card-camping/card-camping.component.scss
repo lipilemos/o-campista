@@ -271,6 +271,139 @@
   box-sizing: border-box;
 }
 
+/* Badge de ocupação */
+
+.camping-presenca-grupo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.badge-ocupacao {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &--tranquilo {
+    background: rgba(76, 175, 80, 0.12);
+    color: var(--color-success);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+  }
+
+  &--movimentado {
+    background: rgba(255, 152, 0, 0.12);
+    color: #e67e00;
+    border: 1px solid rgba(255, 152, 0, 0.3);
+  }
+
+  &--lotado {
+    background: rgba(244, 67, 54, 0.12);
+    color: var(--color-error);
+    border: 1px solid rgba(244, 67, 54, 0.3);
+  }
+}
+
+.badge-ocupacao__label {
+  font-size: var(--text-xs);
+}
+
+/* Seletor de ocupação no check-in */
+
+.ocupacao-selector {
+  position: sticky;
+  bottom: 0;
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border-light);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1;
+}
+
+.ocupacao-pergunta {
+  margin: 0 0 var(--space-3);
+  text-align: center;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text-secondary);
+}
+
+.ocupacao-opcoes {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.btn-ocupacao {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-2);
+  border: 2px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+  cursor: pointer;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-text);
+  transition: var(--transition-base);
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  &--tranquilo:hover {
+    border-color: var(--color-success);
+    color: var(--color-success);
+    background: rgba(76, 175, 80, 0.08);
+  }
+
+  &--movimentado:hover {
+    border-color: #e67e00;
+    color: #e67e00;
+    background: rgba(255, 152, 0, 0.08);
+  }
+
+  &--lotado:hover {
+    border-color: var(--color-error);
+    color: var(--color-error);
+    background: rgba(244, 67, 54, 0.08);
+  }
+}
+
+.ocupacao-emoji {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.btn-ocupacao-cancelar {
+  display: block;
+  width: 100%;
+  margin-top: var(--space-2);
+  padding: var(--space-2);
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  text-align: center;
+
+  &:hover {
+    color: var(--color-text);
+    text-decoration: underline;
+  }
+}
+
 /* alça de drag — visível só em mobile via CSS, mas sempre no DOM */
 .drag-handle-touch {
   display: none;
