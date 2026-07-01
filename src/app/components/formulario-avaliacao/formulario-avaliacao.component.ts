@@ -1,4 +1,12 @@
-import { Component, inject, input, OnChanges, output, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  input,
+  OnChanges,
+  output,
+  SimpleChanges,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Avaliacao } from '../../core/models/avaliacao.model';
 import { Camping } from '../../core/models/camping.model';
@@ -14,6 +22,7 @@ import { AvaliacoesUsuariosComponent } from '../avaliacoes-usuarios/avaliacoes-u
 const XP_ESTRELAS = 100;
 const XP_COMENTARIO_CURTO = 100;
 const XP_COMENTARIO_LONGO = 300;
+const XP_FOTO = 300;
 const COMENTARIO_LONGO_MIN_CHARS = 20;
 
 @Component({
@@ -43,6 +52,7 @@ export class FormularioAvaliacaoComponent implements OnChanges {
   private authService = inject(AuthService);
   private usuarioService = inject(UsuarioService);
   private imageCompressor = inject(ImageCompressorService);
+  private cdr = inject(ChangeDetectorRef);
 
   readonly estrelas = [1, 2, 3, 4, 5];
 
@@ -58,8 +68,12 @@ export class FormularioAvaliacaoComponent implements OnChanges {
       : XP_COMENTARIO_CURTO;
   }
 
+  get xpFoto(): number {
+    return this.fotoSelecionada ? XP_FOTO : 0;
+  }
+
   get xpTotal(): number {
-    return this.xpEstrelas + this.xpComentario;
+    return this.xpEstrelas + this.xpComentario + this.xpFoto;
   }
 
   get isNovaAvaliacao(): boolean {
@@ -67,10 +81,14 @@ export class FormularioAvaliacaoComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['camping'] || changes['trilha']) {
+    if (changes['camping'] || changes['trilha'] || changes['checkinId']) {
       this.resetar();
-      if (this.jaAvaliado() && this.camping()) {
-        this.carregarMinhaAvaliacao();
+      if (this.jaAvaliado()) {
+        if (this.camping()) {
+          this.carregarMinhaAvaliacao();
+        } else if (this.trilha()) {
+          this.carregarMinhaAvaliacaoTrilha();
+        }
       }
     }
   }
@@ -155,7 +173,10 @@ export class FormularioAvaliacaoComponent implements OnChanges {
     if (!file) return;
     this.fotoSelecionada = await this.imageCompressor.compress(file);
     const reader = new FileReader();
-    reader.onload = () => (this.fotoPreview = reader.result as string);
+    reader.onload = () => {
+      this.fotoPreview = reader.result as string;
+      this.cdr.markForCheck();
+    };
     reader.readAsDataURL(this.fotoSelecionada);
   }
 
@@ -185,9 +206,33 @@ export class FormularioAvaliacaoComponent implements OnChanges {
             this.minhaAvaliacao = avaliacao[0];
             this.nota = avaliacao[0].nota;
             this.comentario = avaliacao[0].comentario;
+            if (avaliacao[0].fotoUrl) this.fotoPreview = avaliacao[0].fotoUrl;
+            this.cdr.markForCheck();
           }
         },
         error: () => {},
       });
+  }
+
+  private carregarMinhaAvaliacaoTrilha(): void {
+    const usuarioId = this.authService.getUser()?.id;
+    const trilha = this.trilha();
+    if (!usuarioId || !trilha) return;
+
+    this.trilhaService.obterAvaliacoes(trilha.id).subscribe({
+      next: (avaliacoes) => {
+        const minha = avaliacoes.find(
+          (av) => av.usuarioId === usuarioId && av.checkinId === this.checkinId(),
+        );
+        if (minha) {
+          this.minhaAvaliacao = minha;
+          this.nota = minha.nota;
+          this.comentario = minha.comentario;
+          if (minha.fotoUrl) this.fotoPreview = minha.fotoUrl;
+          this.cdr.markForCheck();
+        }
+      },
+      error: () => {},
+    });
   }
 }

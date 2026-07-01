@@ -1,29 +1,25 @@
 <div class="camping-details-panel">
-  <button
-    class="btn-close-round btn-close-round--light close-btn"
-    (click)="fechar.emit()"
-    aria-label="Fechar detalhes"
-  >
+  <button class="btn-close-round btn-close-round--light close-btn" (click)="fechar.emit()" aria-label="Fechar detalhes">
     ✕
   </button>
 
   @if (camping(); as c) {
-    <div class="camping-header">
-      @if (c.fotoPrincipal) {
-        <img [src]="c.fotoPrincipal" [alt]="c.nome" class="camping-image" appImgFallback />
-      }
-      <h2>{{ c.nome }}</h2>
-      <p class="location">📍 {{ c.endereco }}, {{ c.cidade }}</p>
-    </div>
+  <div class="camping-header">
+    @if (c.fotoPrincipal) {
+    <img [src]="c.fotoPrincipal" [alt]="c.nome" class="camping-image" appImgFallback />
+    }
+    <h2>{{ c.nome }}</h2>
+    <p class="location">📍 {{ c.endereco }}, {{ c.cidade }}</p>
+  </div>
   }
 
   @if (trilha(); as t) {
-    <div class="camping-header">
-      <h2>🥾 {{ t.nome }}</h2>
-      @if (t.criadorNome) {
-        <p class="location">Criado por {{ t.criadorNome }}</p>
-      }
-    </div>
+  <div class="camping-header">
+    <h2>🥾 {{ t.nome }}</h2>
+    @if (t.criadorNome) {
+    <p class="location">Criado por {{ t.criadorNome }}</p>
+    }
+  </div>
   }
 
   <div class="rating-section">
@@ -31,92 +27,72 @@
 
     <div class="star-rating">
       @for (i of estrelas; track i) {
-        <button
-          class="star"
-          [class.active]="i <= nota"
-          (click)="nota = i"
-          [attr.aria-label]="i + ' estrela' + (i > 1 ? 's' : '')"
-        >
-          {{ i <= nota ? '⭐' : '☆' }}
-        </button>
-      }
+      <button class="star" [class.active]="i <= nota" (click)="nota = i"
+        [disabled]="jaAvaliado()"
+        [attr.aria-label]="i + ' estrela' + (i > 1 ? 's' : '')">
+        {{ i <= nota ? '⭐' : '☆' }} </button>
+          }
 
-      @if (isNovaAvaliacao && xpEstrelas > 0) {
-        <span class="xp-badge xp-badge--active" aria-live="polite">+{{ xpEstrelas }} XP</span>
-      }
+          @if (isNovaAvaliacao && xpEstrelas > 0) {
+          <span class="xp-badge xp-badge--active" aria-live="polite">+{{ xpEstrelas }} XP</span>
+          }
     </div>
 
     <div class="comment-field">
-      <textarea
-        [(ngModel)]="comentario"
-        placeholder="Compartilhe sua experiência..."
-        class="comment-input"
-        rows="4"
-        aria-label="Comentário da avaliação"
-      ></textarea>
+      <textarea [(ngModel)]="comentario" placeholder="Compartilhe sua experiência..." class="comment-input" rows="4"
+        [readonly]="jaAvaliado()"
+        aria-label="Comentário da avaliação"></textarea>
 
       @if (isNovaAvaliacao && xpComentario > 0) {
-        <span
-          class="xp-badge"
-          [class.xp-badge--bonus]="comentario.trim().length > 20"
-          [class.xp-badge--active]="comentario.trim().length <= 20"
-          aria-live="polite"
-        >
-          +{{ xpComentario }} XP
-          @if (comentario.trim().length <= 20) {
-            <span class="xp-hint">Escreva mais de 20 caracteres para +300 XP!</span>
-          }
-        </span>
+      <span class="xp-badge" [class.xp-badge--bonus]="comentario.trim().length > 20"
+        [class.xp-badge--active]="comentario.trim().length <= 20" aria-live="polite">
+        +{{ xpComentario }} XP
+        @if (comentario.trim().length <= 20) { <span class="xp-hint">Escreva mais de 20 caracteres para +300 XP!</span>
+      }
+      </span>
       }
     </div>
 
     @if (isNovaAvaliacao && xpTotal > 0) {
-      <div class="xp-total" aria-live="polite">✨ Total: +{{ xpTotal }} XP</div>
+    <div class="xp-total" aria-live="polite">✨ Total: +{{ xpTotal }} XP</div>
     }
 
-    @if (isNovaAvaliacao) {
-      <div class="foto-upload">
-        @if (fotoPreview) {
-          <div class="foto-preview-wrap">
-            <img [src]="fotoPreview" alt="Preview da foto" class="foto-preview" />
-            <button
-              class="btn-close-round btn-close-round--light foto-remove"
-              (click)="removerFoto()"
-              aria-label="Remover foto"
-            >
-              ✕
-            </button>
-          </div>
-        } @else {
-          <label class="foto-label" for="foto-avaliacao">
-            📷 Adicionar foto (opcional)
-            <input
-              id="foto-avaliacao"
-              type="file"
-              accept="image/*"
-              capture="environment"
-              class="foto-input"
-              (change)="onFotoSelecionada($event)"
-              aria-label="Selecionar foto para avaliação"
-            />
-          </label>
+    <div class="foto-upload">
+      @if (fotoPreview) {
+      <div class="foto-preview-wrap">
+        <img [src]="fotoPreview" alt="Foto da avaliação" class="foto-preview" />
+        @if (!jaAvaliado()) {
+        <button class="btn-close-round btn-close-round--light foto-remove" (click)="removerFoto()"
+          aria-label="Remover foto">
+          ✕
+        </button>
         }
       </div>
-    }
+      @if (isNovaAvaliacao) {
+      <span class="xp-badge xp-badge--bonus foto-xp-badge" aria-live="polite">
+        +{{ xpFoto }} XPs
+      </span>
+      }
+      } @else if (isNovaAvaliacao) {
+      <label class="foto-label" for="foto-avaliacao">
+        📷 Adicionar foto (+300 XP)
+        <input id="foto-avaliacao" type="file" accept="image/*" capture="environment" class="foto-input"
+          (change)="onFotoSelecionada($event)" aria-label="Selecionar foto para avaliação" />
+      </label>
+      }
+    </div>
 
-    <button
-      (click)="salvar()"
-      class="save-btn"
-      [disabled]="carregando || nota === 0 || !comentario.trim()"
-    >
+    @if (!jaAvaliado()) {
+    <button (click)="salvar()" class="save-btn" [disabled]="carregando || nota === 0 || !comentario.trim()">
       {{ carregando ? 'Enviando...' : minhaAvaliacao ? 'Atualizar Avaliação' : 'Enviar Avaliação' }}
     </button>
+    }
   </div>
 
   @if (camping(); as c) {
-    <app-avaliacoes-usuarios [campingId]="c.id" />
+  <app-avaliacoes-usuarios [campingId]="c.id" />
   }
   @if (trilha(); as t) {
-    <app-avaliacoes-usuarios [trilhaId]="t.id" />
+  <app-avaliacoes-usuarios [trilhaId]="t.id" />
   }
 </div>
