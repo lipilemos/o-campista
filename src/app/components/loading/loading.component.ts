@@ -5,7 +5,6 @@ import { LoadingService } from '../../core/services/loading.service';
   selector: 'app-loading',
   styleUrls: ['./loading.component.scss'],
   templateUrl: './loading.component.html',
-
 })
 export class LoadingComponent {
   loadingService = inject(LoadingService);

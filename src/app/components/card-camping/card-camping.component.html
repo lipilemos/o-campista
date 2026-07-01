@@ -1,8 +1,28 @@
-<div class="camping-info">
+<div
+  class="camping-info"
+  [style.height]="alturaCard()"
+  [class.dragging]="isDragging()"
+>
+  <!-- alça de drag para mobile -->
+  <div
+    class="drag-handle-touch"
+    (touchstart)="onDragStart($event)"
+    (touchmove)="onDragMove($event)"
+    (touchend)="onDragEnd()"
+    role="separator"
+    aria-label="Arraste para redimensionar"
+  ></div>
+
   <button class="btn-close-round btn-fechar" (click)="fecharCampingInfo()">✕</button>
 
-  @if (campingSelecionado().fotoPrincipal) {
-    <img [src]="campingSelecionado().fotoPrincipal" [alt]="campingSelecionado().nome" appImgFallback />
+  @if (fotos().length > 0) {
+    <app-photo-gallery [fotos]="fotos()" />
+  } @else if (campingSelecionado().fotoPrincipal) {
+    <img
+      [src]="campingSelecionado().fotoPrincipal"
+      [alt]="campingSelecionado().nome"
+      appImgFallback
+    />
   }
 
   <div class="camping-content">
@@ -21,9 +41,11 @@
 
       <div
         class="camping-presenca"
-        [attr.aria-label]="pessoasRecentes() === 1
-          ? '1 pessoa fez check-in nas últimas 24 horas'
-          : pessoasRecentes() + ' pessoas fizeram check-in nas últimas 24 horas'"
+        [attr.aria-label]="
+          pessoasRecentes() === 1
+            ? '1 pessoa fez check-in nas últimas 24 horas'
+            : pessoasRecentes() + ' pessoas fizeram check-in nas últimas 24 horas'
+        "
         role="status"
       >
         <span class="presenca-emoji">{{ obterEmojiTipo() }}</span>
@@ -67,6 +89,12 @@
       }
     </div>
 
+    <h4 class="section-title">🥾 Trilhas</h4>
+    <app-trilha-list
+      [campingId]="campingSelecionado().id"
+      (trilhaSelecionada)="trilhaSelecionada.emit($event)"
+    />
+
     @if (campingSelecionado().tipo === 'camping') {
       @if (mensagemCheckin()) {
         <div
@@ -83,11 +111,7 @@
 
   @if (campingSelecionado().tipo === 'camping' && !checkinRealizado()) {
     @if (podeFazerCheckin()) {
-      <button
-        class="btn-checkin"
-        [disabled]="verificandoCheckin()"
-        (click)="fazerCheckin()"
-      >
+      <button class="btn-checkin" [disabled]="verificandoCheckin()" (click)="fazerCheckin()">
         {{ verificandoCheckin() ? 'Verificando...' : 'Fazer Check-in' }}
       </button>
     } @else {

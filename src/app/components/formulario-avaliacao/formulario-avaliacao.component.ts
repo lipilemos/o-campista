@@ -2,8 +2,11 @@ import { Component, inject, input, OnChanges, output, SimpleChanges } from '@ang
 import { FormsModule } from '@angular/forms';
 import { Avaliacao } from '../../core/models/avaliacao.model';
 import { Camping } from '../../core/models/camping.model';
+import { Trilha } from '../../core/models/trilha.model';
 import { AuthService } from '../../core/services/auth.service';
 import { CampingService } from '../../core/services/camping.service';
+import { TrilhaService } from '../../core/services/trilha.service';
+import { ImageCompressorService } from '../../core/services/image-compressor.service';
 import { UsuarioService } from '../../core/services/usuario.service';
 import { ImgFallbackDirective } from '../../core/directives/img-fallback.directive';
 import { AvaliacoesUsuariosComponent } from '../avaliacoes-usuarios/avaliacoes-usuarios.component';
@@ -20,7 +23,8 @@ const COMENTARIO_LONGO_MIN_CHARS = 20;
   styleUrl: './formulario-avaliacao.component.scss',
 })
 export class FormularioAvaliacaoComponent implements OnChanges {
-  camping = input.required<Camping>();
+  camping = input<Camping>();
+  trilha = input<Trilha>();
   checkinId = input<number>();
   jaAvaliado = input(false);
 
@@ -31,10 +35,14 @@ export class FormularioAvaliacaoComponent implements OnChanges {
   comentario = '';
   carregando = false;
   minhaAvaliacao: Avaliacao | null = null;
+  fotoSelecionada: File | null = null;
+  fotoPreview: string | null = null;
 
   private campingService = inject(CampingService);
+  private trilhaService = inject(TrilhaService);
   private authService = inject(AuthService);
   private usuarioService = inject(UsuarioService);
+  private imageCompressor = inject(ImageCompressorService);
 
   readonly estrelas = [1, 2, 3, 4, 5];
 
@@ -59,29 +67,35 @@ export class FormularioAvaliacaoComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['camping']) {
+    if (changes['camping'] || changes['trilha']) {
       this.resetar();
-      if (this.jaAvaliado()) {
+      if (this.jaAvaliado() && this.camping()) {
         this.carregarMinhaAvaliacao();
       }
     }
   }
 
   salvar(): void {
-    if (this.nota < 1 || this.nota > 5) {
-      return;
-    }
-
-    if (!this.comentario.trim()) {
-      return;
-    }
+    if (this.nota < 1 || this.nota > 5) return;
+    if (!this.comentario.trim()) return;
 
     const usuarioId = this.authService.getUser()?.id;
     if (!usuarioId) return;
 
+    const trilha = this.trilha();
+    const camping = this.camping();
+
+    if (trilha) {
+      this.salvarAvaliacacaoTrilha(trilha.id, usuarioId);
+    } else if (camping) {
+      this.salvarAvaliacaoCamping(camping.id, usuarioId);
+    }
+  }
+
+  private salvarAvaliacaoCamping(campingId: number, usuarioId: string): void {
     const avaliacao: Avaliacao = {
       usuarioId,
-      campingId: this.camping().id,
+      campingId,
       nota: this.nota,
       checkinId: this.checkinId(),
       comentario: this.comentario.trim(),
@@ -95,49 +109,85 @@ export class FormularioAvaliacaoComponent implements OnChanges {
           this.carregando = false;
           this.avaliacaoSalva.emit(resultado);
         },
-        error: (error) => {
-          this.carregando = false;
-          console.error('Erro ao atualizar avaliação:', error);
-        },
+        error: () => (this.carregando = false),
       });
     } else {
       const avaliacaoComXp: Avaliacao = { ...avaliacao, xpGanho: this.xpTotal };
-      this.campingService.criarAvaliacao(avaliacaoComXp).subscribe({
-        next: (resultado) => {
-          this.carregando = false;
-          this.minhaAvaliacao = resultado;
-          this.avaliacaoSalva.emit(resultado);
-          this.usuarioService.verificarNovasConquistas();
-        },
-        error: (error) => {
-          this.carregando = false;
-          console.error('Erro ao criar avaliação:', error);
-        },
-      });
+      this.campingService
+        .criarAvaliacao(avaliacaoComXp, this.fotoSelecionada ?? undefined)
+        .subscribe({
+          next: (resultado) => {
+            this.carregando = false;
+            this.minhaAvaliacao = resultado;
+            this.avaliacaoSalva.emit(resultado);
+            this.usuarioService.verificarNovasConquistas();
+          },
+          error: () => (this.carregando = false),
+        });
     }
+  }
+
+  private salvarAvaliacacaoTrilha(trilhaId: number, usuarioId: string): void {
+    const avaliacao: Avaliacao = {
+      usuarioId,
+      trilhaId,
+      nota: this.nota,
+      checkinId: this.checkinId(),
+      comentario: this.comentario.trim(),
+      xpGanho: this.xpTotal,
+    };
+
+    this.carregando = true;
+    this.trilhaService.criarAvaliacao(trilhaId, avaliacao, this.fotoSelecionada ?? undefined).subscribe({
+      next: (resultado) => {
+        this.carregando = false;
+        this.minhaAvaliacao = resultado;
+        this.avaliacaoSalva.emit(resultado);
+        this.usuarioService.verificarNovasConquistas();
+      },
+      error: () => (this.carregando = false),
+    });
+  }
+
+  async onFotoSelecionada(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    this.fotoSelecionada = await this.imageCompressor.compress(file);
+    const reader = new FileReader();
+    reader.onload = () => (this.fotoPreview = reader.result as string);
+    reader.readAsDataURL(this.fotoSelecionada);
+  }
+
+  removerFoto(): void {
+    this.fotoSelecionada = null;
+    this.fotoPreview = null;
   }
 
   resetar(): void {
     this.nota = 0;
     this.comentario = '';
     this.minhaAvaliacao = null;
+    this.fotoSelecionada = null;
+    this.fotoPreview = null;
   }
 
   private carregarMinhaAvaliacao(): void {
     const usuarioId = this.authService.getUser()?.id;
-    if (!usuarioId) return;
+    const camping = this.camping();
+    if (!usuarioId || !camping) return;
 
     this.campingService
-      .obterAvaliacaoUsuario(this.camping().id, usuarioId, this.checkinId())
+      .obterAvaliacaoUsuario(camping.id, usuarioId, this.checkinId())
       .subscribe({
         next: (avaliacao) => {
-          if (avaliacao) {
+          if (avaliacao?.length) {
             this.minhaAvaliacao = avaliacao[0];
             this.nota = avaliacao[0].nota;
             this.comentario = avaliacao[0].comentario;
           }
         },
-        error: (error) => console.error('Erro ao carregar avaliação do usuário:', error),
+        error: () => {},
       });
   }
 }

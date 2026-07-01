@@ -1,20 +1,12 @@
 <h1>Bem-vindo ao O Campista</h1>
-<p>
-    Seu portal de aventuras e campings.
-</p>
+<p>Seu portal de aventuras e campings.</p>
 
 @if (weather) {
-
-<app-weather-card [weather]="weather">
-</app-weather-card>
-
+  <app-weather-card [weather]="weather"> </app-weather-card>
 }
 
-<div style="margin: var(--space-4) 0;"></div>
+<div style="margin: var(--space-4) 0"></div>
 
 @if (previsao3Dias.length) {
-
-<app-weather-card-forecast [previsoes]="previsao3Dias">
-</app-weather-card-forecast>
-
+  <app-weather-card-forecast [previsoes]="previsao3Dias"> </app-weather-card-forecast>
 }

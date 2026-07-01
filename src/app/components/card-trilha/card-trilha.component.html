@@ -1,0 +1,88 @@
+<div
+  class="trilha-card"
+  [class.dragging]="isDragging()"
+  [style.height]="alturaCard()"
+  (touchstart)="onDragStart($event)"
+  (touchmove)="onDragMove($event)"
+  (touchend)="onDragEnd()"
+>
+  <div class="drag-handle-touch" aria-hidden="true"></div>
+
+  <button class="btn-close-round btn-close-round--light close-btn" (click)="fecharCard()" aria-label="Fechar trilha">
+    ✕
+  </button>
+
+  <div class="trilha-content custom-scrollbar">
+    <!-- Header -->
+    <div class="trilha-header">
+      <div class="trilha-header-row">
+        <h2 class="trilha-nome">🥾 {{ trilha().nome }}</h2>
+        @if (pessoasRecentes() > 0) {
+          <div class="trilha-presenca" aria-label="{{ pessoasRecentes() }} pessoas nas últimas 24h">
+            <span class="presenca-icon">👥</span>
+            <span class="presenca-count">{{ pessoasRecentes() }}</span>
+            <div class="presenca-tooltip">{{ pessoasRecentes() }} pessoa(s) nas últimas 24h</div>
+          </div>
+        }
+      </div>
+
+      <div class="trilha-meta">
+        @if (trilha().dificuldade) {
+          <span class="badge-dificuldade" [class]="classeDificuldade(trilha().dificuldade)">
+            {{ trilha().dificuldade }}
+          </span>
+        }
+        <span class="trilha-distancia">📏 {{ trilha().distanciaKm | number: '1.1-1' }} km</span>
+        <span class="trilha-avaliacao">{{ estrelaDisplay(trilha().avaliacaoMedia) }}</span>
+      </div>
+
+      @if (trilha().criadorNome) {
+        <p class="trilha-criador">Criado por <strong>{{ trilha().criadorNome }}</strong></p>
+      }
+    </div>
+
+    @if (trilha().descricao) {
+      <p class="trilha-descricao">{{ trilha().descricao }}</p>
+    }
+
+    <!-- Check-in feedback -->
+    @if (mensagemCheckin()) {
+      <div class="checkin-message" [class.sucesso]="tipoMensagem() === 'sucesso'" [class.erro]="tipoMensagem() === 'erro'">
+        {{ mensagemCheckin() }}
+      </div>
+    }
+
+    <!-- Avaliações (se não fez checkin) -->
+    @if (!checkinRealizado()) {
+      <app-avaliacoes-usuarios [trilhaId]="trilha().id" />
+    }
+
+    <!-- Formulário de avaliação (após checkin) -->
+    @if (checkinRealizado() && mostrarFormAvaliacao()) {
+      <app-formulario-avaliacao
+        [trilha]="trilha()"
+        [checkinId]="checkinId()"
+        (fechar)="mostrarFormAvaliacao.set(false)"
+        (avaliacaoSalva)="mostrarFormAvaliacao.set(false)"
+      />
+    }
+
+    @if (checkinRealizado() && !mostrarFormAvaliacao()) {
+      <app-avaliacoes-usuarios [trilhaId]="trilha().id" />
+      <button class="btn-avaliar" (click)="mostrarFormAvaliacao.set(true)">⭐ Avaliar Trilha</button>
+    }
+  </div>
+
+  <!-- Sticky footer -->
+  <div class="trilha-footer">
+    @if (!checkinRealizado()) {
+      @if (podeFazerCheckin()) {
+        <button class="btn-checkin" (click)="fazerCheckin()" [disabled]="verificandoCheckin()">
+          {{ verificandoCheckin() ? 'Verificando...' : '📍 Fazer Check-in na Trilha' }}
+        </button>
+      } @else {
+        <p class="distancia-aviso">Você precisa estar a menos de 250 metros do início da trilha para fazer check-in.</p>
+      }
+    }
+  </div>
+</div>

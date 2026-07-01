@@ -1,12 +1,11 @@
-import { ChecklistCategoria } from "./checklist-categoria.model";
+import { ChecklistCategoria } from './checklist-categoria.model';
 
 export interface Checklist {
+  id: number;
 
-    id: number;
+  nome: string;
 
-    nome: string;
+  progresso: number;
 
-    progresso: number;
-
-    categorias: ChecklistCategoria[];
+  categorias: ChecklistCategoria[];
 }

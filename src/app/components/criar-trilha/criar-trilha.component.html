@@ -1,0 +1,83 @@
+<div class="gravar-overlay overlay-backdrop">
+  @if (!finalizando()) {
+    <!-- Modo gravação -->
+    <div class="recording-banner glass-card">
+      <div class="rec-indicator" aria-hidden="true"></div>
+      <div class="rec-info">
+        <span class="rec-label">Gravando trilha...</span>
+        <span class="rec-stats">
+          {{ distanciaKm.toFixed(2) }} km · {{ waypointCount }} pontos
+        </span>
+      </div>
+    </div>
+
+    <div class="recording-actions">
+      <button class="btn-cancel" type="button" (click)="cancelar()">Cancelar</button>
+      <button
+        class="btn-finalizar"
+        type="button"
+        [disabled]="waypointCount < 2"
+        (click)="finalizar()"
+      >
+        Finalizar
+      </button>
+    </div>
+  } @else {
+    <!-- Formulário de salvamento -->
+    <div class="form-modal glass-card" [formGroup]="form">
+      <h3>Salvar Trilha</h3>
+      <p class="form-stats">📏 {{ distanciaKm.toFixed(2) }} km · {{ waypointCount }} pontos gravados</p>
+
+      <div class="form-field">
+        <label for="nome-trilha">Nome da trilha *</label>
+        <input
+          id="nome-trilha"
+          type="text"
+          formControlName="nome"
+          placeholder="Ex: Trilha do Mirante"
+          maxlength="200"
+          autocomplete="off"
+        />
+        @if (form.controls.nome.invalid && form.controls.nome.touched) {
+          <span class="field-error">Nome é obrigatório.</span>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="dificuldade-trilha">Dificuldade *</label>
+        <select id="dificuldade-trilha" formControlName="dificuldade">
+          <option value="" disabled>Selecione...</option>
+          <option value="Fácil">Fácil</option>
+          <option value="Moderada">Moderada</option>
+          <option value="Difícil">Difícil</option>
+          <option value="Extrema">Extrema</option>
+        </select>
+        @if (form.controls.dificuldade.invalid && form.controls.dificuldade.touched) {
+          <span class="field-error">Selecione a dificuldade.</span>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="descricao-trilha">Descrição</label>
+        <textarea
+          id="descricao-trilha"
+          formControlName="descricao"
+          placeholder="Descreva a trilha (opcional)..."
+          rows="3"
+        ></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-voltar" type="button" (click)="voltarParaForm()">Voltar</button>
+        <button
+          class="btn-salvar"
+          type="button"
+          [disabled]="form.invalid || salvando()"
+          (click)="salvar()"
+        >
+          {{ salvando() ? 'Salvando...' : 'Salvar Trilha 🥾' }}
+        </button>
+      </div>
+    </div>
+  }
+</div>

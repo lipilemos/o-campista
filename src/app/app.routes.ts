@@ -4,8 +4,7 @@ import { authGuard } from './core/guards/auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () =>
-      import('./pages/login/login.component').then((m) => m.LoginComponent),
+    loadComponent: () => import('./pages/login/login.component').then((m) => m.LoginComponent),
   },
   {
     path: 'forgot-password',
@@ -34,8 +33,7 @@ export const routes: Routes = [
     children: [
       {
         path: 'home',
-        loadComponent: () =>
-          import('./pages/home/home.component').then((m) => m.HomeComponent),
+        loadComponent: () => import('./pages/home/home.component').then((m) => m.HomeComponent),
       },
       {
         path: 'account',
@@ -44,20 +42,16 @@ export const routes: Routes = [
       },
       {
         path: 'mapa',
-        loadComponent: () =>
-          import('./pages/map/map.component').then((m) => m.MapComponent),
+        loadComponent: () => import('./pages/map/map.component').then((m) => m.MapComponent),
       },
       {
         path: 'chat',
-        loadComponent: () =>
-          import('./pages/chat/chat.component').then((m) => m.ChatComponent),
+        loadComponent: () => import('./pages/chat/chat.component').then((m) => m.ChatComponent),
         children: [
           {
             path: '',
             loadComponent: () =>
-              import('./pages/chat/chat-list/chat-list.component').then(
-                (m) => m.ChatListComponent,
-              ),
+              import('./pages/chat/chat-list/chat-list.component').then((m) => m.ChatListComponent),
           },
           {
             path: 'criar-grupo',
@@ -89,8 +83,7 @@ export const routes: Routes = [
       },
       {
         path: 'gift',
-        loadComponent: () =>
-          import('./pages/gift/gift.component').then((m) => m.GiftComponent),
+        loadComponent: () => import('./pages/gift/gift.component').then((m) => m.GiftComponent),
       },
     ],
   },

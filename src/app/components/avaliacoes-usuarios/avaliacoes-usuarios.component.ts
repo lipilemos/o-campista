@@ -3,6 +3,7 @@ import { Component, effect, inject, input, signal } from '@angular/core';
 import { AvaliacaoComUsuario } from '../../core/models/avaliacao.model';
 import { ImgFallbackDirective } from '../../core/directives/img-fallback.directive';
 import { CampingService } from '../../core/services/camping.service';
+import { TrilhaService } from '../../core/services/trilha.service';
 
 @Component({
   selector: 'app-avaliacoes-usuarios',
@@ -11,34 +12,46 @@ import { CampingService } from '../../core/services/camping.service';
   styleUrl: './avaliacoes-usuarios.component.scss',
 })
 export class AvaliacoesUsuariosComponent {
-  campingId = input.required<number>();
+  campingId = input<number>();
+  trilhaId = input<number>();
 
   avaliacoesCamping = signal<AvaliacaoComUsuario[]>([]);
   carregando = signal(false);
 
   private campingService = inject(CampingService);
+  private trilhaService = inject(TrilhaService);
 
   constructor() {
     effect(() => {
-      const id = this.campingId();
-      if (id) {
-        this.carregarAvaliacoes(id);
+      const tId = this.trilhaId();
+      const cId = this.campingId();
+      if (tId) {
+        this.carregarAvaliacoesTrilha(tId);
+      } else if (cId) {
+        this.carregarAvaliacoes(cId);
       }
     });
   }
 
   private carregarAvaliacoes(campingId: number) {
     this.carregando.set(true);
-
     this.campingService.obterAvaliacoesCamping(campingId).subscribe({
       next: (avaliacoes) => {
         this.avaliacoesCamping.set(avaliacoes);
         this.carregando.set(false);
       },
-      error: (error) => {
-        console.error('Erro ao carregar avaliações:', error);
+      error: () => this.carregando.set(false),
+    });
+  }
+
+  private carregarAvaliacoesTrilha(trilhaId: number) {
+    this.carregando.set(true);
+    this.trilhaService.obterAvaliacoes(trilhaId).subscribe({
+      next: (avaliacoes) => {
+        this.avaliacoesCamping.set(avaliacoes);
         this.carregando.set(false);
       },
+      error: () => this.carregando.set(false),
     });
   }
 }

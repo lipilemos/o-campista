@@ -1,27 +1,17 @@
 <div class="forecast-card">
+  <h3>📅 Próximos 3 dias</h3>
 
-    <h3>
-        📅 Próximos 3 dias
-    </h3>
-
-    @for (dia of previsoes; track dia.dia) {
-
+  @for (dia of previsoes; track dia.dia) {
     <div class="forecast-item">
-        <div>
-            {{ dia.dia }}
-        </div>
-        <div>
-            {{ dia.icone }}
-        </div>
-        <div>
-            {{ dia.temperaturaMinima }}°C
-        </div>
-        -
-        <div>
-            {{ dia.temperaturaMaxima }}°C
-        </div>
+      <div>
+        {{ dia.dia }}
+      </div>
+      <div>
+        {{ dia.icone }}
+      </div>
+      <div>{{ dia.temperaturaMinima }}°C</div>
+      -
+      <div>{{ dia.temperaturaMaxima }}°C</div>
     </div>
-
-    }
-
+  }
 </div>

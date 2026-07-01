@@ -1,17 +1,32 @@
-<div class="profile-overlay overlay-backdrop" (click)="fecharModal()" (keydown.escape)="fecharModal()">
+<div
+  class="profile-overlay overlay-backdrop"
+  (click)="fecharModal()"
+  (keydown.escape)="fecharModal()"
+>
   <div class="profile-card" (click)="$event.stopPropagation()">
-
-    <button class="btn-close-round btn-close-round--light profile-close" (click)="fecharModal()" aria-label="Fechar detalhes do perfil">✕</button>
+    <button
+      class="btn-close-round btn-close-round--light profile-close"
+      (click)="fecharModal()"
+      aria-label="Fechar detalhes do perfil"
+    >
+      ✕
+    </button>
 
     <div class="photo-section">
-      <div class="photo-wrapper" (click)="fileInput.click()" role="button" tabindex="0"
-        (keydown.enter)="fileInput.click()" aria-label="Alterar foto de perfil">
+      <div
+        class="photo-wrapper"
+        (click)="fileInput.click()"
+        role="button"
+        tabindex="0"
+        (keydown.enter)="fileInput.click()"
+        aria-label="Alterar foto de perfil"
+      >
         @if (fotoExibida()) {
-        <img class="profile-photo" [src]="fotoExibida()" [alt]="usuario().nome" appImgFallback />
+          <img class="profile-photo" [src]="fotoExibida()" [alt]="usuario().nome" appImgFallback />
         } @else {
-        <div class="avatar-large">
-          {{ inicialNome() }}
-        </div>
+          <div class="avatar-large">
+            {{ inicialNome() }}
+          </div>
         }
         <div class="photo-hover">
           <span>📷</span>
@@ -21,18 +36,18 @@
       <input #fileInput type="file" accept="image/*" (change)="onPhotoSelected($event)" hidden />
 
       @if (imagePreview()) {
-      <div class="photo-actions">
-        <button class="btn-save" (click)="uploadPhoto()" [disabled]="uploading()">
-          @if (uploading()) {
-          Enviando...
-          } @else {
-          Salvar foto
-          }
-        </button>
-        <button class="btn-remove" (click)="removePhoto()" [disabled]="uploading()">
-          Remover
-        </button>
-      </div>
+        <div class="photo-actions">
+          <button class="btn-save" (click)="uploadPhoto()" [disabled]="uploading()">
+            @if (uploading()) {
+              Enviando...
+            } @else {
+              Salvar foto
+            }
+          </button>
+          <button class="btn-remove" (click)="removePhoto()" [disabled]="uploading()">
+            Remover
+          </button>
+        </div>
       }
     </div>
 
@@ -58,10 +73,9 @@
     </div>
 
     @if (mensagem()) {
-    <div class="feedback" [class.erro]="erro()" [class.sucesso]="!erro()">
-      {{ mensagem() }}
-    </div>
+      <div class="feedback" [class.erro]="erro()" [class.sucesso]="!erro()">
+        {{ mensagem() }}
+      </div>
     }
-
   </div>
 </div>

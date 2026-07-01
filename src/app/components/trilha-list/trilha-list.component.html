@@ -1,0 +1,32 @@
+@if (carregando()) {
+  <p class="trilha-loading">Carregando trilhas...</p>
+} @else if (trilhas().length === 0) {
+  <p class="trilha-empty">Nenhuma trilha cadastrada.</p>
+} @else {
+  <ul class="trilha-list" role="list">
+    @for (trilha of trilhas(); track trilha.id) {
+      <li class="trilha-item" role="listitem">
+        <button
+          class="trilha-btn"
+          (click)="selecionar(trilha)"
+          [attr.aria-label]="'Ver trilha ' + trilha.nome"
+        >
+          <div class="trilha-info">
+            <span class="trilha-nome">{{ trilha.nome }}</span>
+            <span class="trilha-distancia">🥾 {{ trilha.distanciaKm }} km</span>
+          </div>
+          <div class="trilha-badges">
+            @if (trilha.dificuldade) {
+              <span class="badge-dif" [class]="classeDificuldade(trilha.dificuldade)">
+                {{ trilha.dificuldade }}
+              </span>
+            }
+            @if (trilha.concluidaPeloUsuario) {
+              <span class="badge-concluida">✅ Concluída</span>
+            }
+          </div>
+        </button>
+      </li>
+    }
+  </ul>
+}

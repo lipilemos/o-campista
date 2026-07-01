@@ -5,7 +5,11 @@
       <button class="btn-action" (click)="criarGrupo()" aria-label="Criar grupo">
         Criar Grupo
       </button>
-      <button class="btn-action btn-action--outline" (click)="entrarGrupo()" aria-label="Entrar em grupo">
+      <button
+        class="btn-action btn-action--outline"
+        (click)="entrarGrupo()"
+        aria-label="Entrar em grupo"
+      >
         Entrar em Grupo
       </button>
     </div>
@@ -33,7 +37,9 @@
       <button
         class="sala-item"
         (click)="abrirSala(sala)"
-        [attr.aria-label]="sala.nome + (naoLidas(sala) > 0 ? ', ' + naoLidas(sala) + ' mensagens não lidas' : '')"
+        [attr.aria-label]="
+          sala.nome + (naoLidas(sala) > 0 ? ', ' + naoLidas(sala) + ' mensagens não lidas' : '')
+        "
       >
         <div class="sala-avatar">
           @if (sala.fotoCapa) {

@@ -17,6 +17,5 @@ const loadGoogleMaps = () => {
 };
 
 loadGoogleMaps().then(() => {
-  bootstrapApplication(App, appConfig)
-    .catch((err) => console.error(err));
+  bootstrapApplication(App, appConfig).catch((err) => console.error(err));
 });

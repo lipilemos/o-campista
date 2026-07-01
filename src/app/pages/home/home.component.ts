@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { WeatherForecastCardComponent } from '../../components/weather-card-forecast/weather-card-forecast.component';
 import { WeatherCardComponent } from '../../components/weather-card/weather-card.component';
 import { UsuarioLogado } from '../../core/models/user.model';

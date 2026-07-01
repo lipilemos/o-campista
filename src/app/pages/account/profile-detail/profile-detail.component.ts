@@ -103,9 +103,7 @@ export class ProfileDetailComponent {
       error: (err) => {
         this.uploading.set(false);
         this.erro.set(true);
-        this.mensagem.set(
-          err?.error?.mensagem ?? 'Nao foi possivel atualizar a foto.',
-        );
+        this.mensagem.set(err?.error?.mensagem ?? 'Nao foi possivel atualizar a foto.');
       },
     });
   }

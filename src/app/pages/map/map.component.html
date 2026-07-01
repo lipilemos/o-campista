@@ -1,88 +1,156 @@
-<div class="map-wrapper">
-    @if (!networkStatus.isOnline()) {
+<div class="map-wrapper" [class.card-aberto]="!!campingSelecionado">
+  @if (!networkStatus.isOnline()) {
     <div class="offline-view">
-        <div class="offline-header">
-            <span class="offline-header-icon">📡</span>
-            <h2>Mapa indisponível offline</h2>
-            <p>Mostrando campings salvos no seu dispositivo</p>
-        </div>
+      <div class="offline-header">
+        <span class="offline-header-icon">📡</span>
+        <h2>Mapa indisponível offline</h2>
+        <p>Mostrando campings salvos no seu dispositivo</p>
+      </div>
 
-        <div class="offline-search">
-            <input type="text" placeholder="Buscar camping salvo..." [(ngModel)]="busca">
-        </div>
+      <div class="offline-search">
+        <input type="text" placeholder="Buscar camping salvo..." [(ngModel)]="busca" />
+      </div>
 
-        <div class="offline-cards">
-            @for (camping of campings; track camping.id) {
-            @if (!busca ||
+      <div class="offline-cards">
+        @for (camping of campings; track camping.id) {
+          @if (
+            !busca ||
             camping.nome.toLowerCase().includes(busca.toLowerCase()) ||
-            camping.cidade.toLowerCase().includes(busca.toLowerCase())) {
+            camping.cidade.toLowerCase().includes(busca.toLowerCase())
+          ) {
             <div class="offline-card">
-                <div class="offline-card-emoji">{{ obterEmoji(camping.tipo) }}</div>
-                <div class="offline-card-info">
-                    <h3>{{ camping.nome }}</h3>
-                    <p>📍 {{ camping.cidade }} - {{ camping.estado }}</p>
-                    <div class="offline-card-meta">
-                        <span class="offline-card-tipo">{{ camping.tipo }}</span>
-                        <span class="offline-card-avaliacao">⭐ {{ camping.avaliacao }}</span>
-                    </div>
+              <div class="offline-card-emoji">{{ obterEmoji(camping.tipo) }}</div>
+              <div class="offline-card-info">
+                <h3>{{ camping.nome }}</h3>
+                <p>📍 {{ camping.cidade }} - {{ camping.estado }}</p>
+                <div class="offline-card-meta">
+                  <span class="offline-card-tipo">{{ camping.tipo }}</span>
+                  <span class="offline-card-avaliacao">⭐ {{ camping.avaliacao }}</span>
                 </div>
+              </div>
             </div>
-            }
-            } @empty {
-            <p class="offline-empty">Nenhum camping salvo. Conecte-se à internet para carregar dados.</p>
-            }
-        </div>
-    </div>
-    }
-    @else {
-    <div class="filtros">
-        <div class="filtros-linha">
-            <input type="text" placeholder="Buscar cidade, estado ou camping..." [(ngModel)]="busca"
-                (input)="aplicarFiltros()">
-            <select [(ngModel)]="categoriaSelecionada" (change)="aplicarFiltrosImediato()">
-                <option value="">Todas categorias</option>
-                <option value="camping">🏕️ Camping</option>
-                <option value="cachoeira">💧 Cachoeira</option>
-                <option value="trilha">🥾 Trilha</option>
-                <option value="mirante">🌄 Mirante</option>
-                <option value="pesca">🎣 Pesca</option>
-                <option value="presente">🎁 Presentes</option>
-            </select>
-            <select [(ngModel)]="recursoSelectValue" (change)="onRecursoSelect(recursoSelectValue)"
-                aria-label="Filtrar por recursos">
-                <option value="">Filtrar recursos</option>
-                @for (recurso of recursosDisponiveis; track recurso) {
-                <option [value]="recurso">
-                    {{ recursosSelecionados.has(recurso) ? '✓ ' : '' }}{{ recurso }}
-                </option>
-                }
-            </select>
-        </div>
-        @if (recursosSelecionados.size > 0) {
-        <div class="tags-recursos">
-            @for (recurso of recursosSelecionados; track recurso) {
-            <span class="tag-recurso">
-                {{ recurso }}
-                <button (click)="removerRecurso(recurso)" aria-label="Remover filtro {{ recurso }}">✕</button>
-            </span>
-            }
-        </div>
+          }
+        } @empty {
+          <p class="offline-empty">
+            Nenhum camping salvo. Conecte-se à internet para carregar dados.
+          </p>
         }
+      </div>
+    </div>
+  } @else {
+    <div class="filtros-wrapper" [class.aberto]="filtrosAbertos">
+      <button
+        class="btn-filtros-toggle"
+        (click)="filtrosAbertos = !filtrosAbertos"
+        [attr.aria-expanded]="filtrosAbertos"
+        aria-label="Mostrar ou ocultar filtros"
+      >
+        @if (filtrosAtivos > 0 && !filtrosAbertos) {
+          <span class="filtros-badge-tab">{{ filtrosAtivos }}</span>
+        }
+        <span aria-hidden="true">{{ filtrosAbertos ? '›' : '‹' }}</span>
+      </button>
+
+      @if (filtrosAbertos) {
+        <div class="filtros">
+          <div class="filtros-linha">
+            <input
+              type="text"
+              placeholder="Buscar cidade, estado ou camping..."
+              [(ngModel)]="busca"
+              (input)="aplicarFiltros()"
+            />
+            <select [(ngModel)]="categoriaSelecionada" (change)="aplicarFiltrosImediato()">
+              <option value="">Todas categorias</option>
+              <option value="camping">🏕️ Camping</option>
+              <option value="cachoeira">💧 Cachoeira</option>
+              <option value="trilha">🥾 Trilha</option>
+              <option value="mirante">🌄 Mirante</option>
+              <option value="pesca">🎣 Pesca</option>
+              <option value="presente">🎁 Presentes</option>
+            </select>
+            <select
+              [(ngModel)]="recursoSelectValue"
+              (change)="onRecursoSelect(recursoSelectValue)"
+              aria-label="Filtrar por recursos"
+            >
+              <option value="">Filtrar recursos</option>
+              @for (recurso of recursosDisponiveis; track recurso) {
+                <option [value]="recurso">
+                  {{ recursosSelecionados.has(recurso) ? '✓ ' : '' }}{{ recurso }}
+                </option>
+              }
+            </select>
+          </div>
+          @if (recursosSelecionados.size > 0) {
+            <div class="tags-recursos">
+              @for (recurso of recursosSelecionados; track recurso) {
+                <span class="tag-recurso">
+                  {{ recurso }}
+                  <button
+                    (click)="removerRecurso(recurso)"
+                    aria-label="Remover filtro {{ recurso }}"
+                  >
+                    ✕
+                  </button>
+                </span>
+              }
+            </div>
+          }
+        </div>
+      }
     </div>
 
-    <div #mapContainer class="map-container">
-    </div>
-    <button class="btn-localizacao" (click)="centralizarNoUsuario()">
-        📍 Minha localização
-    </button>
+    <div #mapContainer class="map-container"></div>
+    <button class="btn-localizacao" (click)="centralizarNoUsuario()">📍 Minha localização</button>
+
+    @if (!gravandoTrilha) {
+      <button class="btn-criar-trilha" (click)="iniciarGravacaoTrilha()" aria-label="Criar nova trilha">
+        🥾 Criar Trilha
+      </button>
+    }
+
+    @if (gravandoTrilha) {
+      <app-criar-trilha
+        [polylineAoVivo]="polylineGravacao"
+        (fechar)="fecharGravacao()"
+        (trilhaCriada)="onTrilhaCriada($event)"
+      />
+    }
 
     @if (campingSelecionado) {
-    <app-card-camping [campingSelecionado]="campingSelecionado" [minhaPosicao]="minhaPosicao"
-        (fechar)="fecharCampingInfo()"></app-card-camping>
+      <app-card-camping
+        [campingSelecionado]="campingSelecionado"
+        [minhaPosicao]="minhaPosicao"
+        (fechar)="fecharCampingInfo()"
+        (trilhaSelecionada)="onTrilhaSelecionada($event)"
+      >
+      </app-card-camping>
+    }
+    @if (trilhaSelecionada) {
+      <div class="trilha-detail-overlay">
+        <app-trilha-detail
+          [trilha]="trilhaSelecionada"
+          [minhaPosicao]="minhaPosicao"
+          (fechar)="fecharTrilhaDetail()"
+          (concluida)="fecharTrilhaDetail()"
+        >
+        </app-trilha-detail>
+      </div>
+    }
+    @if (trilhaIndependenteSelecionada(); as trilha) {
+      <app-card-trilha
+        [trilha]="trilha"
+        [minhaPosicao]="minhaPosicao"
+        (fechar)="fecharCardTrilha()"
+      />
     }
     @if (presenteSelecionado) {
-    <app-card-gift [presenteSelecionado]="presenteSelecionado" [minhaPosicao]="minhaPosicao"
-        (fechar)="fecharCampingInfo()"></app-card-gift>
+      <app-card-gift
+        [presenteSelecionado]="presenteSelecionado"
+        [minhaPosicao]="minhaPosicao"
+        (fechar)="fecharCampingInfo()"
+      ></app-card-gift>
     }
-    }
+  }
 </div>

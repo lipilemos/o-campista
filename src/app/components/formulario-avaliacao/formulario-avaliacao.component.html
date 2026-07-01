@@ -1,13 +1,30 @@
 <div class="camping-details-panel">
-  <button class="btn-close-round btn-close-round--light close-btn" (click)="fechar.emit()" aria-label="Fechar detalhes">✕</button>
+  <button
+    class="btn-close-round btn-close-round--light close-btn"
+    (click)="fechar.emit()"
+    aria-label="Fechar detalhes"
+  >
+    ✕
+  </button>
 
-  <div class="camping-header">
-    @if (camping().fotoPrincipal) {
-      <img [src]="camping().fotoPrincipal" [alt]="camping().nome" class="camping-image" appImgFallback />
-    }
-    <h2>{{ camping().nome }}</h2>
-    <p class="location">📍 {{ camping().endereco }}, {{ camping().cidade }}</p>
-  </div>
+  @if (camping(); as c) {
+    <div class="camping-header">
+      @if (c.fotoPrincipal) {
+        <img [src]="c.fotoPrincipal" [alt]="c.nome" class="camping-image" appImgFallback />
+      }
+      <h2>{{ c.nome }}</h2>
+      <p class="location">📍 {{ c.endereco }}, {{ c.cidade }}</p>
+    </div>
+  }
+
+  @if (trilha(); as t) {
+    <div class="camping-header">
+      <h2>🥾 {{ t.nome }}</h2>
+      @if (t.criadorNome) {
+        <p class="location">Criado por {{ t.criadorNome }}</p>
+      }
+    </div>
+  }
 
   <div class="rating-section">
     <h3>Sua Avaliação</h3>
@@ -32,7 +49,7 @@
     <div class="comment-field">
       <textarea
         [(ngModel)]="comentario"
-        placeholder="Compartilhe sua experiência neste camping..."
+        placeholder="Compartilhe sua experiência..."
         class="comment-input"
         rows="4"
         aria-label="Comentário da avaliação"
@@ -57,14 +74,49 @@
       <div class="xp-total" aria-live="polite">✨ Total: +{{ xpTotal }} XP</div>
     }
 
+    @if (isNovaAvaliacao) {
+      <div class="foto-upload">
+        @if (fotoPreview) {
+          <div class="foto-preview-wrap">
+            <img [src]="fotoPreview" alt="Preview da foto" class="foto-preview" />
+            <button
+              class="btn-close-round btn-close-round--light foto-remove"
+              (click)="removerFoto()"
+              aria-label="Remover foto"
+            >
+              ✕
+            </button>
+          </div>
+        } @else {
+          <label class="foto-label" for="foto-avaliacao">
+            📷 Adicionar foto (opcional)
+            <input
+              id="foto-avaliacao"
+              type="file"
+              accept="image/*"
+              capture="environment"
+              class="foto-input"
+              (change)="onFotoSelecionada($event)"
+              aria-label="Selecionar foto para avaliação"
+            />
+          </label>
+        }
+      </div>
+    }
+
     <button
       (click)="salvar()"
       class="save-btn"
       [disabled]="carregando || nota === 0 || !comentario.trim()"
     >
-      {{ minhaAvaliacao ? 'Atualizar Avaliação' : 'Enviar Avaliação' }}
+      {{ carregando ? 'Enviando...' : minhaAvaliacao ? 'Atualizar Avaliação' : 'Enviar Avaliação' }}
     </button>
   </div>
 
-  <app-avaliacoes-usuarios [campingId]="camping().id" />
+  @if (camping(); as c) {
+    <app-avaliacoes-usuarios [campingId]="c.id" />
+  }
+  @if (trilha(); as t) {
+    <app-avaliacoes-usuarios [trilhaId]="t.id" />
+  }
 </div>

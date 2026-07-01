@@ -1,10 +1,11 @@
-import { Injectable, signal } from "@angular/core";
+import { Injectable, signal } from '@angular/core';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class MapStateService {
-
-    campingAberto = signal(false);
-    presenteAberto = signal(false);
+  campingAberto = signal(false);
+  presenteAberto = signal(false);
+  trilhaIndependenteAberta = signal(false);
+  gravandoTrilha = signal(false);
 }

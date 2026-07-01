@@ -1,55 +1,30 @@
 <div class="checklists">
-
-    @for (
-    checklist of checklists;
-    track checklist.id
-    ) {
-
+  @for (checklist of checklists; track checklist.id) {
     <div class="checklist-card">
+      <h2>{{ checklist.nome }}</h2>
 
-        <h2> {{ checklist.nome }} </h2>
+      <p>{{ totalConcluidos }} de {{ totalItens }} itens concluídos</p>
+      <div class="progress">
+        <div class="progress-fill" [style.width.%]="checklist.progresso"></div>
+      </div>
 
-        <p>{{ totalConcluidos }} de {{ totalItens }} itens concluídos</p>
-        <div class="progress">
-            <div class="progress-fill" [style.width.%]="checklist.progresso">
-            </div>
-        </div>
+      <span> {{ checklist.progresso }}% </span>
 
-        <span> {{ checklist.progresso }}% </span>
-
-        @for (
-        categoria of checklist.categorias;
-        track categoria.nome
-        ) {
-
+      @for (categoria of checklist.categorias; track categoria.nome) {
         <div class="categoria">
+          <h3>{{ categoria.nome }}</h3>
 
-            <h3> {{ categoria.nome }} </h3>
-
-            @for (
-            item of categoria.itens;
-            track item.id
-            ) {
-
+          @for (item of categoria.itens; track item.id) {
             <label class="item">
+              <input type="checkbox" [(ngModel)]="item.concluido" (change)="toggleItem()" />
 
-                <input type="checkbox" [(ngModel)]="item.concluido" (change)="toggleItem()">
-
-                {{ item.descricao }}
-
+              {{ item.descricao }}
             </label>
-
-            }
-
+          }
         </div>
-
-        }
-
+      }
     </div>
+  }
 
-    }
-
-    <button class="btn-restaurar" (click)="confirmarRestauracao()">
-        🔄 Restaurar Checklist
-    </button>
+  <button class="btn-restaurar" (click)="confirmarRestauracao()">🔄 Restaurar Checklist</button>
 </div>

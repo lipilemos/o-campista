@@ -1,0 +1,102 @@
+.achievement-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 9500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  animation: fadeIn 0.25s ease;
+}
+
+.achievement-card {
+  position: relative;
+  max-width: 380px;
+  width: 100%;
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  animation: cardAppear 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.achievement-close {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 32px;
+  height: 32px;
+  font-size: var(--text-sm);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.achievement-icon {
+  font-size: 72px;
+  line-height: 1;
+  margin-bottom: var(--space-4);
+  filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));
+  animation: pulse 1.5s ease-in-out infinite alternate;
+}
+
+.achievement-label {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: #f5c518;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 var(--space-2);
+}
+
+.achievement-name {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-3);
+}
+
+.achievement-desc {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0 0 var(--space-6);
+}
+
+.achievement-btn {
+  background: linear-gradient(135deg, #f5c518, #e6a800);
+  color: #1a1000;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: var(--space-3) var(--space-8);
+  font-size: var(--text-base);
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  box-shadow: 0 4px 16px rgba(245, 197, 24, 0.4);
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(245, 197, 24, 0.6);
+  }
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}

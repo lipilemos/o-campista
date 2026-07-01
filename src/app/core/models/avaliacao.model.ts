@@ -2,9 +2,11 @@ export interface Avaliacao {
   id?: number;
   checkinId?: number;
   usuarioId: string;
-  campingId: number;
+  campingId?: number;
+  trilhaId?: number;
   nota: number;
   comentario: string;
+  fotoUrl?: string;
   xpGanho?: number;
   dataCriacao?: string;
   dataAtualizacao?: string;

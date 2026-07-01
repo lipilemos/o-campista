@@ -13,9 +13,9 @@ export class GiftService {
   private apiUrl = `${environment.apiUrl}/presentes`;
 
   createGift(data: FormData) {
-    return this.http.post(this.apiUrl, data).pipe(
-      retry({ count: 2, delay: (_, retryCount) => timer(retryCount * 1000) }),
-    );
+    return this.http
+      .post(this.apiUrl, data)
+      .pipe(retry({ count: 2, delay: (_, retryCount) => timer(retryCount * 1000) }));
   }
 
   getNearby(latitude: number, longitude: number) {
