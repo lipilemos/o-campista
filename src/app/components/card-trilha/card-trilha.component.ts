@@ -42,6 +42,7 @@ export class CardTrilhaComponent {
   checkinRealizado = signal(false);
   verificandoCheckin = signal(false);
   pessoasRecentes = signal(0);
+  totalVisitas = signal(0);
   mostrarFormAvaliacao = signal(false);
   checkinId = signal<number | undefined>(undefined);
 
@@ -80,8 +81,12 @@ export class CardTrilhaComponent {
 
   private carregarCheckinsRecentes(trilhaId: number) {
     this.pessoasRecentes.set(0);
+    this.totalVisitas.set(0);
     this.trilhaService.contarCheckinsRecentes(trilhaId).subscribe({
       next: (res) => this.pessoasRecentes.set(res.quantidade),
+    });
+    this.trilhaService.contarTotalVisitas(trilhaId).subscribe({
+      next: (res) => this.totalVisitas.set(res.total),
     });
   }
 
