@@ -11,10 +11,11 @@ import { FormularioAvaliacaoComponent } from '../../../components/formulario-ava
 import { Avaliacao } from '../../../core/models/avaliacao.model';
 import { HistoricoCheckin } from '../../../core/models/historico-checkin.model';
 import { Trilha } from '../../../core/models/trilha.model';
+import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-checkin-history',
-  imports: [DatePipe, FormularioAvaliacaoComponent],
+  imports: [DatePipe, FormularioAvaliacaoComponent, TranslatePipe],
   templateUrl: './checkin-history.component.html',
   styleUrls: ['./checkin-history.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

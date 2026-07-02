@@ -112,31 +112,39 @@ export class WeatherService {
   private obterDescricao(weatherCode: number): string {
     switch (weatherCode) {
       case 0:
-        return 'Céu limpo';
+        return 'weather.desc.clear';
 
       case 1:
       case 2:
       case 3:
-        return 'Parcialmente nublado';
+        return 'weather.desc.partly-cloudy';
 
       case 45:
       case 48:
-        return 'Neblina';
+        return 'weather.desc.fog';
 
       case 61:
       case 63:
       case 65:
-        return 'Chuva';
+        return 'weather.desc.rain';
 
       default:
-        return 'Tempo variável';
+        return 'weather.desc.variable';
     }
   }
 
   private obterNomeDia(data: string): string {
-    const dias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    const chaves = [
+      'weather.day.dom',
+      'weather.day.seg',
+      'weather.day.ter',
+      'weather.day.qua',
+      'weather.day.qui',
+      'weather.day.sex',
+      'weather.day.sab',
+    ];
 
-    return dias[new Date(data).getDay()];
+    return chaves[new Date(data).getDay()];
   }
   carregarDadosClima(): Observable<{
     clima: Weather;

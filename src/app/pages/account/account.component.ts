@@ -22,10 +22,11 @@ import { UsuarioService } from '../../core/services/usuario.service';
 import { ImgFallbackDirective } from '../../core/directives/img-fallback.directive';
 import { CheckinHistoryComponent } from './checkin-history/checkin-history.component';
 import { ProfileDetailComponent } from './profile-detail/profile-detail.component';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-account',
-  imports: [CommonModule, CheckinHistoryComponent, ProfileDetailComponent, ImgFallbackDirective],
+  imports: [CommonModule, CheckinHistoryComponent, ProfileDetailComponent, ImgFallbackDirective, TranslatePipe],
   templateUrl: './account.component.html',
   styleUrls: ['./account.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

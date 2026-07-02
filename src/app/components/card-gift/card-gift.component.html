@@ -16,14 +16,14 @@
         {{ presenteSelecionado().nome }}
       </h2>
 
-      <span class="gift-type"> 🎁 Presente escondido </span>
+      <span class="gift-type">{{ 'card.gift.hidden' | translate }}</span>
 
       <p class="gift-description">
         {{ presenteSelecionado().descricao }}
       </p>
 
       <div class="gift-code">
-        <label>Código do presente</label>
+        <label>{{ 'card.gift.code-label' | translate }}</label>
 
         <input
           type="text"
@@ -35,11 +35,11 @@
 
       <div class="gift-info">
         <strong>Status:</strong>
-        {{ presenteSelecionado().estaDisponivel ? '🟢 Disponível' : '🔴 Já resgatado' }}
+        {{ presenteSelecionado().estaDisponivel ? ('card.gift.available' | translate) : ('card.gift.redeemed' | translate) }}
       </div>
 
       <div class="gift-info">
-        Criado em
+        {{ 'card.gift.created-at' | translate }}
         {{ presenteSelecionado().criadoEm | date: 'dd/MM/yyyy HH:mm' }}
       </div>
 
@@ -52,29 +52,27 @@
         <h3>{{ mensagemDistancia() }}</h3>
 
         <p>
-          Distância atual:
+          {{ 'card.gift.distance' | translate }}
           <strong>{{ distanciaPresente() }} metros</strong>
         </p>
       </div>
 
       @if (presenteSelecionado().estaDisponivel && !ehMeuPresente()) {
         @if (podeResgatar()) {
-          <button class="gift-button" (click)="resgatarPresente()">🎁 Resgatar Presente</button>
+          <button class="gift-button" (click)="resgatarPresente()">{{ 'card.gift.btn-redeem' | translate }}</button>
         }
       }
 
       @if (distanciaPresente() !== null && distanciaPresente()! > 150) {
-        <p>Você precisa estar a menos de 150 metros do presente para resgatá-lo.</p>
+        <p>{{ 'card.gift.too-far' | translate }}</p>
       }
 
       @if (ehMeuPresente()) {
-        <p class="gift-message">
-          Este presente foi deixado por você. Apenas outros campistas podem resgatá-lo.
-        </p>
+        <p class="gift-message">{{ 'card.gift.own' | translate }}</p>
       }
 
       @if (!presenteSelecionado().estaDisponivel) {
-        <p class="gift-message">Este presente já foi encontrado por outro campista.</p>
+        <p class="gift-message">{{ 'card.gift.found' | translate }}</p>
       }
     </div>
   </div>

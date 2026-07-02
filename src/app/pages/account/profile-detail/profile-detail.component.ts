@@ -12,12 +12,13 @@ import { UsuarioLogado } from '../../../core/models/user.model';
 import { ImageCompressorService } from '../../../core/services/image-compressor.service';
 import { UsuarioService } from '../../../core/services/usuario.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 @Component({
   selector: 'app-profile-detail',
-  imports: [ImgFallbackDirective],
+  imports: [ImgFallbackDirective, TranslatePipe],
   templateUrl: './profile-detail.component.html',
   styleUrl: './profile-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

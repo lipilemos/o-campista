@@ -1,12 +1,12 @@
 <div class="grupo-page">
   <div class="grupo-header">
     <button class="btn-voltar" (click)="voltar()" aria-label="Voltar">←</button>
-    <h2>Criar Grupo</h2>
+    <h2>{{ 'chat.group.title' | translate }}</h2>
   </div>
 
   @if (!codigoCriado()) {
     <div class="grupo-form">
-      <label for="nomeGrupo">Nome do grupo</label>
+      <label for="nomeGrupo">{{ 'chat.group.name-label' | translate }}</label>
       <input
         id="nomeGrupo"
         type="text"
@@ -23,21 +23,21 @@
       }
 
       <button class="btn-criar" (click)="criar()" [disabled]="!nomeGrupo().trim() || criando()">
-        {{ criando() ? 'Criando...' : 'Criar Grupo' }}
+        {{ criando() ? ('chat.group.btn-creating' | translate) : ('chat.group.btn-create' | translate) }}
       </button>
     </div>
   } @else {
     <div class="grupo-sucesso">
       <span class="sucesso-icon">🎉</span>
-      <h3>Grupo criado!</h3>
-      <p>Compartilhe o código abaixo para convidar pessoas:</p>
+      <h3>{{ 'chat.group.success' | translate }}</h3>
+      <p>{{ 'chat.group.invite-text' | translate }}</p>
       <div class="codigo-box">
         <span class="codigo">{{ codigoCriado() }}</span>
         <button class="btn-copiar" (click)="copiarCodigo()" aria-label="Copiar código">
-          Copiar
+          {{ 'chat.group.btn-copy' | translate }}
         </button>
       </div>
-      <button class="btn-ir-grupo" (click)="irParaGrupo()">Ir para Chats</button>
+      <button class="btn-ir-grupo" (click)="irParaGrupo()">{{ 'chat.group.btn-go-chats' | translate }}</button>
     </div>
   }
 </div>

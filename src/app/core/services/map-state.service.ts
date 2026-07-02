@@ -8,4 +8,5 @@ export class MapStateService {
   presenteAberto = signal(false);
   trilhaIndependenteAberta = signal(false);
   gravandoTrilha = signal(false);
+  cardAltura = signal<string>('58vh');
 }

@@ -7,10 +7,11 @@ import { GiftService } from '../../core/services/gift.service';
 import { ImageCompressorService } from '../../core/services/image-compressor.service';
 import { ToastService } from '../../core/services/toast.service';
 import { UsuarioService } from '../../core/services/usuario.service';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-gift-form',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
   templateUrl: './gift.component.html',
   styleUrls: ['./gift.component.scss'],
 })

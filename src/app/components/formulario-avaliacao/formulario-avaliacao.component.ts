@@ -18,6 +18,7 @@ import { ImageCompressorService } from '../../core/services/image-compressor.ser
 import { UsuarioService } from '../../core/services/usuario.service';
 import { ImgFallbackDirective } from '../../core/directives/img-fallback.directive';
 import { AvaliacoesUsuariosComponent } from '../avaliacoes-usuarios/avaliacoes-usuarios.component';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 const XP_ESTRELAS = 100;
 const XP_COMENTARIO_CURTO = 100;
@@ -27,7 +28,7 @@ const COMENTARIO_LONGO_MIN_CHARS = 20;
 
 @Component({
   selector: 'app-formulario-avaliacao',
-  imports: [FormsModule, AvaliacoesUsuariosComponent, ImgFallbackDirective],
+  imports: [FormsModule, AvaliacoesUsuariosComponent, ImgFallbackDirective, TranslatePipe],
   templateUrl: './formulario-avaliacao.component.html',
   styleUrl: './formulario-avaliacao.component.scss',
 })

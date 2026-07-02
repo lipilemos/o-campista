@@ -10,7 +10,7 @@
     (touchmove)="onDragMove($event)"
     (touchend)="onDragEnd()"
     role="separator"
-    aria-label="Arraste para redimensionar"
+    [attr.aria-label]="'card.camping.drag-handle' | translate"
   ></div>
 
   <button class="btn-close-round btn-fechar" (click)="fecharCampingInfo()">✕</button>
@@ -44,7 +44,7 @@
           <div
             class="badge-ocupacao"
             [class]="'badge-ocupacao--' + status.nivel"
-            [attr.aria-label]="'Ocupação atual: ' + status.label"
+            [attr.aria-label]="('card.camping.ocupacao-label' | translate) + status.label"
             role="status"
           >
             <span>{{ status.emoji }}</span>
@@ -56,8 +56,8 @@
           class="camping-presenca"
           [attr.aria-label]="
             pessoasRecentes() === 1
-              ? '1 pessoa fez check-in nas últimas 24 horas'
-              : pessoasRecentes() + ' pessoas fizeram check-in nas últimas 24 horas'
+              ? ('card.camping.one-checkin' | translate)
+              : pessoasRecentes() + ' ' + ('card.camping.many-checkins' | translate)
           "
           role="status"
         >
@@ -65,29 +65,29 @@
           <span class="presenca-count">{{ pessoasRecentes() }}</span>
           <div class="presenca-tooltip">
             @if (pessoasRecentes() === 0) {
-              Nenhum check-in nas últimas 24h
+              {{ 'card.camping.no-checkin' | translate }}
             } @else if (pessoasRecentes() === 1) {
-              1 pessoa fez check-in nas últimas 24h
+              {{ 'card.camping.one-checkin' | translate }}
             } @else {
-              {{ pessoasRecentes() }} pessoas fizeram check-in nas últimas 24h
+              {{ pessoasRecentes() }} {{ 'card.camping.many-checkins' | translate }}
             }
           </div>
         </div>
 
         <div
           class="camping-presenca camping-presenca--total"
-          [attr.aria-label]="totalVisitas() + ' visitas no total'"
+          [attr.aria-label]="totalVisitas() + ' ' + ('card.camping.visits-total' | translate)"
           role="status"
         >
           <span class="presenca-emoji">📊</span>
           <span class="presenca-count">{{ totalVisitas() }}</span>
           <div class="presenca-tooltip">
             @if (totalVisitas() === 0) {
-              Nenhuma visita registrada ainda
+              {{ 'card.camping.no-visits' | translate }}
             } @else if (totalVisitas() === 1) {
-              1 visita no total
+              {{ 'card.camping.one-visit' | translate }}
             } @else {
-              {{ totalVisitas() }} visitas no total
+              {{ totalVisitas() }} {{ 'card.camping.visits-total' | translate }}
             }
           </div>
         </div>
@@ -106,7 +106,7 @@
 
     <div class="info-item">📞 {{ campingSelecionado().telefone }}</div>
 
-    <h4>Recursos</h4>
+    <h4>{{ 'card.camping.resources' | translate }}</h4>
 
     <div class="recursos">
       @for (recurso of campingSelecionado().recursos; track recurso.nome) {
@@ -121,7 +121,7 @@
       }
     </div>
 
-    <h4 class="section-title">🥾 Trilhas</h4>
+    <h4 class="section-title">{{ 'trail.section-title' | translate }}</h4>
     <app-trilha-list
       [campingId]="campingSelecionado().id"
       (trilhaSelecionada)="trilhaSelecionada.emit($event)"
@@ -143,31 +143,31 @@
 
   @if (campingSelecionado().tipo === 'camping' && !checkinRealizado()) {
     @if (aguardandoOcupacao()) {
-      <div class="ocupacao-selector" role="group" aria-label="Como está o camping agora?">
-        <p class="ocupacao-pergunta">Como está o camping agora?</p>
+      <div class="ocupacao-selector" role="group" [attr.aria-label]="'card.camping.ocupacao-question' | translate">
+        <p class="ocupacao-pergunta">{{ 'card.camping.ocupacao-question' | translate }}</p>
         <div class="ocupacao-opcoes">
           <button class="btn-ocupacao btn-ocupacao--tranquilo" (click)="confirmarCheckin('tranquilo')">
             <span class="ocupacao-emoji">😌</span>
-            <span>Tranquilo</span>
+            <span>{{ 'card.camping.tranquilo' | translate }}</span>
           </button>
           <button class="btn-ocupacao btn-ocupacao--movimentado" (click)="confirmarCheckin('movimentado')">
             <span class="ocupacao-emoji">🙂</span>
-            <span>Movimentado</span>
+            <span>{{ 'card.camping.movimentado' | translate }}</span>
           </button>
           <button class="btn-ocupacao btn-ocupacao--lotado" (click)="confirmarCheckin('lotado')">
             <span class="ocupacao-emoji">😬</span>
-            <span>Lotado</span>
+            <span>{{ 'card.camping.lotado' | translate }}</span>
           </button>
         </div>
-        <button class="btn-ocupacao-cancelar" (click)="cancelarOcupacao()">Cancelar</button>
+        <button class="btn-ocupacao-cancelar" (click)="cancelarOcupacao()">{{ 'card.camping.btn-cancel' | translate }}</button>
       </div>
     } @else if (podeFazerCheckin()) {
       <button class="btn-checkin" [disabled]="verificandoCheckin()" (click)="fazerCheckin()">
-        {{ verificandoCheckin() ? 'Verificando...' : 'Fazer Check-in' }}
+        {{ verificandoCheckin() ? ('card.camping.btn-checking' | translate) : ('card.camping.btn-checkin' | translate) }}
       </button>
     } @else {
       <p class="checkin-info">
-        Você precisa estar a menos de 250 metros do camping para fazer check-in.
+        {{ 'card.camping.distance-warning' | translate }}
       </p>
     }
   }

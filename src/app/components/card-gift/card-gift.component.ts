@@ -8,10 +8,11 @@ import { ToastService } from '../../core/services/toast.service';
 import { UsuarioService } from '../../core/services/usuario.service';
 import { ImgFallbackDirective } from '../../core/directives/img-fallback.directive';
 import { Util } from '../../core/Utils.ts/Util';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-card-gift',
-  imports: [DatePipe, ImgFallbackDirective],
+  imports: [DatePipe, ImgFallbackDirective, TranslatePipe],
   templateUrl: './card-gift.component.html',
   styleUrl: './card-gift.component.scss',
 })

@@ -8,7 +8,7 @@
 >
   <div class="drag-handle-touch" aria-hidden="true"></div>
 
-  <button class="btn-close-round btn-close-round--light close-btn" (click)="fecharCard()" aria-label="Fechar trilha">
+  <button class="btn-close-round btn-close-round--light close-btn" (click)="fecharCard()" [attr.aria-label]="'trail.card.close' | translate">
     ✕
   </button>
 
@@ -19,22 +19,22 @@
         <h2 class="trilha-nome">🥾 {{ trilha().nome }}</h2>
         <div class="trilha-presenca-grupo">
           @if (pessoasRecentes() > 0) {
-            <div class="trilha-presenca" [attr.aria-label]="pessoasRecentes() + ' pessoas nas últimas 24h'" role="status">
+            <div class="trilha-presenca" [attr.aria-label]="pessoasRecentes() + ' ' + ('trail.card.recent-24h' | translate)" role="status">
               <span class="presenca-icon">👥</span>
               <span class="presenca-count">{{ pessoasRecentes() }}</span>
-              <div class="presenca-tooltip">{{ pessoasRecentes() }} pessoa(s) nas últimas 24h</div>
+              <div class="presenca-tooltip">{{ pessoasRecentes() }} {{ 'trail.card.recent-24h' | translate }}</div>
             </div>
           }
-          <div class="trilha-presenca trilha-presenca--total" [attr.aria-label]="totalVisitas() + ' visitas no total'" role="status">
+          <div class="trilha-presenca trilha-presenca--total" [attr.aria-label]="totalVisitas() + ' ' + ('trail.card.visits-total' | translate)" role="status">
             <span class="presenca-icon">📊</span>
             <span class="presenca-count">{{ totalVisitas() }}</span>
             <div class="presenca-tooltip">
               @if (totalVisitas() === 0) {
-                Nenhuma visita registrada ainda
+                {{ 'trail.card.no-visits' | translate }}
               } @else if (totalVisitas() === 1) {
-                1 visita no total
+                {{ 'trail.card.one-visit' | translate }}
               } @else {
-                {{ totalVisitas() }} visitas no total
+                {{ totalVisitas() }} {{ 'trail.card.visits-total' | translate }}
               }
             </div>
           </div>
@@ -52,7 +52,7 @@
       </div>
 
       @if (trilha().criadorNome) {
-        <p class="trilha-criador">Criado por <strong>{{ trilha().criadorNome }}</strong></p>
+        <p class="trilha-criador">{{ 'trail.card.creator' | translate }} <strong>{{ trilha().criadorNome }}</strong></p>
       }
     </div>
 
@@ -84,7 +84,7 @@
 
     @if (checkinRealizado() && !mostrarFormAvaliacao()) {
       <app-avaliacoes-usuarios [trilhaId]="trilha().id" />
-      <button class="btn-avaliar" (click)="mostrarFormAvaliacao.set(true)">⭐ Avaliar Trilha</button>
+      <button class="btn-avaliar" (click)="mostrarFormAvaliacao.set(true)">{{ 'trail.card.rate-btn' | translate }}</button>
     }
   </div>
 
@@ -93,10 +93,10 @@
     @if (!checkinRealizado()) {
       @if (podeFazerCheckin()) {
         <button class="btn-checkin" (click)="fazerCheckin()" [disabled]="verificandoCheckin()">
-          {{ verificandoCheckin() ? 'Verificando...' : '📍 Fazer Check-in na Trilha' }}
+          {{ verificandoCheckin() ? ('trail.card.checking' | translate) : ('trail.card.checkin-btn' | translate) }}
         </button>
       } @else {
-        <p class="distancia-aviso">Você precisa estar a menos de 250 metros do início da trilha para fazer check-in.</p>
+        <p class="distancia-aviso">{{ 'trail.checkin.too-far' | translate }}</p>
       }
     }
   </div>

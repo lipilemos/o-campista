@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChatRoomService } from '../../../core/services/chat-room.service';
+import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-chat-create-group',
+  imports: [TranslatePipe],
   templateUrl: './chat-create-group.component.html',
   styleUrl: './chat-create-group.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

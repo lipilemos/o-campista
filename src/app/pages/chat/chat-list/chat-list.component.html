@@ -1,16 +1,16 @@
 <div class="chat-page">
   <div class="chat-header-page">
-    <h2>Chats</h2>
+    <h2>{{ 'chat.title' | translate }}</h2>
     <div class="header-actions">
       <button class="btn-action" (click)="criarGrupo()" aria-label="Criar grupo">
-        Criar Grupo
+        {{ 'chat.btn-create-group' | translate }}
       </button>
       <button
         class="btn-action btn-action--outline"
         (click)="entrarGrupo()"
         aria-label="Entrar em grupo"
       >
-        Entrar em Grupo
+        {{ 'chat.btn-join-group' | translate }}
       </button>
     </div>
   </div>
@@ -20,15 +20,15 @@
       type="text"
       [value]="filtro()"
       (input)="filtro.set($any($event.target).value)"
-      placeholder="Buscar conversa..."
-      aria-label="Buscar conversa"
+      [placeholder]="'chat.search-placeholder' | translate"
+      [attr.aria-label]="'chat.search-placeholder' | translate"
     />
   </div>
 
   @if (carregando()) {
     <div class="chat-loading">
       <span class="loading-icon">⏳</span>
-      <p>Carregando conversas...</p>
+      <p>{{ 'chat.loading-conversations' | translate }}</p>
     </div>
   }
 
@@ -60,7 +60,7 @@
                 {{ sala.ultimaMensagem.texto }}
               </p>
             } @else {
-              <p class="sala-preview sala-preview--vazio">Nenhuma mensagem ainda</p>
+              <p class="sala-preview sala-preview--vazio">{{ 'chat.no-messages' | translate }}</p>
             }
             @if (naoLidas(sala) > 0) {
               <span class="badge-nao-lidas" aria-live="polite">
@@ -77,7 +77,7 @@
               (click)="sairDoGrupo($event, sala)"
               aria-label="Sair do grupo"
             >
-              Sair
+              {{ 'chat.btn-leave' | translate }}
             </button>
           }
           @if (sala.ultimaMensagem) {
@@ -89,8 +89,8 @@
       @if (!carregando()) {
         <div class="chat-vazio">
           <span class="vazio-icon">💬</span>
-          <p>Nenhuma conversa ainda</p>
-          <span class="vazio-dica">Faça check-in em um camping ou crie um grupo para começar!</span>
+          <p>{{ 'chat.empty-title' | translate }}</p>
+          <span class="vazio-dica">{{ 'chat.empty-hint' | translate }}</span>
         </div>
       }
     }

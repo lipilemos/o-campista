@@ -5,7 +5,7 @@
       <h3>{{ salaNome() }}</h3>
       <div class="chat-status">
         <span class="status-dot" [class.online]="conectado()" [class.offline]="!conectado()"></span>
-        {{ conectado() ? 'Online' : 'Reconectando...' }}
+        {{ conectado() ? ('chat.status-online' | translate) : ('chat.status-reconnecting' | translate) }}
       </div>
     </div>
     <div class="header-tipo">
@@ -15,8 +15,7 @@
 
   @if (!podeEnviar() && salaTipo() === 'camping') {
     <div class="aviso-expirado" role="status">
-      Seu check-in expirou. Você pode ler as mensagens, mas precisa fazer um novo check-in para
-      enviar.
+      {{ 'chat.checkin-expired' | translate }}
     </div>
   }
 
@@ -24,7 +23,7 @@
     @if (chatRoomService.carregandoMensagens()) {
       <div class="chat-loading">
         <span class="loading-icon">⏳</span>
-        <p>Carregando mensagens...</p>
+        <p>{{ 'chat.loading-messages' | translate }}</p>
       </div>
     }
 
@@ -53,8 +52,8 @@
       @if (!chatRoomService.carregandoMensagens()) {
         <div class="chat-vazio">
           <span class="vazio-icon">👋</span>
-          <p>Nenhuma mensagem ainda.</p>
-          <span class="vazio-dica">Seja o primeiro a dizer oi!</span>
+          <p>{{ 'chat.no-messages-yet' | translate }}</p>
+          <span class="vazio-dica">{{ 'chat.be-first' | translate }}</span>
         </div>
       }
     }
@@ -72,7 +71,7 @@
       [value]="textoMensagem()"
       (input)="textoMensagem.set($any($event.target).value); onDigitando()"
       (keydown.enter)="enviar()"
-      placeholder="Digite sua mensagem..."
+      [placeholder]="'chat.placeholder' | translate"
       aria-label="Mensagem do chat"
       [disabled]="!conectado() || !podeEnviar()"
       maxlength="500"

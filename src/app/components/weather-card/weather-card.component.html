@@ -5,7 +5,7 @@
     </div>
 
     <div>
-      <h3>Condição para Acampamento</h3>
+      <h3>{{ 'weather.condition-title' | translate }}</h3>
 
       <span>
         {{ weather.cidade }}
@@ -16,15 +16,15 @@
   <div class="weather-temp">{{ weather.temperatura }}°C</div>
 
   <div class="weather-description">
-    {{ weather.descricao }}
+    {{ weather.descricao | translate }}
   </div>
 
   <div class="weather-details">
-    <div>💧 Umidade: {{ weather.umidade }}%</div>
+    <div>{{ 'weather.humidity' | translate }} {{ weather.umidade }}%</div>
 
-    <div>🌬️ Vento: {{ weather.vento }} km/h</div>
+    <div>{{ 'weather.wind' | translate }} {{ weather.vento }} km/h</div>
 
-    <div>🌧️ Chuva: {{ weather.chuva }}%</div>
+    <div>{{ 'weather.rain' | translate }} {{ weather.chuva }}%</div>
   </div>
 
   <div
@@ -34,6 +34,6 @@
     [class.ruim]="weather.statusCamping === 'Ruim'"
   >
     {{ obterEmojiStatus(weather.statusCamping) }}
-    {{ weather.statusCamping }} para acampar
+    {{ obterChaveStatus(weather.statusCamping) | translate }} {{ 'weather.status-suffix' | translate }}
   </div>
 </div>

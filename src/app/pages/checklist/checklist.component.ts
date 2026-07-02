@@ -11,10 +11,11 @@ import { ChecklistService } from '../../core/services/checklist.service';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 
 import { ToastService } from '../../core/services/toast.service';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-checklist',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './checklist.component.html',
   styleUrls: ['./checklist.component.scss'],
 })
