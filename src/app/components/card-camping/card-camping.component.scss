@@ -281,6 +281,10 @@
   flex-shrink: 0;
 }
 
+.camping-presenca--total .presenca-count {
+  color: var(--color-text-secondary);
+}
+
 .badge-ocupacao {
   display: flex;
   align-items: center;

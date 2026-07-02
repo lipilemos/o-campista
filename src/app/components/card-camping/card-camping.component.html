@@ -73,6 +73,24 @@
             }
           </div>
         </div>
+
+        <div
+          class="camping-presenca camping-presenca--total"
+          [attr.aria-label]="totalVisitas() + ' visitas no total'"
+          role="status"
+        >
+          <span class="presenca-emoji">📊</span>
+          <span class="presenca-count">{{ totalVisitas() }}</span>
+          <div class="presenca-tooltip">
+            @if (totalVisitas() === 0) {
+              Nenhuma visita registrada ainda
+            } @else if (totalVisitas() === 1) {
+              1 visita no total
+            } @else {
+              {{ totalVisitas() }} visitas no total
+            }
+          </div>
+        </div>
       </div>
     </div>
 

@@ -54,6 +54,10 @@ export class TrilhaService {
     return this.http.get<{ quantidade: number }>(`${this.apiUrl}/${trilhaId}/checkins/recentes`);
   }
 
+  contarTotalVisitas(trilhaId: number): Observable<{ total: number }> {
+    return this.http.get<{ total: number }>(`${this.apiUrl}/${trilhaId}/checkins/total`);
+  }
+
   obterAvaliacoes(trilhaId: number): Observable<AvaliacaoComUsuario[]> {
     return this.http.get<AvaliacaoComUsuario[]>(`${this.apiUrl}/${trilhaId}/avaliacoes`);
   }

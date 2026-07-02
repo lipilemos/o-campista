@@ -17,13 +17,28 @@
     <div class="trilha-header">
       <div class="trilha-header-row">
         <h2 class="trilha-nome">🥾 {{ trilha().nome }}</h2>
-        @if (pessoasRecentes() > 0) {
-          <div class="trilha-presenca" aria-label="{{ pessoasRecentes() }} pessoas nas últimas 24h">
-            <span class="presenca-icon">👥</span>
-            <span class="presenca-count">{{ pessoasRecentes() }}</span>
-            <div class="presenca-tooltip">{{ pessoasRecentes() }} pessoa(s) nas últimas 24h</div>
+        <div class="trilha-presenca-grupo">
+          @if (pessoasRecentes() > 0) {
+            <div class="trilha-presenca" [attr.aria-label]="pessoasRecentes() + ' pessoas nas últimas 24h'" role="status">
+              <span class="presenca-icon">👥</span>
+              <span class="presenca-count">{{ pessoasRecentes() }}</span>
+              <div class="presenca-tooltip">{{ pessoasRecentes() }} pessoa(s) nas últimas 24h</div>
+            </div>
+          }
+          <div class="trilha-presenca trilha-presenca--total" [attr.aria-label]="totalVisitas() + ' visitas no total'" role="status">
+            <span class="presenca-icon">📊</span>
+            <span class="presenca-count">{{ totalVisitas() }}</span>
+            <div class="presenca-tooltip">
+              @if (totalVisitas() === 0) {
+                Nenhuma visita registrada ainda
+              } @else if (totalVisitas() === 1) {
+                1 visita no total
+              } @else {
+                {{ totalVisitas() }} visitas no total
+              }
+            </div>
           </div>
-        }
+        </div>
       </div>
 
       <div class="trilha-meta">

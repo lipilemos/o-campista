@@ -50,6 +50,7 @@ export class CardCampingComponent {
   checkinRealizado = signal(false);
   verificandoCheckin = signal(false);
   pessoasRecentes = signal(0);
+  totalVisitas = signal(0);
   fotos = signal<CampingFoto[]>([]);
   aguardandoOcupacao = signal(false);
   ocupacaoLocal = signal<OcupacaoStatus | null>(null);
@@ -111,8 +112,12 @@ export class CardCampingComponent {
 
   private carregarCheckinsRecentes(campingId: number) {
     this.pessoasRecentes.set(0);
+    this.totalVisitas.set(0);
     this.checkinService.contarCheckinsRecentes(campingId).subscribe({
       next: (res) => this.pessoasRecentes.set(res.quantidade),
+    });
+    this.checkinService.contarTotalVisitas(campingId).subscribe({
+      next: (res) => this.totalVisitas.set(res.total),
     });
   }
 
