@@ -392,17 +392,18 @@
 
   /* quando o card está aberto, move o botão de localização para cima da bottom sheet */
   .map-wrapper.card-aberto .btn-localizacao {
-    bottom: calc(58vh + var(--space-4));
-    transition: bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    bottom: calc(var(--card-height, 58vh) + var(--space-4));
+    transition: bottom 0.05s linear;
   }
 
   /* detalhe da trilha fica no topo do espaço visível acima da bottom sheet */
   .map-wrapper.card-aberto .trilha-detail-overlay {
     position: fixed;
-    bottom: calc(58vh + var(--space-3));
+    bottom: calc(var(--card-height, 58vh) + var(--space-3));
     left: var(--space-4);
     right: var(--space-4);
     width: auto;
     transform: none;
+    transition: bottom 0.05s linear;
   }
 }

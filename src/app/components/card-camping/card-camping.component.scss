@@ -61,10 +61,10 @@
 .camping-presenca {
   position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 2px;
-  padding: var(--space-2) var(--space-3);
+  gap: 5px;
+  padding: 5px 10px;
   background: var(--color-bg);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border-light);
@@ -79,7 +79,7 @@
 }
 
 .presenca-emoji {
-  font-size: 28px;
+  font-size: 16px;
   line-height: 1;
 }
 
@@ -92,9 +92,10 @@
 
 .presenca-tooltip {
   position: absolute;
-  bottom: calc(100% + 8px);
+  top: calc(100% + 8px);
+  bottom: auto;
   left: 50%;
-  transform: translateX(-50%) translateY(4px);
+  transform: translateX(-50%) translateY(-4px);
   white-space: nowrap;
   padding: var(--space-2) var(--space-3);
   background: var(--color-primary-dark);
@@ -112,11 +113,12 @@
   &::after {
     content: '';
     position: absolute;
-    top: 100%;
+    bottom: 100%;
+    top: auto;
     left: 50%;
     transform: translateX(-50%);
     border: 5px solid transparent;
-    border-top-color: var(--color-primary-dark);
+    border-bottom-color: var(--color-primary-dark);
   }
 }
 
@@ -184,8 +186,8 @@
 
 .btn-fechar {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 14px;
+  right: 14px;
   z-index: 1;
 }
 
@@ -275,10 +277,12 @@
 
 .camping-presenca-grupo {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
   gap: var(--space-2);
   flex-shrink: 0;
+  flex-wrap: wrap;
 }
 
 .camping-presenca--total .presenca-count {

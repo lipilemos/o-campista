@@ -7,10 +7,11 @@ import { ConfirmDialogService } from '../../../core/services/confirm-dialog.serv
 import { ToastService } from '../../../core/services/toast.service';
 import { ImgFallbackDirective } from '../../../core/directives/img-fallback.directive';
 import { ChatRoomService } from '../../../core/services/chat-room.service';
+import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-chat-list',
-  imports: [DatePipe, ImgFallbackDirective],
+  imports: [DatePipe, ImgFallbackDirective, TranslatePipe],
   templateUrl: './chat-list.component.html',
   styleUrl: './chat-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

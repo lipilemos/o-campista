@@ -18,10 +18,11 @@ import { ImgFallbackDirective } from '../../../core/directives/img-fallback.dire
 import { AuthService } from '../../../core/services/auth.service';
 import { ChatNotificationService } from '../../../core/services/chat-notification.service';
 import { ChatRoomService } from '../../../core/services/chat-room.service';
+import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-chat-conversation',
-  imports: [DatePipe, ImgFallbackDirective],
+  imports: [DatePipe, ImgFallbackDirective, TranslatePipe],
   templateUrl: './chat-conversation.component.html',
   styleUrl: './chat-conversation.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

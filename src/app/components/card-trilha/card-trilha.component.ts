@@ -18,11 +18,12 @@ import { UsuarioService } from '../../core/services/usuario.service';
 import { Util } from '../../core/Utils.ts/Util';
 import { AvaliacoesUsuariosComponent } from '../avaliacoes-usuarios/avaliacoes-usuarios.component';
 import { FormularioAvaliacaoComponent } from '../formulario-avaliacao/formulario-avaliacao.component';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-card-trilha',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AvaliacoesUsuariosComponent, FormularioAvaliacaoComponent, DecimalPipe],
+  imports: [AvaliacoesUsuariosComponent, FormularioAvaliacaoComponent, DecimalPipe, TranslatePipe],
   templateUrl: './card-trilha.component.html',
   styleUrl: './card-trilha.component.scss',
 })

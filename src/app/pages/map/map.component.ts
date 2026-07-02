@@ -28,6 +28,7 @@ import { LocationService } from '../../core/services/location.service';
 import { MapStateService } from '../../core/services/map-state.service';
 import { NetworkStatusService } from '../../core/services/network-status.service';
 import { TrilhaService } from '../../core/services/trilha.service';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-map',
@@ -40,6 +41,7 @@ import { TrilhaService } from '../../core/services/trilha.service';
     TrilhaDetailComponent,
     CriarTrilhaComponent,
     CardTrilhaComponent,
+    TranslatePipe,
   ],
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
@@ -60,7 +62,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.polylineGravacao?.setMap(null);
   }
 
-  private mapState = inject(MapStateService);
+  protected mapState = inject(MapStateService);
   private giftService = inject(GiftService);
   private campingService = inject(CampingService);
   private trilhaService = inject(TrilhaService);

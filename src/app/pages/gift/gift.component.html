@@ -2,27 +2,27 @@
   <div class="gift-card glass-card">
     <header class="gift-header">
       <div class="header-icon">🎁</div>
-      <h2>Deixar um Presente</h2>
-      <p>Tire uma foto e marque sua localização para que outro campista possa encontrá-lo.</p>
+      <h2>{{ 'gift.page.title' | translate }}</h2>
+      <p>{{ 'gift.page.subtitle' | translate }}</p>
     </header>
 
     <form [formGroup]="giftForm" (ngSubmit)="onSubmit()" class="gift-form">
       <!-- Nome -->
       <div class="form-group">
-        <label for="nome">Nome do Presente</label>
-        <input id="nome" type="text" formControlName="nome" placeholder="Ex: Lanterna de Led" />
+        <label for="nome">{{ 'gift.page.name-label' | translate }}</label>
+        <input id="nome" type="text" formControlName="nome" [placeholder]="'gift.page.name-placeholder' | translate" />
         <span class="error" *ngIf="giftForm.get('nome')?.invalid && giftForm.get('nome')?.touched">
-          O nome é obrigatório (mín. 3 caracteres).
+          {{ 'gift.page.name-required' | translate }}
         </span>
       </div>
 
       <!-- Descrição -->
       <div class="form-group">
-        <label for="descricao">Descrição / Dica</label>
+        <label for="descricao">{{ 'gift.page.desc-label' | translate }}</label>
         <textarea
           id="descricao"
           formControlName="descricao"
-          placeholder="Dê uma dica para o próximo campista..."
+          [placeholder]="'gift.page.desc-placeholder' | translate"
         ></textarea>
       </div>
 
@@ -30,8 +30,8 @@
         <div class="upload-card" (click)="fileInput.click()">
           <ng-container *ngIf="!imagePreview">
             <div class="upload-icon">📷</div>
-            <h4>Adicionar Foto</h4>
-            <span>Toque para tirar ou selecionar uma foto</span>
+            <h4>{{ 'gift.page.photo-title' | translate }}</h4>
+            <span>{{ 'gift.page.photo-prompt' | translate }}</span>
           </ng-container>
 
           <img *ngIf="imagePreview" [src]="imagePreview" alt="Preview" />
@@ -50,20 +50,20 @@
       <!-- GPS Status -->
       <div class="gps-status" [class.active]="hasLocation">
         <span class="dot"></span>
-        {{ hasLocation ? 'Localização via GPS ativa' : 'Buscando sinal de GPS...' }}
+        {{ hasLocation ? ('gift.page.gps-active' | translate) : ('gift.page.gps-searching' | translate) }}
       </div>
       <div *ngIf="mensagem" class="feedback" [class.erro]="erro" [class.sucesso]="!erro">
         {{ mensagem }}
       </div>
       <!-- Ações -->
       <div class="form-actions">
-        <button type="button" class="btn-link" (click)="goBack()">Cancelar</button>
+        <button type="button" class="btn-link" (click)="goBack()">{{ 'gift.page.btn-cancel' | translate }}</button>
         <button
           type="submit"
           class="btn-primary"
           [disabled]="giftForm.invalid || !hasLocation || !selectedFile || loading"
         >
-          {{ loading ? 'Publicando...' : 'Publicar Presente' }}
+          {{ loading ? ('gift.page.btn-publishing' | translate) : ('gift.page.btn-submit' | translate) }}
         </button>
       </div>
     </form>

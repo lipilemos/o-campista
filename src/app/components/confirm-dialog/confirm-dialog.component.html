@@ -16,14 +16,14 @@
           class="confirm-dialog__btn confirm-dialog__btn--cancel"
           (click)="dialogService.responder(false)"
         >
-          {{ dialogService.dados()?.textoBotaoCancelar ?? 'Cancelar' }}
+          {{ dialogService.dados()?.textoBotaoCancelar ?? ('dialog.btn-cancel' | translate) }}
         </button>
         <button
           type="button"
           class="confirm-dialog__btn confirm-dialog__btn--confirm"
           (click)="dialogService.responder(true)"
         >
-          {{ dialogService.dados()?.textoBotaoConfirmar ?? 'Confirmar' }}
+          {{ dialogService.dados()?.textoBotaoConfirmar ?? ('dialog.btn-confirm' | translate) }}
         </button>
       </div>
     </div>

@@ -1,4 +1,8 @@
-<div class="map-wrapper" [class.card-aberto]="!!campingSelecionado">
+<div
+  class="map-wrapper"
+  [class.card-aberto]="!!campingSelecionado"
+  [style.--card-height]="mapState.cardAltura()"
+>
   @if (!networkStatus.isOnline()) {
     <div class="offline-view">
       <div class="offline-header">
@@ -102,11 +106,11 @@
     </div>
 
     <div #mapContainer class="map-container"></div>
-    <button class="btn-localizacao" (click)="centralizarNoUsuario()">📍 Minha localização</button>
+    <button class="btn-localizacao" (click)="centralizarNoUsuario()">{{ 'map.btn-location' | translate }}</button>
 
     @if (!gravandoTrilha) {
       <button class="btn-criar-trilha" (click)="iniciarGravacaoTrilha()" aria-label="Criar nova trilha">
-        🥾 Criar Trilha
+        {{ 'trail.create.btn' | translate }}
       </button>
     }
 

@@ -1,9 +1,9 @@
 <div class="all-ratings-section">
-  <h3>Avaliações dos Usuários</h3>
+  <h3>{{ 'review.title' | translate }}</h3>
   @if (carregando()) {
-    <p class="loading">Carregando avaliações...</p>
+    <p class="loading">{{ 'review.loading' | translate }}</p>
   } @else if (avaliacoesCamping().length === 0) {
-    <p class="no-ratings">Nenhuma avaliação ainda. Seja o primeiro a avaliar!</p>
+    <p class="no-ratings">{{ 'review.empty' | translate }}</p>
   } @else {
     <div class="ratings-list">
       @for (avaliacao of avaliacoesCamping(); track avaliacao.id) {

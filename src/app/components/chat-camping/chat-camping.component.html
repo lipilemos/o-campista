@@ -10,15 +10,15 @@
       <div class="chat-header-info">
         <span class="chat-header-icon">🏕️</span>
         <div>
-          <h3>Chat do Camping</h3>
-          <h4>Chat com os campistas que estão neste camping.</h4>
+          <h3>{{ 'chat.camping.title' | translate }}</h3>
+          <h4>{{ 'chat.camping.subtitle' | translate }}</h4>
           <div class="chat-status">
             <span
               class="status-dot"
               [class.online]="conectado()"
               [class.offline]="!conectado()"
             ></span>
-            {{ conectado() ? 'Online' : 'Reconectando...' }}
+            {{ conectado() ? ('chat.status-online' | translate) : ('chat.status-reconnecting' | translate) }}
           </div>
         </div>
       </div>
@@ -35,7 +35,7 @@
       @if (chatService.carregandoHistorico()) {
         <div class="chat-loading">
           <span class="loading-icon">⏳</span>
-          <p>Carregando mensagens...</p>
+          <p>{{ 'chat.loading-messages' | translate }}</p>
         </div>
       }
 
@@ -64,8 +64,8 @@
         @if (!chatService.carregandoHistorico()) {
           <div class="chat-vazio">
             <span class="vazio-icon">👋</span>
-            <p>Nenhuma mensagem ainda.</p>
-            <span class="vazio-dica">Seja o primeiro a dizer oi!</span>
+            <p>{{ 'chat.no-messages-yet' | translate }}</p>
+            <span class="vazio-dica">{{ 'chat.be-first' | translate }}</span>
           </div>
         }
       }
@@ -77,7 +77,7 @@
         [value]="textoMensagem()"
         (input)="textoMensagem.set($any($event.target).value)"
         (keydown.enter)="enviar()"
-        placeholder="Digite sua mensagem..."
+        [placeholder]="'chat.placeholder' | translate"
         aria-label="Mensagem do chat"
         [disabled]="!conectado()"
         maxlength="500"

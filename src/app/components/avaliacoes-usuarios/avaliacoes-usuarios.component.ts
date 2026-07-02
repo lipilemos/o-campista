@@ -4,10 +4,11 @@ import { AvaliacaoComUsuario } from '../../core/models/avaliacao.model';
 import { ImgFallbackDirective } from '../../core/directives/img-fallback.directive';
 import { CampingService } from '../../core/services/camping.service';
 import { TrilhaService } from '../../core/services/trilha.service';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-avaliacoes-usuarios',
-  imports: [DatePipe, ImgFallbackDirective],
+  imports: [DatePipe, ImgFallbackDirective, TranslatePipe],
   templateUrl: './avaliacoes-usuarios.component.html',
   styleUrl: './avaliacoes-usuarios.component.scss',
 })

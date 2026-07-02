@@ -67,10 +67,7 @@ No momento do check-in, o usuário reporta a lotação atual:
 
 ### 8. Estatísticas Avançadas do Perfil
 No perfil, além de XP e nível, exibir:
-- Total de campings únicos visitados
 - Total de km percorridos em trilhas
-- Presentes dados e recebidos
-- Streak de check-ins (dias consecutivos ou meses com check-in)
 - Camping favorito (mais visitado)
 - **Motivo:** torna o perfil algo que o usuário quer mostrar para amigos
 
@@ -114,7 +111,7 @@ Timeline acessível pela sidebar com:
 | 3 | Onboarding Interativo (retém usuários novos) | ⬜ Pendente |
 | 4 | Compartilhamento Social (ativa o loop viral) | ⬜ Pendente |
 | 5 | Favoritos de Campings | ⬜ Pendente |
-| 6 | **Status de Ocupação** | ✅ Frontend pronto — backend pendente |
+| 6 | **Status de Ocupação** | ✅ Pronto |
 | 7 | Estatísticas Avançadas do Perfil | ⬜ Pendente |
 | 8 | Ranking / Leaderboard | ⬜ Pendente |
 | 9 | Feed de Atividades | ⬜ Pendente |

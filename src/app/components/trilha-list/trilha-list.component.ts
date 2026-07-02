@@ -10,9 +10,11 @@ import {
 import { AuthService } from '../../core/services/auth.service';
 import { Trilha } from '../../core/models/trilha.model';
 import { TrilhaService } from '../../core/services/trilha.service';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-trilha-list',
+  imports: [TranslatePipe],
   templateUrl: './trilha-list.component.html',
   styleUrl: './trilha-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

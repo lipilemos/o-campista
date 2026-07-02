@@ -104,6 +104,16 @@ src/app/
 - Serviços com `providedIn: 'root'`
 - Async pipe para observables nos templates
 
+### Internacionalização (i18n)
+
+- **Todo texto fixo visível ao usuário deve usar o `TranslatePipe`** — nunca strings hardcoded nos templates
+- Chaves ficam em `public/i18n/pt-BR.json` e `public/i18n/en-US.json` — sempre adicionar em ambos os arquivos
+- Nomenclatura de chaves: `<domínio>.<componente>.<elemento>` (ex: `card.camping.btn-checkin`, `trail.card.close`)
+- Em templates: `{{ 'chave' | translate }}` para textos, `[attr.aria-label]="'chave' | translate"` para atributos
+- Para textos com valor dinâmico: `{{ valor }} {{ 'chave-sufixo' | translate }}` (ex: `{{ totalVisitas() }} {{ 'card.camping.visits-total' | translate }}`)
+- Em TypeScript: injetar `I18nService` e usar `this.i18n.t('chave')` — nunca hardcodar labels em métodos retornados para o template
+- Atributos ARIA também devem ser traduzidos — usar `[attr.aria-label]` com binding dinâmico em vez de `aria-label` estático
+
 ### Acessibilidade
 
 - WCAG AA mínimo obrigatório

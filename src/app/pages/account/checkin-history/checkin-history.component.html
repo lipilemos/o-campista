@@ -2,7 +2,7 @@
   <div class="history-overlay" tabindex="-1">
     <div class="history-list">
       <div class="history-header">
-        <h2>📋 Histórico de Check-ins</h2>
+        <h2>{{ 'checkin.history.title' | translate }}</h2>
         <button
           class="btn-close-round btn-close-round--light"
           (click)="fecharHistorico()"
@@ -25,12 +25,12 @@
               <p class="camping-details">{{ item.camping.cidade }}, {{ item.camping.estado }}</p>
             } @else {
               <h3>🥾 {{ item.trilhaNome }}</h3>
-              <p class="camping-details">Check-in de Trilha</p>
+              <p class="camping-details">{{ 'checkin.history.trail-label' | translate }}</p>
             }
             <p class="check-in-date">{{ item.dataCriacao | date: 'dd/MM/yyyy HH:mm' }}</p>
           </div>
           @if (isAvaliado(item)) {
-            <span class="badge-avaliado">Já avaliado</span>
+            <span class="badge-avaliado">{{ 'checkin.history.rated' | translate }}</span>
           } @else {
             <span class="chevron">›</span>
           }

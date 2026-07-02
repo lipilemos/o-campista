@@ -11,6 +11,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { CampingService } from '../../core/services/camping.service';
 import { CheckinService } from '../../core/services/checkin.service';
 import { MapStateService } from '../../core/services/map-state.service';
+import { I18nService } from '../../core/services/i18n.service';
 import { ToastService } from '../../core/services/toast.service';
 import { UsuarioService } from '../../core/services/usuario.service';
 import { Util } from '../../core/Utils.ts/Util';
@@ -19,6 +20,7 @@ import { AvaliacoesUsuariosComponent } from '../avaliacoes-usuarios/avaliacoes-u
 import { ChatCampingComponent } from '../chat-camping/chat-camping.component';
 import { PhotoGalleryComponent } from '../photo-gallery/photo-gallery.component';
 import { TrilhaListComponent } from '../trilha-list/trilha-list.component';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-card-camping',
@@ -28,6 +30,7 @@ import { TrilhaListComponent } from '../trilha-list/trilha-list.component';
     ImgFallbackDirective,
     TrilhaListComponent,
     PhotoGalleryComponent,
+    TranslatePipe,
   ],
   templateUrl: './card-camping.component.html',
   styleUrl: './card-camping.component.scss',
@@ -39,6 +42,7 @@ export class CardCampingComponent {
   private mapState = inject(MapStateService);
   private toast = inject(ToastService);
   private usuarioService = inject(UsuarioService);
+  private i18n = inject(I18nService);
 
   campingSelecionado = input.required<Camping>();
   minhaPosicao = input<google.maps.LatLngLiteral>();
@@ -78,6 +82,7 @@ export class CardCampingComponent {
 
     if (typeof window !== 'undefined' && window.innerWidth <= 768) {
       this.alturaCard.set('58vh');
+      this.mapState.cardAltura.set('58vh');
     }
   }
 
@@ -215,9 +220,9 @@ export class CardCampingComponent {
     const nivel = this.ocupacaoLocal() ?? this.campingSelecionado().statusOcupacao?.nivel ?? null;
     if (!nivel) return null;
     const map: Record<OcupacaoStatus, { emoji: string; label: string }> = {
-      tranquilo: { emoji: '😌', label: 'Tranquilo' },
-      movimentado: { emoji: '🙂', label: 'Movimentado' },
-      lotado: { emoji: '😬', label: 'Lotado' },
+      tranquilo: { emoji: '😌', label: this.i18n.t('card.camping.tranquilo') },
+      movimentado: { emoji: '🙂', label: this.i18n.t('card.camping.movimentado') },
+      lotado: { emoji: '😬', label: this.i18n.t('card.camping.lotado') },
     };
     return { nivel, ...map[nivel] };
   }
@@ -234,7 +239,9 @@ export class CardCampingComponent {
     if (!this.isDragging()) return;
     const deltaVh = (this.startY - event.touches[0].clientY) / (window.innerHeight / 100);
     const next = Math.min(Math.max(this.startVh + deltaVh, 15), 92);
-    this.alturaCard.set(`${next}vh`);
+    const altura = `${next}vh`;
+    this.alturaCard.set(altura);
+    this.mapState.cardAltura.set(altura);
   }
 
   onDragEnd(): void {
@@ -251,6 +258,8 @@ export class CardCampingComponent {
     const nearest = this.SNAPS.reduce((prev, snap) =>
       Math.abs(snap - current) < Math.abs(prev - current) ? snap : prev,
     );
-    this.alturaCard.set(`${nearest}vh`);
+    const altura = `${nearest}vh`;
+    this.alturaCard.set(altura);
+    this.mapState.cardAltura.set(altura);
   }
 }

@@ -1,7 +1,7 @@
 @if (carregando()) {
-  <p class="trilha-loading">Carregando trilhas...</p>
+  <p class="trilha-loading">{{ 'trail.loading' | translate }}</p>
 } @else if (trilhas().length === 0) {
-  <p class="trilha-empty">Nenhuma trilha cadastrada.</p>
+  <p class="trilha-empty">{{ 'trail.empty' | translate }}</p>
 } @else {
   <ul class="trilha-list" role="list">
     @for (trilha of trilhas(); track trilha.id) {
@@ -22,7 +22,7 @@
               </span>
             }
             @if (trilha.concluidaPeloUsuario) {
-              <span class="badge-concluida">✅ Concluída</span>
+              <span class="badge-concluida">✅ {{ 'trail.completed-badge' | translate }}</span>
             }
           </div>
         </button>

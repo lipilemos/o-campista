@@ -23,7 +23,7 @@
   }
 
   <div class="rating-section">
-    <h3>Sua Avaliação</h3>
+    <h3>{{ 'review.your-review' | translate }}</h3>
 
     <div class="star-rating">
       @for (i of estrelas; track i) {
@@ -39,7 +39,7 @@
     </div>
 
     <div class="comment-field">
-      <textarea [(ngModel)]="comentario" placeholder="Compartilhe sua experiência..." class="comment-input" rows="4"
+      <textarea [(ngModel)]="comentario" [placeholder]="'review.comment-placeholder' | translate" class="comment-input" rows="4"
         [readonly]="jaAvaliado()"
         aria-label="Comentário da avaliação"></textarea>
 
@@ -47,7 +47,7 @@
       <span class="xp-badge" [class.xp-badge--bonus]="comentario.trim().length > 20"
         [class.xp-badge--active]="comentario.trim().length <= 20" aria-live="polite">
         +{{ xpComentario }} XP
-        @if (comentario.trim().length <= 20) { <span class="xp-hint">Escreva mais de 20 caracteres para +300 XP!</span>
+        @if (comentario.trim().length <= 20) { <span class="xp-hint">{{ 'review.xp-hint' | translate }}</span>
       }
       </span>
       }
@@ -75,7 +75,7 @@
       }
       } @else if (isNovaAvaliacao) {
       <label class="foto-label" for="foto-avaliacao">
-        📷 Adicionar foto (+300 XP)
+        {{ 'review.add-photo' | translate }}
         <input id="foto-avaliacao" type="file" accept="image/*" capture="environment" class="foto-input"
           (change)="onFotoSelecionada($event)" aria-label="Selecionar foto para avaliação" />
       </label>
@@ -84,7 +84,7 @@
 
     @if (!jaAvaliado()) {
     <button (click)="salvar()" class="save-btn" [disabled]="carregando || nota === 0 || !comentario.trim()">
-      {{ carregando ? 'Enviando...' : minhaAvaliacao ? 'Atualizar Avaliação' : 'Enviar Avaliação' }}
+      {{ carregando ? ('review.sending' | translate) : minhaAvaliacao ? ('review.btn-update' | translate) : ('review.btn-send' | translate) }}
     </button>
     }
   </div>
