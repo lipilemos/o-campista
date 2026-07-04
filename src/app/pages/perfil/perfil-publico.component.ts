@@ -1,11 +1,12 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PerfilPublico, UsuarioBusca } from '../../core/models/perfil-publico.model';
 import { ImgFallbackDirective } from '../../core/directives/img-fallback.directive';
 import { AuthService } from '../../core/services/auth.service';
 import { SocialService } from '../../core/services/social.service';
 import { ToastService } from '../../core/services/toast.service';
+import { ChatRoomService } from '../../core/services/chat-room.service';
 import { SugestoesUsuariosComponent } from '../../components/sugestoes-usuarios/sugestoes-usuarios.component';
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
@@ -18,14 +19,17 @@ import { TranslatePipe } from '../../core/pipes/translate.pipe';
 })
 export class PerfilPublicoComponent {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private socialService = inject(SocialService);
   private authService = inject(AuthService);
   private toast = inject(ToastService);
+  private chatRoomService = inject(ChatRoomService);
 
   perfil = signal<PerfilPublico | null>(null);
   carregando = signal(true);
   erro = signal(false);
   salvandoFollow = signal(false);
+  abrindoDm = signal(false);
   modalLista = signal<'seguidores' | 'seguindo' | null>(null);
   listaModal = signal<UsuarioBusca[]>([]);
   carregandoLista = signal(false);
@@ -112,6 +116,22 @@ export class PerfilPublicoComponent {
         this.carregandoLista.set(false);
       },
       error: () => this.carregandoLista.set(false),
+    });
+  }
+
+  enviarMensagem(): void {
+    const p = this.perfil();
+    if (!p || this.abrindoDm()) return;
+    this.abrindoDm.set(true);
+    this.chatRoomService.abrirDm(p.id).subscribe({
+      next: (sala) => {
+        this.abrindoDm.set(false);
+        this.router.navigate(['/chat', sala.id]);
+      },
+      error: () => {
+        this.toast.error('Não foi possível abrir a conversa. Tente novamente.');
+        this.abrindoDm.set(false);
+      },
     });
   }
 

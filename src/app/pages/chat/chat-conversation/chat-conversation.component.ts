@@ -1,5 +1,4 @@
 import { DatePipe } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -12,8 +11,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { environment } from '../../../../environments/environment';
-import { MensagemSalaChat, SalaChat } from '../../../core/models/chat-room.model';
+import { MensagemSalaChat } from '../../../core/models/chat-room.model';
 import { ImgFallbackDirective } from '../../../core/directives/img-fallback.directive';
 import { AuthService } from '../../../core/services/auth.service';
 import { ChatNotificationService } from '../../../core/services/chat-notification.service';
@@ -33,14 +31,13 @@ export class ChatConversationComponent {
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
   private chatNotification = inject(ChatNotificationService);
-  private http = inject(HttpClient);
   chatRoomService = inject(ChatRoomService);
 
   private meuId = this.authService.getUser()?.id;
 
   salaId = signal(0);
-  salaNome = signal('');
-  salaTipo = signal('');
+  salaNome = computed(() => this.chatRoomService.salas().find((s) => s.id === this.salaId())?.nome ?? '');
+  salaTipo = computed(() => this.chatRoomService.salas().find((s) => s.id === this.salaId())?.tipo ?? '');
   textoMensagem = signal('');
   private digitandoTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -59,13 +56,8 @@ export class ChatConversationComponent {
         this.chatRoomService.conectarSala(id);
         this.chatNotification.marcarComoLida(id);
 
-        const salas = this.chatRoomService.salas();
-        const sala = salas.find((s) => s.id === id);
-        if (sala) {
-          this.salaNome.set(sala.nome);
-          this.salaTipo.set(sala.tipo);
-        } else {
-          this.carregarInfoSala(id);
+        if (!this.chatRoomService.salas().find((s) => s.id === id)) {
+          this.chatRoomService.carregarSalas();
         }
       }
     });
@@ -106,15 +98,5 @@ export class ChatConversationComponent {
     return msgId === meuIdStr;
   }
 
-  private carregarInfoSala(salaId: number): void {
-    this.http.get<SalaChat[]>(`${environment.apiUrl}/chat/salas`).subscribe({
-      next: (salas) => {
-        const sala = salas.find((s) => s.id === salaId);
-        if (sala) {
-          this.salaNome.set(sala.nome);
-          this.salaTipo.set(sala.tipo);
-        }
-      },
-    });
-  }
+
 }

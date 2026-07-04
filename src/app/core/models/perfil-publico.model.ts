@@ -15,6 +15,7 @@ export interface PerfilPublico {
   totalSeguidores: number;
   totalSeguindo: number;
   estouSeguindo: boolean;
+  segueMutuo: boolean;
 }
 
 export interface ConfiguracaoPrivacidade {

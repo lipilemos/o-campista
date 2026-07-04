@@ -41,12 +41,16 @@
           sala.nome + (naoLidas(sala) > 0 ? ', ' + naoLidas(sala) + ' mensagens não lidas' : '')
         "
       >
-        <div class="sala-avatar">
+        <div class="sala-avatar" [class.sala-avatar--dm]="sala.tipo === 'dm'">
           @if (sala.fotoCapa) {
             <img [src]="sala.fotoCapa" [alt]="sala.nome" appImgFallback />
           } @else {
-            <div class="avatar-placeholder" [class.grupo]="sala.tipo === 'grupo'">
-              {{ sala.tipo === 'camping' ? '🏕️' : '👥' }}
+            <div
+              class="avatar-placeholder"
+              [class.grupo]="sala.tipo === 'grupo'"
+              [class.dm]="sala.tipo === 'dm'"
+            >
+              {{ sala.tipo === 'camping' ? '🏕️' : sala.tipo === 'dm' ? '👤' : '👥' }}
             </div>
           }
         </div>
@@ -79,6 +83,9 @@
             >
               {{ 'chat.btn-leave' | translate }}
             </button>
+          }
+          @if (sala.tipo === 'dm') {
+            <span class="badge-dm">{{ 'chat.dm.badge' | translate }}</span>
           }
           @if (sala.ultimaMensagem) {
             <span class="sala-hora">{{ sala.ultimaMensagem.dataEnvio | date: 'HH:mm' }}</span>

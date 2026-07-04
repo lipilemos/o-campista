@@ -28,17 +28,29 @@
       </div>
 
       @if (!ehProprioUsuario()) {
-        <button
-          class="btn-follow"
-          [class.seguindo]="p.estouSeguindo"
-          [disabled]="salvandoFollow()"
-          (click)="toggleFollow()"
-          [attr.aria-label]="
-            (p.estouSeguindo ? 'perfil.btn-unfollow' : 'perfil.btn-follow') | translate
-          "
-        >
-          {{ (p.estouSeguindo ? 'perfil.btn-unfollow' : 'perfil.btn-follow') | translate }}
-        </button>
+        <div class="perfil-acoes">
+          <button
+            class="btn-follow"
+            [class.seguindo]="p.estouSeguindo"
+            [disabled]="salvandoFollow()"
+            (click)="toggleFollow()"
+            [attr.aria-label]="
+              (p.estouSeguindo ? 'perfil.btn-unfollow' : 'perfil.btn-follow') | translate
+            "
+          >
+            {{ (p.estouSeguindo ? 'perfil.btn-unfollow' : 'perfil.btn-follow') | translate }}
+          </button>
+          @if (p.segueMutuo) {
+            <button
+              class="btn-mensagem"
+              [disabled]="abrindoDm()"
+              (click)="enviarMensagem()"
+              [attr.aria-label]="'perfil.btn-mensagem' | translate"
+            >
+              {{ 'perfil.btn-mensagem' | translate }}
+            </button>
+          }
+        </div>
       }
     </div>
 

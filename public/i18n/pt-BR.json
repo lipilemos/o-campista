@@ -127,6 +127,7 @@
   "chat.loading-conversations": "Carregando conversas...",
   "chat.no-messages": "Nenhuma mensagem ainda",
   "chat.btn-leave": "Sair",
+  "chat.dm.badge": "DM",
   "chat.empty-title": "Nenhuma conversa ainda",
   "chat.empty-hint": "Faça check-in em um camping ou crie um grupo para começar!",
   "chat.status-online": "Online",
@@ -240,6 +241,7 @@
 
   "perfil.btn-follow": "Seguir",
   "perfil.btn-unfollow": "Deixar de seguir",
+  "perfil.btn-mensagem": "Enviar mensagem",
   "perfil.seguidores": "Seguidores",
   "perfil.seguindo": "Seguindo",
   "perfil.stats-private": "Estatísticas privadas",

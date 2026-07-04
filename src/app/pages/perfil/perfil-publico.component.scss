@@ -70,6 +70,13 @@
   }
 }
 
+.perfil-acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
 .btn-follow {
   padding: 0.45rem 1.1rem;
   border-radius: 20px;
@@ -87,6 +94,30 @@
   &.seguindo {
     background: transparent;
     color: var(--color-primary, #6e1217);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-mensagem {
+  padding: 0.45rem 1.1rem;
+  border-radius: 20px;
+  border: 2px solid var(--color-border, #ddd);
+  background: transparent;
+  color: var(--color-text, #333);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--color-surface, #f5f5f5);
   }
 
   &:disabled {
