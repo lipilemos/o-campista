@@ -5,7 +5,11 @@
       <h3>{{ salaNome() }}</h3>
       <div class="chat-status">
         <span class="status-dot" [class.online]="conectado()" [class.offline]="!conectado()"></span>
-        {{ conectado() ? ('chat.status-online' | translate) : ('chat.status-reconnecting' | translate) }}
+        {{
+          conectado()
+            ? ('chat.status-online' | translate)
+            : ('chat.status-reconnecting' | translate)
+        }}
       </div>
     </div>
     <div class="header-tipo">
@@ -42,7 +46,9 @@
         }
         <div class="msg-conteudo">
           @if (!ehMinhaMensagem(msg)) {
-            <span class="msg-nome">{{ msg.nomeUsuario }}</span>
+            <a [routerLink]="['/perfil', msg.usuarioId]" class="msg-nome msg-nome-link">
+              {{ msg.nomeUsuario }}
+            </a>
           }
           <p class="msg-texto">{{ msg.texto }}</p>
           <span class="msg-hora">{{ msg.dataEnvio | date: 'HH:mm' }}</span>

@@ -85,6 +85,27 @@ export const routes: Routes = [
         path: 'gift',
         loadComponent: () => import('./pages/gift/gift.component').then((m) => m.GiftComponent),
       },
+      {
+        path: 'feed',
+        loadComponent: () => import('./pages/feed/feed.component').then((m) => m.FeedComponent),
+      },
+      {
+        path: 'ranking',
+        loadComponent: () =>
+          import('./pages/ranking/ranking.component').then((m) => m.RankingComponent),
+      },
+      {
+        path: 'perfil/:id',
+        loadComponent: () =>
+          import('./pages/perfil/perfil-publico.component').then((m) => m.PerfilPublicoComponent),
+      },
+      {
+        path: 'notificacoes',
+        loadComponent: () =>
+          import('./pages/notificacoes/notificacoes.component').then(
+            (m) => m.NotificacoesComponent,
+          ),
+      },
     ],
   },
   {

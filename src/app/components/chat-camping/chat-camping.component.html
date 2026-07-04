@@ -18,7 +18,11 @@
               [class.online]="conectado()"
               [class.offline]="!conectado()"
             ></span>
-            {{ conectado() ? ('chat.status-online' | translate) : ('chat.status-reconnecting' | translate) }}
+            {{
+              conectado()
+                ? ('chat.status-online' | translate)
+                : ('chat.status-reconnecting' | translate)
+            }}
           </div>
         </div>
       </div>

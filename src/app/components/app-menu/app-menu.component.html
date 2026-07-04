@@ -43,6 +43,16 @@
         >
           {{ 'nav.account' | translate }}
         </button>
+        <button class="menu-item" [class.active]="isActive('feed')" (click)="navigateTo('feed')">
+          {{ 'nav.feed' | translate }}
+        </button>
+        <button
+          class="menu-item"
+          [class.active]="isActive('ranking')"
+          (click)="navigateTo('ranking')"
+        >
+          {{ 'nav.ranking' | translate }}
+        </button>
         <button class="menu-item" [class.active]="isActive('mapa')" (click)="navigateTo('mapa')">
           {{ 'nav.map' | translate }}
         </button>
@@ -51,6 +61,18 @@
           @if (chatNotification.totalNaoLidas() > 0) {
             <span class="badge-nao-lidas">{{
               chatNotification.totalNaoLidas() > 99 ? '99+' : chatNotification.totalNaoLidas()
+            }}</span>
+          }
+        </button>
+        <button
+          class="menu-item"
+          [class.active]="isActive('notificacoes')"
+          (click)="navigateTo('notificacoes')"
+        >
+          {{ 'nav.notifications' | translate }}
+          @if (notificacao.totalNaoLidas() > 0) {
+            <span class="badge-nao-lidas">{{
+              notificacao.totalNaoLidas() > 99 ? '99+' : notificacao.totalNaoLidas()
             }}</span>
           }
         </button>

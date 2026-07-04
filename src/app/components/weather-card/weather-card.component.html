@@ -34,6 +34,7 @@
     [class.ruim]="weather.statusCamping === 'Ruim'"
   >
     {{ obterEmojiStatus(weather.statusCamping) }}
-    {{ obterChaveStatus(weather.statusCamping) | translate }} {{ 'weather.status-suffix' | translate }}
+    {{ obterChaveStatus(weather.statusCamping) | translate }}
+    {{ 'weather.status-suffix' | translate }}
   </div>
 </div>

@@ -5,11 +5,15 @@ import {
   Component,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { forkJoin, Observable, of } from 'rxjs';
 import { Avaliacao } from '../../core/models/avaliacao.model';
+import { Camping } from '../../core/models/camping.model';
 import { HistoricoCheckin } from '../../core/models/historico-checkin.model';
+import { ConfiguracaoPrivacidade, UsuarioBusca } from '../../core/models/perfil-publico.model';
 import { Presente } from '../../core/models/presente.model';
 import { UsuarioLogado } from '../../core/models/user.model';
 import { AuthService } from '../../core/services/auth.service';
@@ -17,6 +21,7 @@ import { CampingService } from '../../core/services/camping.service';
 import { TrilhaService } from '../../core/services/trilha.service';
 import { CheckinService } from '../../core/services/checkin.service';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
+import { SocialService } from '../../core/services/social.service';
 import { ToastService } from '../../core/services/toast.service';
 import { UsuarioService } from '../../core/services/usuario.service';
 import { ImgFallbackDirective } from '../../core/directives/img-fallback.directive';
@@ -26,7 +31,14 @@ import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-account',
-  imports: [CommonModule, CheckinHistoryComponent, ProfileDetailComponent, ImgFallbackDirective, TranslatePipe],
+  imports: [
+    CommonModule,
+    CheckinHistoryComponent,
+    ProfileDetailComponent,
+    ImgFallbackDirective,
+    TranslatePipe,
+    RouterLink,
+  ],
   templateUrl: './account.component.html',
   styleUrls: ['./account.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,8 +63,21 @@ export class AccountComponent implements OnInit {
   historicoCheckins: HistoricoCheckin[] = [];
   mostrarHistorico = false;
   mostrarPerfilDetalhe = false;
+
+  favoritos = signal<Camping[]>([]);
+  carregandoFavoritos = signal(false);
+  totalSeguidores = signal(0);
+  totalSeguindo = signal(0);
+  privacidade = signal<ConfiguracaoPrivacidade | null>(null);
+  modalSocial = signal<'seguidores' | 'seguindo' | null>(null);
+  listaModal = signal<UsuarioBusca[]>([]);
+  carregandoLista = signal(false);
+  salvandoPrivacidade = signal(false);
+
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
+  private socialService = inject(SocialService);
+
   constructor(
     private authService: AuthService,
     private usuarioService: UsuarioService,
@@ -67,7 +92,87 @@ export class AccountComponent implements OnInit {
         this.usuario = usuario;
         this.cdr.markForCheck();
         this.carregarHistoricoCheckins();
+        this.carregarDadosSociais(usuario.id);
+        this.carregarPrivacidade(usuario.id);
+        this.carregarFavoritos(usuario.id);
       });
+  }
+
+  private carregarFavoritos(id: string): void {
+    this.carregandoFavoritos.set(true);
+    this.campingService.getFavoritos(id).subscribe({
+      next: (lista) => {
+        this.favoritos.set(lista);
+        this.carregandoFavoritos.set(false);
+      },
+      error: () => this.carregandoFavoritos.set(false),
+    });
+  }
+
+  private carregarDadosSociais(id: string): void {
+    this.socialService.getPerfil(id).subscribe({
+      next: (perfil) => {
+        this.totalSeguidores.set(perfil.totalSeguidores);
+        this.totalSeguindo.set(perfil.totalSeguindo);
+      },
+    });
+  }
+
+  private carregarPrivacidade(id: string): void {
+    this.socialService.getPrivacidade(id).subscribe({
+      next: (config) => this.privacidade.set(config),
+    });
+  }
+
+  abrirModalSeguidores(): void {
+    const id = this.usuario?.id;
+    if (!id) return;
+    this.modalSocial.set('seguidores');
+    this.carregandoLista.set(true);
+    this.listaModal.set([]);
+    this.socialService.getSeguidores(id).subscribe({
+      next: (lista) => {
+        this.listaModal.set(lista);
+        this.carregandoLista.set(false);
+      },
+      error: () => this.carregandoLista.set(false),
+    });
+  }
+
+  abrirModalSeguindo(): void {
+    const id = this.usuario?.id;
+    if (!id) return;
+    this.modalSocial.set('seguindo');
+    this.carregandoLista.set(true);
+    this.listaModal.set([]);
+    this.socialService.getSeguindo(id).subscribe({
+      next: (lista) => {
+        this.listaModal.set(lista);
+        this.carregandoLista.set(false);
+      },
+      error: () => this.carregandoLista.set(false),
+    });
+  }
+
+  fecharModalSocial(): void {
+    this.modalSocial.set(null);
+    this.listaModal.set([]);
+  }
+
+  togglePrivacidade(campo: keyof ConfiguracaoPrivacidade): void {
+    const atual = this.privacidade();
+    if (!atual) return;
+    const nova = { ...atual, [campo]: !atual[campo] };
+    this.privacidade.set(nova);
+    this.salvandoPrivacidade.set(true);
+    this.socialService.salvarPrivacidade(this.usuario.id, nova).subscribe({
+      next: () => this.salvandoPrivacidade.set(false),
+      error: () => {
+        this.privacidade.set(atual);
+        this.salvandoPrivacidade.set(false);
+        this.toast.error('Não foi possível salvar as preferências de privacidade.');
+      },
+    });
   }
 
   private carregarHistoricoCheckins(): void {
@@ -92,9 +197,7 @@ export class AccountComponent implements OnInit {
       ...new Set(this.historicoCheckins.filter((h) => h.camping !== null).map((h) => h.campingId)),
     ];
     const trilhaIdsUnicos = [
-      ...new Set(
-        this.historicoCheckins.filter((h) => h.trilhaId).map((h) => h.trilhaId!),
-      ),
+      ...new Set(this.historicoCheckins.filter((h) => h.trilhaId).map((h) => h.trilhaId!)),
     ];
 
     const campingReqs: Record<string, Observable<Avaliacao[] | []>> = {};
@@ -108,24 +211,24 @@ export class AccountComponent implements OnInit {
     });
 
     const campingObs =
-      campingIdsUnicos.length > 0
-        ? forkJoin(campingReqs)
-        : of({} as Record<string, Avaliacao[]>);
+      campingIdsUnicos.length > 0 ? forkJoin(campingReqs) : of({} as Record<string, Avaliacao[]>);
     const trilhaObs =
-      trilhaIdsUnicos.length > 0
-        ? forkJoin(trilhaReqs)
-        : of({} as Record<string, Avaliacao[]>);
+      trilhaIdsUnicos.length > 0 ? forkJoin(trilhaReqs) : of({} as Record<string, Avaliacao[]>);
 
     forkJoin({ campings: campingObs, trilhas: trilhaObs }).subscribe({
       next: ({ campings, trilhas }) => {
         const avaliados = new Set<number>();
         Object.values(campings).forEach((avaliacoes) => {
-          avaliacoes.forEach((av) => { if (av.checkinId) avaliados.add(av.checkinId); });
+          avaliacoes.forEach((av) => {
+            if (av.checkinId) avaliados.add(av.checkinId);
+          });
         });
         Object.values(trilhas).forEach((avaliacoes) => {
           avaliacoes
             .filter((av) => av.usuarioId === usuarioId)
-            .forEach((av) => { if (av.checkinId) avaliados.add(av.checkinId); });
+            .forEach((av) => {
+              if (av.checkinId) avaliados.add(av.checkinId);
+            });
         });
         this.checkinsAvaliados = avaliados;
         this.cdr.markForCheck();
@@ -189,6 +292,18 @@ export class AccountComponent implements OnInit {
   private trilhaService = inject(TrilhaService);
   private toast = inject(ToastService);
   private confirmDialog = inject(ConfirmDialogService);
+
+  desfavoritarCamping(campingId: number): void {
+    const usuarioId = this.usuario?.id;
+    if (!usuarioId) return;
+    this.campingService.desfavoritar(usuarioId, campingId).subscribe({
+      next: () => this.favoritos.update((lista) => lista.filter((c) => c.id !== campingId)),
+      error: () => {
+        this.campingService.reverterFavorito(campingId, true);
+        this.toast.error('account.favorito-erro');
+      },
+    });
+  }
 
   copiarCodigo(codigo: string): void {
     navigator.clipboard.writeText(codigo);

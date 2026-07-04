@@ -18,6 +18,7 @@ export interface Camping {
   fotoPrincipal: string;
   recursos: Recurso[];
   statusOcupacao?: StatusOcupacao;
+  estaFavoritado?: boolean;
 }
 export interface Recurso {
   nome: string;

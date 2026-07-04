@@ -1,0 +1,352 @@
+:host {
+  display: block;
+}
+
+.ranking-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4);
+}
+
+.ranking-header {
+  margin-bottom: var(--space-5);
+}
+
+.ranking-title {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+// Tabs
+.ranking-tabs {
+  display: flex;
+  border-bottom: 2px solid var(--color-border);
+  margin-bottom: var(--space-5);
+  gap: 0;
+}
+
+.ranking-tab {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  margin-bottom: -2px;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+
+  &:hover {
+    color: var(--color-text);
+  }
+
+  &.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+  }
+}
+
+// Body states
+.ranking-loading,
+.ranking-empty {
+  text-align: center;
+  padding: var(--space-12) var(--space-4);
+  color: var(--color-text-muted);
+
+  p {
+    font-size: var(--text-base);
+    line-height: 1.6;
+  }
+}
+
+.spinner {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-bottom: var(--space-3);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn-retry {
+  margin-top: var(--space-3);
+  background: none;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  border-radius: var(--radius-full);
+  padding: 8px 20px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+
+  &:hover {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+  }
+}
+
+// Minha posição fixada
+.minha-posicao {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+  border: 2px solid var(--color-primary);
+  background: rgba(110, 18, 23, 0.04);
+}
+
+// Lista
+.ranking-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.ranking-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  animation: fadeIn 0.25s ease;
+  transition: transform var(--transition-fast);
+
+  &:hover {
+    transform: translateX(2px);
+  }
+
+  &.eu {
+    border: 2px solid var(--color-primary);
+    background: rgba(110, 18, 23, 0.03);
+  }
+}
+
+// Posição
+.pos-badge {
+  font-size: var(--text-base);
+  font-weight: 700;
+  min-width: 36px;
+  text-align: center;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+
+  &.ouro {
+    color: #b8860b;
+    font-size: var(--text-xl);
+  }
+  &.prata {
+    color: #808080;
+    font-size: var(--text-xl);
+  }
+  &.bronze {
+    color: #8b4513;
+    font-size: var(--text-xl);
+  }
+  &.eu {
+    color: var(--color-primary);
+  }
+}
+
+// Avatar + info
+.ranking-usuario-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover .ranking-nome {
+    color: var(--color-primary);
+  }
+}
+
+.ranking-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+
+  &-placeholder {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: var(--text-sm);
+  }
+
+  &.eu-avatar {
+    background: var(--color-primary);
+  }
+}
+
+.ranking-nome-wrap {
+  min-width: 0;
+  flex: 1;
+}
+
+.ranking-nome {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color var(--transition-fast);
+}
+
+.badge-eu {
+  font-size: var(--text-xs);
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  border-radius: var(--radius-full);
+  padding: 2px 8px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ranking-sub {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: 2px;
+  display: block;
+}
+
+// Parte direita
+.ranking-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.checkins-count {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.btn-follow {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  background: transparent;
+  white-space: nowrap;
+
+  &.following {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+  }
+
+  &:hover:not(:disabled) {
+    opacity: 0.85;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Campings
+.ranking-camping {
+  gap: var(--space-3);
+}
+
+.camping-foto-wrap {
+  flex-shrink: 0;
+}
+
+.camping-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+
+  &-placeholder {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    background: var(--color-surface-alt);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+}
+
+// Load more
+.btn-load-more {
+  display: block;
+  width: 100%;
+  margin-top: var(--space-4);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+@media (max-width: 480px) {
+  .ranking-page {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .ranking-tab {
+    padding: var(--space-3) var(--space-3);
+    font-size: var(--text-xs);
+  }
+
+  .btn-follow {
+    display: none;
+  }
+
+  .ranking-avatar {
+    width: 34px;
+    height: 34px;
+  }
+}

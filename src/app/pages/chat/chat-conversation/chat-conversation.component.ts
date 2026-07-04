@@ -11,7 +11,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { MensagemSalaChat, SalaChat } from '../../../core/models/chat-room.model';
 import { ImgFallbackDirective } from '../../../core/directives/img-fallback.directive';
@@ -22,7 +22,7 @@ import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-chat-conversation',
-  imports: [DatePipe, ImgFallbackDirective, TranslatePipe],
+  imports: [DatePipe, ImgFallbackDirective, TranslatePipe, RouterLink],
   templateUrl: './chat-conversation.component.html',
   styleUrl: './chat-conversation.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

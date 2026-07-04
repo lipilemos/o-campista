@@ -19,8 +19,14 @@
 }
 
 @keyframes slideInRight {
-  from { opacity: 0; transform: translateX(16px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .drag-handle-touch {
@@ -91,10 +97,18 @@
   }
 }
 
-.presenca-icon { font-size: 1rem; }
-.presenca-count { font-size: var(--text-sm); font-weight: 700; color: var(--color-primary); }
+.presenca-icon {
+  font-size: 1rem;
+}
+.presenca-count {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-primary);
+}
 
-.trilha-presenca--total .presenca-count { color: var(--color-text-secondary); }
+.trilha-presenca--total .presenca-count {
+  color: var(--color-text-secondary);
+}
 
 .presenca-tooltip {
   position: absolute;
@@ -128,13 +142,28 @@
   font-size: var(--text-xs);
   font-weight: 600;
 
-  &.dif-fácil, &.dif-facil { background: #d4edda; color: #155724; }
-  &.dif-moderada { background: #fff3cd; color: #856404; }
-  &.dif-difícil, &.dif-dificil { background: #f8d7da; color: #721c24; }
-  &.dif-extrema { background: #4a0000; color: white; }
+  &.dif-fácil,
+  &.dif-facil {
+    background: #d4edda;
+    color: #155724;
+  }
+  &.dif-moderada {
+    background: #fff3cd;
+    color: #856404;
+  }
+  &.dif-difícil,
+  &.dif-dificil {
+    background: #f8d7da;
+    color: #721c24;
+  }
+  &.dif-extrema {
+    background: #4a0000;
+    color: white;
+  }
 }
 
-.trilha-distancia, .trilha-avaliacao {
+.trilha-distancia,
+.trilha-avaliacao {
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
 }
@@ -180,7 +209,7 @@
 .btn-checkin {
   width: 100%;
   padding: var(--space-3) var(--space-4);
-  background: var(--color-accent, #FF9800);
+  background: var(--color-accent, #ff9800);
   color: white;
   border: none;
   border-radius: var(--radius-lg);
@@ -215,7 +244,9 @@
 
 /* Mobile bottom sheet */
 @media (max-width: 768px) {
-  .drag-handle-touch { display: block; }
+  .drag-handle-touch {
+    display: block;
+  }
 
   .trilha-card {
     position: fixed;
@@ -230,11 +261,17 @@
     animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     transition: height 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
-    &.dragging { transition: none; }
+    &.dragging {
+      transition: none;
+    }
   }
 
   @keyframes slideUp {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
   }
 }

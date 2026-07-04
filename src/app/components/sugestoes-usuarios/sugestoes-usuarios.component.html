@@ -1,0 +1,50 @@
+@if (carregando()) {
+  <div class="sugestoes-loading" aria-busy="true">
+    <span class="spinner"></span>
+  </div>
+} @else if (sugestoes().length > 0) {
+  <section class="sugestoes-section" [attr.aria-label]="'sugestoes.titulo' | translate">
+    <h2 class="sugestoes-titulo">{{ 'sugestoes.titulo' | translate }}</h2>
+
+    <div class="sugestoes-scroll custom-scrollbar" role="list">
+      @for (s of sugestoes(); track s.id) {
+        <div class="sugestao-card" role="listitem">
+          <button
+            class="btn-dispensar"
+            (click)="dispensar(s.id)"
+            [attr.aria-label]="'sugestoes.dispensar' | translate"
+          >
+            ✕
+          </button>
+
+          <a [routerLink]="['/perfil', s.id]" class="sugestao-link">
+            @if (s.fotoPerfil) {
+              <img
+                class="sugestao-avatar"
+                [src]="s.fotoPerfil"
+                [alt]="s.nome"
+                appImgFallback
+              />
+            } @else {
+              <div class="sugestao-avatar sugestao-avatar-placeholder">
+                {{ s.nome.charAt(0).toUpperCase() }}
+              </div>
+            }
+            <p class="sugestao-nome">{{ s.nome }}</p>
+            <small class="sugestao-nivel">🏕️ {{ 'account.badge-level' | translate }} {{ s.nivel }}</small>
+          </a>
+
+          <button
+            class="btn-follow"
+            [class.seguindo]="s.seguindo"
+            [disabled]="s.salvando"
+            (click)="toggleFollow(s)"
+            [attr.aria-label]="(s.seguindo ? 'perfil.btn-unfollow' : 'perfil.btn-follow') | translate"
+          >
+            {{ (s.seguindo ? 'perfil.btn-unfollow' : 'sugestoes.btn-seguir') | translate }}
+          </button>
+        </div>
+      }
+    </div>
+  </section>
+}

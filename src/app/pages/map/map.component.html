@@ -106,10 +106,16 @@
     </div>
 
     <div #mapContainer class="map-container"></div>
-    <button class="btn-localizacao" (click)="centralizarNoUsuario()">{{ 'map.btn-location' | translate }}</button>
+    <button class="btn-localizacao" (click)="centralizarNoUsuario()">
+      {{ 'map.btn-location' | translate }}
+    </button>
 
     @if (!gravandoTrilha) {
-      <button class="btn-criar-trilha" (click)="iniciarGravacaoTrilha()" aria-label="Criar nova trilha">
+      <button
+        class="btn-criar-trilha"
+        (click)="iniciarGravacaoTrilha()"
+        aria-label="Criar nova trilha"
+      >
         {{ 'trail.create.btn' | translate }}
       </button>
     }

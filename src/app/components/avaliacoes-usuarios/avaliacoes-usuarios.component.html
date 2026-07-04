@@ -23,7 +23,9 @@
                 </div>
               }
               <div>
-                <p class="user-name">{{ avaliacao.usuarioNome }}</p>
+                <a [routerLink]="['/perfil', avaliacao.usuarioId]" class="user-name user-name-link">
+                  {{ avaliacao.usuarioNome }}
+                </a>
                 <p class="rating-date">{{ avaliacao.dataCriacao | date: 'dd/MM/yyyy' }}</p>
               </div>
             </div>

@@ -1,0 +1,228 @@
+<article class="feed-card">
+  <header class="feed-card-header">
+    <a [routerLink]="['/perfil', item().usuarioId]" class="feed-autor">
+      @if (item().usuarioFoto) {
+        <img
+          [src]="item().usuarioFoto"
+          [alt]="item().usuarioNome"
+          class="feed-avatar"
+          appImgFallback
+        />
+      } @else {
+        <div class="feed-avatar feed-avatar-placeholder">
+          {{ item().usuarioNome.charAt(0).toUpperCase() }}
+        </div>
+      }
+      <div>
+        <p class="feed-autor-nome">{{ item().usuarioNome }}</p>
+        <time class="feed-data">{{ item().criadoEm | date: 'dd/MM/yyyy HH:mm' }}</time>
+      </div>
+    </a>
+
+    <span class="feed-tipo-badge feed-tipo-{{ item().tipo }}">
+      @switch (item().tipo) {
+        @case ('checkin') {
+          📍 {{ 'feed.tipo.checkin' | translate }}
+        }
+        @case ('conquista') {
+          🏆 {{ 'feed.tipo.conquista' | translate }}
+        }
+        @case ('avaliacao') {
+          ⭐ {{ 'feed.tipo.avaliacao' | translate }}
+        }
+        @case ('post') {
+          📸 {{ 'feed.tipo.post' | translate }}
+        }
+        @case ('trilha_concluida') {
+          🥾 {{ 'feed.tipo.trilha' | translate }}
+        }
+      }
+    </span>
+  </header>
+
+  <div class="feed-card-body">
+    @switch (item().tipo) {
+      @case ('checkin') {
+        <p class="feed-descricao">
+          {{ 'feed.checkin.fez' | translate }}
+          <strong>{{ item().campingNome }}</strong>
+        </p>
+        @if (item().ocupacaoReportada) {
+          <span class="ocupacao-badge ocupacao-{{ item().ocupacaoReportada }}">
+            {{ 'card.camping.' + item().ocupacaoReportada | translate }}
+          </span>
+        }
+        @if (item().campingFoto) {
+          <img
+            [src]="item().campingFoto"
+            [alt]="item().campingNome"
+            class="feed-imagem"
+            appImgFallback
+          />
+        }
+      }
+
+      @case ('conquista') {
+        <div class="conquista-wrap">
+          <span class="conquista-icone">{{ item().conquistaIcone }}</span>
+          <div>
+            <p class="conquista-nome">{{ item().conquistaNome }}</p>
+            <p class="conquista-desc">{{ item().conquistaDescricao }}</p>
+          </div>
+        </div>
+      }
+
+      @case ('avaliacao') {
+        <p class="feed-descricao">
+          {{ 'feed.avaliacao.avaliou' | translate }}
+          <strong>{{ item().localNome }}</strong>
+          — {{ item().nota }} ⭐
+        </p>
+        @if (item().comentario) {
+          <p class="avaliacao-comentario">"{{ item().comentario }}"</p>
+        }
+        @if (item().avaliacaoFotoUrl) {
+          <img
+            [src]="item().avaliacaoFotoUrl"
+            [alt]="item().localNome"
+            class="feed-imagem"
+            appImgFallback
+          />
+        }
+      }
+
+      @case ('post') {
+        @if (item().postTexto) {
+          <p class="post-texto">{{ item().postTexto }}</p>
+        }
+        @if (item().postFotoUrl) {
+          <img
+            [src]="item().postFotoUrl"
+            [alt]="item().usuarioNome"
+            class="feed-imagem feed-imagem-post"
+            appImgFallback
+          />
+        }
+        @if (item().campingNome) {
+          <p class="post-local">📍 {{ item().campingNome }}</p>
+        }
+      }
+
+      @case ('trilha_concluida') {
+        <p class="feed-descricao">
+          {{ 'feed.trilha.concluiu' | translate }}
+          <strong>{{ item().trilhaNome }}</strong>
+        </p>
+        <div class="trilha-info">
+          @if (item().distanciaKm) {
+            <span class="trilha-badge">📏 {{ item().distanciaKm }} km</span>
+          }
+          @if (item().dificuldade) {
+            <span class="trilha-badge">{{
+              'trail.difficulty.' + item().dificuldade | translate
+            }}</span>
+          }
+        </div>
+      }
+    }
+  </div>
+
+  @if (ehPost()) {
+    <footer class="feed-card-footer">
+      <button
+        class="btn-curtir"
+        [class.curtido]="curtiu()"
+        [disabled]="curtindo()"
+        (click)="toggleCurtir()"
+        [attr.aria-label]="(curtiu() ? 'feed.btn-descurtir' : 'feed.btn-curtir') | translate"
+      >
+        {{ curtiu() ? '❤️' : '🤍' }} {{ totalCurtidas() }}
+      </button>
+
+      <button
+        class="btn-comentar"
+        [class.ativo]="comentariosAbertos()"
+        (click)="toggleComentarios()"
+        [attr.aria-label]="'feed.btn-comentar' | translate"
+        [attr.aria-expanded]="comentariosAbertos()"
+      >
+        💬 {{ totalComentarios() }}
+      </button>
+
+      @if (ehMeu()) {
+        <button
+          class="btn-deletar"
+          (click)="confirmarDeletar()"
+          [attr.aria-label]="'feed.btn-deletar' | translate"
+        >
+          🗑️
+        </button>
+      }
+    </footer>
+
+    @if (comentariosAbertos()) {
+      <section class="comments-section" aria-label="Comentários">
+        @if (loadingComentarios()) {
+          <p class="comments-loading">{{ 'feed.loading' | translate }}</p>
+        } @else {
+          @if (comentarios().length === 0) {
+            <p class="comments-empty">{{ 'feed.comentarios.vazio' | translate }}</p>
+          } @else {
+            <ul class="comments-list">
+              @for (c of comentarios(); track c.id) {
+                <li class="comment-item">
+                  @if (c.usuarioFoto) {
+                    <img
+                      [src]="c.usuarioFoto"
+                      [alt]="c.usuarioNome"
+                      class="comment-avatar"
+                      appImgFallback
+                    />
+                  } @else {
+                    <div class="comment-avatar comment-avatar-placeholder">
+                      {{ c.usuarioNome.charAt(0).toUpperCase() }}
+                    </div>
+                  }
+                  <div class="comment-body">
+                    <p class="comment-autor">{{ c.usuarioNome }}</p>
+                    <p class="comment-texto">{{ c.texto }}</p>
+                    <time class="comment-data">{{ c.criadoEm | date: 'dd/MM HH:mm' }}</time>
+                  </div>
+                  @if (c.usuarioId === meuId()) {
+                    <button
+                      class="comment-deletar"
+                      (click)="deletarComentario(c.id)"
+                      [attr.aria-label]="'feed.comentarios.deletar' | translate"
+                    >
+                      🗑️
+                    </button>
+                  }
+                </li>
+              }
+            </ul>
+          }
+
+          <div class="comment-input-row">
+            <textarea
+              class="comment-input"
+              [value]="novoComentario()"
+              [placeholder]="'feed.comentarios.placeholder' | translate"
+              maxlength="500"
+              rows="2"
+              [disabled]="enviando()"
+              (input)="onNovoComentarioInput($event)"
+              (keydown)="onComentarioKeydown($event)"
+            ></textarea>
+            <button
+              class="comment-enviar"
+              [disabled]="!novoComentario().trim() || enviando()"
+              (click)="enviarComentario()"
+            >
+              {{ 'feed.comentarios.enviar' | translate }}
+            </button>
+          </div>
+        }
+      </section>
+    }
+  }
+</article>

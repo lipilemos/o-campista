@@ -10,7 +10,9 @@
   gap: var(--space-4);
   pointer-events: none;
 
-  > * { pointer-events: auto; }
+  > * {
+    pointer-events: auto;
+  }
 }
 
 .recording-banner {
@@ -33,8 +35,13 @@
 }
 
 @keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.2; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
 }
 
 .rec-info {
@@ -74,7 +81,7 @@
   padding: var(--space-3) var(--space-5);
   border-radius: var(--radius-full);
   border: none;
-  background: #4CAF50;
+  background: #4caf50;
   color: white;
   font-weight: 700;
   cursor: pointer;
@@ -132,10 +139,14 @@
     font-family: inherit;
     outline: none;
 
-    &:focus { border-color: var(--color-primary); }
+    &:focus {
+      border-color: var(--color-primary);
+    }
   }
 
-  textarea { resize: vertical; }
+  textarea {
+    resize: vertical;
+  }
 }
 
 .field-error {
@@ -165,7 +176,7 @@
   padding: var(--space-3);
   border: none;
   border-radius: var(--radius-lg);
-  background: #4CAF50;
+  background: #4caf50;
   color: white;
   font-weight: 700;
   cursor: pointer;

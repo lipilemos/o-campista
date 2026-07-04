@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { Observable, catchError, from, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Avaliacao, AvaliacaoComUsuario } from '../models/avaliacao.model';
@@ -20,6 +20,59 @@ export class CampingService {
   private http = inject(HttpClient);
   private offlineStorage = inject(OfflineStorageService);
   private apiUrl = `${environment.apiUrl}/mapa`;
+
+  private readonly _favoritos = signal<Set<number>>(new Set());
+  readonly favoritos = this._favoritos.asReadonly();
+  private favoritosCarregados = false;
+
+  carregarFavoritos(usuarioId: string): void {
+    if (this.favoritosCarregados) return;
+    this.http
+      .get<Camping[]>(`${environment.apiUrl}/usuarios/${usuarioId}/favoritos`)
+      .subscribe({
+        next: (lista) => {
+          this._favoritos.set(new Set(lista.map((c) => c.id)));
+          this.favoritosCarregados = true;
+        },
+        error: () => {},
+      });
+  }
+
+  getFavoritos(usuarioId: string): Observable<Camping[]> {
+    return this.http.get<Camping[]>(`${environment.apiUrl}/usuarios/${usuarioId}/favoritos`);
+  }
+
+  favoritar(usuarioId: string, campingId: number): Observable<void> {
+    this._favoritos.update((s) => new Set([...s, campingId]));
+    return this.http.post<void>(
+      `${environment.apiUrl}/usuarios/${usuarioId}/favoritos/${campingId}`,
+      {},
+    );
+  }
+
+  desfavoritar(usuarioId: string, campingId: number): Observable<void> {
+    this._favoritos.update((s) => {
+      const next = new Set(s);
+      next.delete(campingId);
+      return next;
+    });
+    return this.http.delete<void>(
+      `${environment.apiUrl}/usuarios/${usuarioId}/favoritos/${campingId}`,
+    );
+  }
+
+  ehFavorito(campingId: number): boolean {
+    return this._favoritos().has(campingId);
+  }
+
+  reverterFavorito(campingId: number, eraFavorito: boolean): void {
+    this._favoritos.update((s) => {
+      const next = new Set(s);
+      if (eraFavorito) next.add(campingId);
+      else next.delete(campingId);
+      return next;
+    });
+  }
 
   listar(filtro?: CampingFiltro): Observable<Camping[]> {
     let params = new HttpParams();

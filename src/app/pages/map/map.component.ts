@@ -99,7 +99,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   categoriaSelecionada = '';
 
   get filtrosAtivos(): number {
-    return (this.busca ? 1 : 0) + (this.categoriaSelecionada ? 1 : 0) + this.recursosSelecionados.size;
+    return (
+      (this.busca ? 1 : 0) + (this.categoriaSelecionada ? 1 : 0) + this.recursosSelecionados.size
+    );
   }
 
   campings: Camping[] = [];

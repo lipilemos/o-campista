@@ -10,7 +10,12 @@
       <!-- Nome -->
       <div class="form-group">
         <label for="nome">{{ 'gift.page.name-label' | translate }}</label>
-        <input id="nome" type="text" formControlName="nome" [placeholder]="'gift.page.name-placeholder' | translate" />
+        <input
+          id="nome"
+          type="text"
+          formControlName="nome"
+          [placeholder]="'gift.page.name-placeholder' | translate"
+        />
         <span class="error" *ngIf="giftForm.get('nome')?.invalid && giftForm.get('nome')?.touched">
           {{ 'gift.page.name-required' | translate }}
         </span>
@@ -50,20 +55,30 @@
       <!-- GPS Status -->
       <div class="gps-status" [class.active]="hasLocation">
         <span class="dot"></span>
-        {{ hasLocation ? ('gift.page.gps-active' | translate) : ('gift.page.gps-searching' | translate) }}
+        {{
+          hasLocation
+            ? ('gift.page.gps-active' | translate)
+            : ('gift.page.gps-searching' | translate)
+        }}
       </div>
       <div *ngIf="mensagem" class="feedback" [class.erro]="erro" [class.sucesso]="!erro">
         {{ mensagem }}
       </div>
       <!-- Ações -->
       <div class="form-actions">
-        <button type="button" class="btn-link" (click)="goBack()">{{ 'gift.page.btn-cancel' | translate }}</button>
+        <button type="button" class="btn-link" (click)="goBack()">
+          {{ 'gift.page.btn-cancel' | translate }}
+        </button>
         <button
           type="submit"
           class="btn-primary"
           [disabled]="giftForm.invalid || !hasLocation || !selectedFile || loading"
         >
-          {{ loading ? ('gift.page.btn-publishing' | translate) : ('gift.page.btn-submit' | translate) }}
+          {{
+            loading
+              ? ('gift.page.btn-publishing' | translate)
+              : ('gift.page.btn-submit' | translate)
+          }}
         </button>
       </div>
     </form>
