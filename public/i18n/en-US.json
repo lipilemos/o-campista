@@ -238,6 +238,8 @@
   "social.privacy-checkins": "Visible check-ins",
   "social.privacy-conquistas": "Visible achievements",
   "social.privacy-nivel": "Visible level & XP",
+  "social.privacy-visivel-mapa": "Visible on map",
+  "social.privacy-visivel-mapa-hint": "Shares your real-time location with mutual followers",
 
   "perfil.btn-follow": "Follow",
   "perfil.btn-unfollow": "Unfollow",

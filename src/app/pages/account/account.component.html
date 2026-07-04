@@ -242,6 +242,18 @@
               (change)="togglePrivacidade('nivelPublico')"
             />
           </label>
+          <label class="privacy-item privacy-item--column">
+            <div class="privacy-item__labels">
+              <span>{{ 'social.privacy-visivel-mapa' | translate }}</span>
+              <small class="privacy-hint">{{ 'social.privacy-visivel-mapa-hint' | translate }}</small>
+            </div>
+            <input
+              type="checkbox"
+              [checked]="privacidade()!.visivelNoMapa"
+              [disabled]="salvandoPrivacidade()"
+              (change)="togglePrivacidade('visivelNoMapa')"
+            />
+          </label>
         </div>
       </div>
     }

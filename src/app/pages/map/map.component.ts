@@ -6,11 +6,13 @@ import {
   NgZone,
   OnDestroy,
   ViewChild,
+  effect,
   inject,
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { Router } from '@angular/router';
 import { Subject, Subscription, debounceTime } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { CardCampingComponent } from '../../components/card-camping/card-camping.component';
@@ -19,14 +21,17 @@ import { CardTrilhaComponent } from '../../components/card-trilha/card-trilha.co
 import { CriarTrilhaComponent } from '../../components/criar-trilha/criar-trilha.component';
 import { TrilhaDetailComponent } from '../../components/trilha-detail/trilha-detail.component';
 import { Camping } from '../../core/models/camping.model';
+import { LocalizacaoUsuario } from '../../core/models/perfil-publico.model';
 import { Presente } from '../../core/models/presente.model';
 import { Trilha } from '../../core/models/trilha.model';
 import { AuthService } from '../../core/services/auth.service';
 import { CampingService } from '../../core/services/camping.service';
 import { GiftService } from '../../core/services/gift.service';
 import { LocationService } from '../../core/services/location.service';
+import { LocationSharingService } from '../../core/services/location-sharing.service';
 import { MapStateService } from '../../core/services/map-state.service';
 import { NetworkStatusService } from '../../core/services/network-status.service';
+import { SocialService } from '../../core/services/social.service';
 import { TrilhaService } from '../../core/services/trilha.service';
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
@@ -60,6 +65,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.trilhaIndependenteMarkers.forEach((m) => (m.map = null));
     this.trilhaIndependenteMarkers.clear();
     this.polylineGravacao?.setMap(null);
+
+    clearInterval(this.locationInterval);
+    this.compartilhamentoAtivo = false;
+    this.locationSharingService.parar();
+    this.seguidorMarkers.forEach((m) => (m.map = null));
+    this.seguidorMarkers.clear();
   }
 
   protected mapState = inject(MapStateService);
@@ -67,11 +78,23 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private campingService = inject(CampingService);
   private trilhaService = inject(TrilhaService);
   private authService = inject(AuthService);
+  private socialService = inject(SocialService);
+  private locationSharingService = inject(LocationSharingService);
+  private router = inject(Router);
   private ngZone = inject(NgZone);
   protected networkStatus = inject(NetworkStatusService);
   private locationSubscription?: Subscription;
+  private locationInterval?: ReturnType<typeof setInterval>;
+  private compartilhamentoAtivo = false;
+  private readonly seguidorMarkers = new Map<string, google.maps.marker.AdvancedMarkerElement>();
 
-  constructor(private locationService: LocationService) {}
+  constructor(private locationService: LocationService) {
+    effect(() => {
+      const seguidores = this.locationSharingService.seguidoresVisiveis();
+      if (!this.map) return;
+      this.atualizarMarcadoresSeguidores(seguidores);
+    });
+  }
 
   @ViewChild('mapContainer', { static: false })
   mapContainer?: ElementRef;
@@ -127,6 +150,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     this.carregarCampings();
     this.carregarTrilhasIndependentes();
+    this.iniciarCompartilhamentoLocalizacao();
   }
 
   private carregarCampings() {
@@ -396,6 +420,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
         this.atualizarMarcadorUsuario();
 
+        if (this.compartilhamentoAtivo) {
+          this.locationSharingService.atualizarPosicao(
+            this.minhaPosicao.lat,
+            this.minhaPosicao.lng,
+          );
+        }
+
         if (!this.jacentralizouNoPrimeiroGps) {
           this.jacentralizouNoPrimeiroGps = true;
           this.map.panTo(this.minhaPosicao);
@@ -649,5 +680,114 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     });
 
     this.markers.push(marker);
+  }
+
+  private iniciarCompartilhamentoLocalizacao(): void {
+    const userId = this.authService.getUser()?.id;
+    if (!userId) return;
+
+    this.socialService.getPrivacidade(userId).subscribe({
+      next: (privacidade) => {
+        if (!privacidade.visivelNoMapa) return;
+
+        const enviar = () => {
+          if (this.minhaPosicao) {
+            this.locationSharingService.atualizarPosicao(
+              this.minhaPosicao.lat,
+              this.minhaPosicao.lng,
+            );
+          }
+        };
+
+        // Só inicia o interval depois que a conexão SignalR estiver estabelecida
+        this.locationSharingService.iniciar().then(() => {
+          this.compartilhamentoAtivo = true;
+          enviar();
+          this.locationInterval = setInterval(enviar, 30_000);
+        });
+      },
+    });
+  }
+
+  private atualizarMarcadoresSeguidores(seguidores: LocalizacaoUsuario[]): void {
+    const idsAtivos = new Set(seguidores.map((u) => u.usuarioId));
+
+    // Remover marcadores de usuários que saíram
+    this.seguidorMarkers.forEach((marker, id) => {
+      if (!idsAtivos.has(id)) {
+        marker.map = null;
+        this.seguidorMarkers.delete(id);
+      }
+    });
+
+    // Criar ou atualizar marcadores
+    for (const usuario of seguidores) {
+      const pos = { lat: usuario.lat, lng: usuario.lng };
+      const existing = this.seguidorMarkers.get(usuario.usuarioId);
+
+      if (existing) {
+        existing.position = pos;
+      } else {
+        const marker = new google.maps.marker.AdvancedMarkerElement({
+          map: this.map,
+          position: pos,
+          title: usuario.nome,
+          content: this.criarConteudoMarcadorUsuario(usuario),
+          gmpClickable: true,
+        });
+
+        marker.addEventListener('gmp-click', () => {
+          this.ngZone.run(() => this.router.navigate(['/perfil', usuario.usuarioId]));
+        });
+
+        this.seguidorMarkers.set(usuario.usuarioId, marker);
+      }
+    }
+  }
+
+  private criarConteudoMarcadorUsuario(usuario: LocalizacaoUsuario): HTMLElement {
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText =
+      'position:relative;width:44px;height:44px;cursor:pointer;';
+
+    const avatar = document.createElement('div');
+    avatar.style.cssText =
+      'width:40px;height:40px;border-radius:50%;border:2px solid #fff;' +
+      'box-shadow:0 2px 8px rgba(0,0,0,0.3);overflow:hidden;background:#6e1217;' +
+      'display:flex;align-items:center;justify-content:center;';
+
+    if (usuario.fotoUrl) {
+      const img = document.createElement('img');
+      img.src = usuario.fotoUrl;
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+      img.onerror = () => {
+        img.style.display = 'none';
+        avatar.appendChild(this.criarIniciais(usuario.nome));
+      };
+      avatar.appendChild(img);
+    } else {
+      avatar.appendChild(this.criarIniciais(usuario.nome));
+    }
+
+    const dot = document.createElement('div');
+    dot.style.cssText =
+      'position:absolute;bottom:2px;right:2px;width:10px;height:10px;' +
+      'border-radius:50%;background:#22c55e;border:2px solid #fff;';
+
+    wrapper.appendChild(avatar);
+    wrapper.appendChild(dot);
+    return wrapper;
+  }
+
+  private criarIniciais(nome: string): HTMLElement {
+    const span = document.createElement('span');
+    span.style.cssText = 'color:#fff;font-size:14px;font-weight:700;';
+    span.textContent = nome
+      .split(' ')
+      .slice(0, 2)
+      .map((p) => p[0])
+      .join('')
+      .toUpperCase();
+    return span;
   }
 }

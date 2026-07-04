@@ -23,6 +23,15 @@ export interface ConfiguracaoPrivacidade {
   checkinsPublicos: boolean;
   conquistasPublicas: boolean;
   nivelPublico: boolean;
+  visivelNoMapa: boolean;
+}
+
+export interface LocalizacaoUsuario {
+  usuarioId: string;
+  nome: string;
+  fotoUrl?: string;
+  lat: number;
+  lng: number;
 }
 
 export interface UsuarioBusca {

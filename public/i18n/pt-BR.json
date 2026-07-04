@@ -238,6 +238,8 @@
   "social.privacy-checkins": "Check-ins visíveis",
   "social.privacy-conquistas": "Conquistas visíveis",
   "social.privacy-nivel": "Nível e XP visíveis",
+  "social.privacy-visivel-mapa": "Visível no mapa",
+  "social.privacy-visivel-mapa-hint": "Compartilha sua localização em tempo real com seguidores mútuos",
 
   "perfil.btn-follow": "Seguir",
   "perfil.btn-unfollow": "Deixar de seguir",
