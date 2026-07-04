@@ -1,8 +1,4 @@
-<div
-  class="camping-info"
-  [style.height]="alturaCard()"
-  [class.dragging]="isDragging()"
->
+<div class="camping-info" [style.height]="alturaCard()" [class.dragging]="isDragging()">
   <!-- alça de drag para mobile -->
   <div
     class="drag-handle-touch"
@@ -15,15 +11,28 @@
 
   <button class="btn-close-round btn-fechar" (click)="fecharCampingInfo()">✕</button>
 
-  @if (fotos().length > 0) {
-    <app-photo-gallery [fotos]="fotos()" />
-  } @else if (campingSelecionado().fotoPrincipal) {
-    <img
-      [src]="campingSelecionado().fotoPrincipal"
-      [alt]="campingSelecionado().nome"
-      appImgFallback
-    />
-  }
+  <div class="foto-wrapper">
+    @if (fotos().length > 0) {
+      <app-photo-gallery [fotos]="fotos()" />
+    } @else if (campingSelecionado().fotoPrincipal) {
+      <img
+        [src]="campingSelecionado().fotoPrincipal"
+        [alt]="campingSelecionado().nome"
+        appImgFallback
+      />
+    }
+
+    <button
+      class="btn-favorito"
+      [class.btn-favorito--ativo]="ehFavorito()"
+      [disabled]="favoritoSalvando()"
+      (click)="toggleFavorito()"
+      [attr.aria-label]="(ehFavorito() ? 'card.camping.desfavoritar' : 'card.camping.favoritar') | translate"
+      [attr.aria-pressed]="ehFavorito()"
+    >
+      {{ ehFavorito() ? '❤️' : '🤍' }}
+    </button>
+  </div>
 
   <div class="camping-content">
     <div class="camping-header-row">
@@ -143,14 +152,24 @@
 
   @if (campingSelecionado().tipo === 'camping' && !checkinRealizado()) {
     @if (aguardandoOcupacao()) {
-      <div class="ocupacao-selector" role="group" [attr.aria-label]="'card.camping.ocupacao-question' | translate">
+      <div
+        class="ocupacao-selector"
+        role="group"
+        [attr.aria-label]="'card.camping.ocupacao-question' | translate"
+      >
         <p class="ocupacao-pergunta">{{ 'card.camping.ocupacao-question' | translate }}</p>
         <div class="ocupacao-opcoes">
-          <button class="btn-ocupacao btn-ocupacao--tranquilo" (click)="confirmarCheckin('tranquilo')">
+          <button
+            class="btn-ocupacao btn-ocupacao--tranquilo"
+            (click)="confirmarCheckin('tranquilo')"
+          >
             <span class="ocupacao-emoji">😌</span>
             <span>{{ 'card.camping.tranquilo' | translate }}</span>
           </button>
-          <button class="btn-ocupacao btn-ocupacao--movimentado" (click)="confirmarCheckin('movimentado')">
+          <button
+            class="btn-ocupacao btn-ocupacao--movimentado"
+            (click)="confirmarCheckin('movimentado')"
+          >
             <span class="ocupacao-emoji">🙂</span>
             <span>{{ 'card.camping.movimentado' | translate }}</span>
           </button>
@@ -159,11 +178,17 @@
             <span>{{ 'card.camping.lotado' | translate }}</span>
           </button>
         </div>
-        <button class="btn-ocupacao-cancelar" (click)="cancelarOcupacao()">{{ 'card.camping.btn-cancel' | translate }}</button>
+        <button class="btn-ocupacao-cancelar" (click)="cancelarOcupacao()">
+          {{ 'card.camping.btn-cancel' | translate }}
+        </button>
       </div>
     } @else if (podeFazerCheckin()) {
       <button class="btn-checkin" [disabled]="verificandoCheckin()" (click)="fazerCheckin()">
-        {{ verificandoCheckin() ? ('card.camping.btn-checking' | translate) : ('card.camping.btn-checkin' | translate) }}
+        {{
+          verificandoCheckin()
+            ? ('card.camping.btn-checking' | translate)
+            : ('card.camping.btn-checkin' | translate)
+        }}
       </button>
     } @else {
       <p class="checkin-info">

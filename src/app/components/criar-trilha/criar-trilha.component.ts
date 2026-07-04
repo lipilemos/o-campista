@@ -164,7 +164,12 @@ export class CriarTrilhaComponent implements OnInit, OnDestroy {
 
   private adicionarWaypoint(lat: number, lng: number): void {
     if (this.ultimoPonto) {
-      const dist = Util.calcularDistanciaMetros(this.ultimoPonto.lat, this.ultimoPonto.lng, lat, lng);
+      const dist = Util.calcularDistanciaMetros(
+        this.ultimoPonto.lat,
+        this.ultimoPonto.lng,
+        lat,
+        lng,
+      );
       if (dist < this.MIN_DIST_METROS) return;
       this.distanciaTotal.update((d) => d + dist);
     }

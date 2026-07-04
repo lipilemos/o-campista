@@ -1,120 +1,150 @@
 # Features Pré-Lançamento — O Campista
 
-> Gerado em 2026-07-01. Última atualização: 2026-07-01.
-> Features já implementadas: auth, mapa, check-in GPS, clima, presentes, chat, checklist, trilhas, conquistas, offline cache, **status de ocupação do camping** ✅
+> Prazo alvo: 2–4 semanas. Atualizado em 2026-07-04.
 
 ---
 
-## Prioridade Alta — Críticas para lançamento
+## ✅ Já Implementado
 
-### 1. Landing Page Pública (`/welcome`)
-Hoje o app começa direto no login. Precisa de uma página pública antes do auth com:
-- Proposta de valor clara ("Descubra campings, faça check-in, conecte-se")
-- Screenshots ou animação das features principais
-- CTA "Criar conta grátis" e "Entrar"
-- SEO básico (meta tags Open Graph)
-- **Motivo:** ponto de entrada de toda campanha de marketing
-
-### 2. Onboarding Interativo
-Walkthrough de 4 passos exibido apenas no primeiro acesso:
-1. Mapa → "Descubra campings perto de você"
-2. Check-in → "Chegou no camping? Faça check-in e ganhe XP"
-3. Presentes → "Deixe ou encontre presentes escondidos"
-4. Chat → "Converse com quem está no mesmo camping que você"
-- Salvo em localStorage para não reexibir
-- **Motivo:** sem tutorial, usuário novo abandona antes de entender o valor
-
-### 3. PWA / Instalação no Celular
-- `manifest.json` com ícones, nome, splash screen, `display: standalone`
-- Service worker com cache de shell (Angular Workbox/ngsw)
-- Banner de instalação customizado ("Instale O Campista na tela inicial")
-- **Motivo:** campistas usam no campo, às vezes sem internet — ícone na tela inicial é essencial
-
-### 4. Compartilhamento Social
-Após check-in ou conclusão de trilha, gerar card compartilhável:
-- Canvas/imagem com: nome do camping, foto, XP ganho, username
-- Botões: "Compartilhar no WhatsApp", "Baixar imagem", "Copiar link"
-- Meta tags Open Graph para preview bonito ao colar link
-- **Motivo:** principal motor de crescimento viral
+| Feature | Observações |
+|---|---|
+| Autenticação (login, registro, Google, forgot/reset) | ✅ |
+| Mapa interativo com markers e filtros avançados | ✅ |
+| Check-in por geolocalização com XP | ✅ |
+| Status de ocupação do camping (tranquilo/movimentado/lotado) | ✅ |
+| Clima atual + previsão 5 dias (Open-Meteo) | ✅ |
+| Presentes (criar, buscar por raio, resgatar) | ✅ |
+| Chat de camping (sala automática por check-in) | ✅ |
+| Chat de grupo (convite por código alfanumérico) | ✅ |
+| Chat direto DM (apenas seguimento mútuo) | ✅ |
+| Checklist de preparação para camping | ✅ |
+| Trilhas (mapa, check-in, avaliação com foto) | ✅ |
+| Conquistas e gamificação (XP, níveis, badges) | ✅ |
+| Feed de atividades sociais | ✅ |
+| Ranking global e de seguidos | ✅ |
+| Perfil público com seguidores/seguindo | ✅ |
+| Notificações in-app | ✅ |
+| Campings favoritos | ✅ |
+| Posts de viagem e comentários | ✅ |
+| Offline cache e status de rede | ✅ |
 
 ---
 
-## Prioridade Média — Retenção e Engajamento
+## 🔴 Prioridade Alta — Bloqueadores de Lançamento
 
-### 5. Favoritos de Campings
-- Ícone de coração no card e na página do camping
-- Lista "Quero visitar" no perfil do usuário
-- Endpoint backend: `POST/DELETE /usuarios/{id}/favoritos/{campingId}`
-- **Motivo:** feature básica de qualquer app de descoberta — ausência gera frustração
+### 1. Política de Privacidade + Termos de Uso (LGPD)
 
-### 6. Status de Ocupação do Camping ✅ IMPLEMENTADO (2026-07-01)
-No momento do check-in, o usuário reporta a lotação atual:
-- Opções: "Tranquilo 😌", "Movimentado 🙂", "Lotado 😬"
-- Exibido no card do camping como badge colorido (verde/laranja/vermelho)
-- Expira após 6 horas sem check-ins — backend deve implementar agregação
-- Agregado: moda dos reports das últimas 6h por camping
-- **Frontend:** seletor de 3 botões inserido no fluxo de check-in (`card-camping.component`)
-- **Modelos atualizados:** `OcupacaoStatus` em `checkin.model.ts`, `StatusOcupacao` em `camping.model.ts`
-- **Pendente no backend:** aceitar campo `ocupacao` no `POST /checkin` e retornar `statusOcupacao` no `GET /mapa/campings`
-- **Motivo:** informação que nenhum app de camping tem, alta utilidade prática
+**Por que bloqueia:** sem esses documentos o app não pode ser publicado em lojas (Play Store, App Store) e viola a LGPD.
 
-### 7. Ranking / Leaderboard
-- Top 10 campistas por XP (mensal + all-time)
-- Top 10 campings mais visitados do mês
-- Top trilhas mais completadas
-- Página `/ranking` acessível pela sidebar
-- **Motivo:** amplifica a gamificação existente, incentiva retenção semanal
+Escopo:
+- Rota `/privacidade` — página estática com conteúdo em HTML/markdown
+- Rota `/termos` — página estática com conteúdo em HTML/markdown
+- Link no rodapé das telas de login e registro ("Ao criar conta você aceita nossos Termos")
+- Conteúdo gerado com template padrão + revisão; zero backend necessário
+- Páginas acessíveis sem autenticação (fora do `authGuard`)
 
-### 8. Estatísticas Avançadas do Perfil
-No perfil, além de XP e nível, exibir:
-- Total de km percorridos em trilhas
-- Camping favorito (mais visitado)
-- **Motivo:** torna o perfil algo que o usuário quer mostrar para amigos
+### 2. PWA — Instalação no Celular
 
-### 9. Feed de Atividades
-Timeline acessível pela sidebar com:
-- Check-ins recentes de outros campistas (campings próximos)
-- Trilhas publicadas na região
-- Presentes deixados perto de você
-- Filtro: "Perto de mim" / "Todos"
-- **Motivo:** cria sensação de comunidade ativa, reduz churn
+**Por que bloqueia:** campistas estão no campo sem internet; ícone na tela inicial é parte da proposta de valor central do app.
+
+Escopo:
+- `manifest.json` com nome, `display: standalone`, `theme_color`, `background_color`
+- Ícones gerados: 192×192, 512×512 (maskable)
+- Angular Service Worker (`@angular/pwa` + `ngsw-config.json`) com cache de shell + assets estáticos
+- Banner de instalação customizado via evento `beforeinstallprompt`
+- Teste: app deve abrir sem conexão após primeira visita
+
+### 3. Onboarding Interativo (Primeiro Acesso)
+
+**Por que bloqueia:** sem tutorial, usuário novo abandona antes de entender o valor; sem onboarding a taxa de ativação cai drasticamente.
+
+Escopo:
+- Overlay de 4 passos exibido uma única vez, controlado por `localStorage('ocampista-onboarded')`
+- Passo 1 — Mapa: "Descubra campings perto de você"
+- Passo 2 — Check-in: "Chegou? Faça check-in e ganhe XP"
+- Passo 3 — Presentes: "Deixe ou encontre itens escondidos nos campings"
+- Passo 4 — Chat: "Converse com quem está no mesmo camping"
+- Botão "Pular" disponível em todos os passos
+- Exibido na primeira visita à `/home` como overlay com backdrop
 
 ---
 
-## Prioridade Baixa — Diferenciação
+## 🟡 Prioridade Média — Retenção e Crescimento
 
-### 10. Modo SOS / Emergência
-- Botão fixo e visível na tela do mapa (canto inferior, vermelho)
-- Abre modal com: coordenadas atuais copiáveis, link `geo:lat,lng` para abrir GPS nativo, texto formatado para enviar por WhatsApp ("Preciso de ajuda. Estou em: lat, lng")
-- Sem backend necessário — client-side puro
-- **Motivo:** diferencial brutal de marketing ("pode salvar vidas"), implementação simples
+### 4. Localização em Tempo Real de Seguidores no Mapa
 
-### 11. Alertas de Clima para Viagens Planejadas
-- Ao favoritar um camping (feature 5), usuário pode definir data de visita
-- Web Push Notification se previsão Open-Meteo indicar chuva > 60% na semana da visita
-- **Motivo:** traz o usuário de volta ao app mesmo entre viagens
+**Motivo:** cria sensação de presença e comunidade — ver amigos no mapa em campo é um diferencial social forte.
 
-### 12. QR Code por Camping
-- Na ficha de cada camping, botão "Gerar QR Code"
-- QR aponta para deep link `ocampista.com/mapa?camping={id}`
+Escopo:
+- Nova opção em Privacidade: "Visível no mapa" (toggle com sublabel explicativo)
+- Quando ativo, localização GPS é transmitida via SignalR (`/locationHub`) a cada 30s
+- Seguidores mútuos que também ativaram a opção aparecem no mapa como avatares circulares (foto ou iniciais)
+- Indicador verde no avatar = usuário online; marcador some em até 5 min se o usuário fechar o app
+- Clicar no avatar → abre `/perfil/{id}`
+- Zero banco de dados — localização armazenada em `IMemoryCache` com sliding expiration de 5 min
+
+### 5. Compartilhamento Social (Pós Check-in / Trilha)
+
+**Motivo:** principal motor de crescimento viral — cada usuário vira canal de aquisição.
+
+Escopo:
+- Modal "Compartilhar conquista" após check-in bem-sucedido e conclusão de trilha
+- Canvas API gera card com: foto/emoji do camping, nome, XP ganho, username e logo do app
+- Botões: "Compartilhar" (Web Share API), "Baixar imagem" (link download), "Copiar link"
+- Meta tags Open Graph dinâmicas no perfil público (`/perfil/:id`) para preview ao colar link
+
+### 5. Modo SOS / Emergência
+
+**Motivo:** diferencial de marketing de alto impacto com implementação simples; reutiliza `LocationService` existente.
+
+Escopo:
+- FAB (Floating Action Button) vermelho fixo no canto inferior esquerdo da tela do mapa
+- Abre modal bottom-sheet com:
+  - Coordenadas atuais copiáveis (lat, lng com botão copiar)
+  - Botão "Abrir no GPS" → link `geo:lat,lng`
+  - Botão "Enviar via WhatsApp" → `https://wa.me/?text=Preciso de ajuda. Estou em: {lat}, {lng}`
+  - Números de emergência: 193 (Bombeiros), 192 (SAMU), 190 (Polícia)
+- Zero backend — 100% client-side usando `LocationService` já injetado no `MapComponent`
+
+### 6. Estatísticas Avançadas no Perfil
+
+**Motivo:** torna o perfil algo que o usuário quer mostrar a amigos; aumenta engajamento social.
+
+Escopo (dados já disponíveis no backend):
+- Total de km percorridos (soma das trilhas concluídas do usuário)
+- Camping mais visitado (moda dos check-ins)
+- Total de presentes deixados e resgatados
+- Exibir em `AccountComponent` (próprio perfil) e `PerfilPublicoComponent` (perfil alheio)
+
+---
+
+## 🟢 Prioridade Baixa — Diferenciação Pós-Launch
+
+### 7. QR Code por Camping
+
+Botão na ficha do camping gera QR apontando para deep link `ocampista.com/mapa?camping={id}`.
+- Donos de campings viram promotores do app no ponto físico
+- Biblioteca `qrcode` (client-side, ~15kb gzip)
 - Opção de baixar PNG para imprimir
-- **Motivo:** donos de campings viram promotores — canal de aquisição no ponto físico
+
+### 8. Alertas de Clima para Viagens Planejadas
+
+Web Push Notification com previsão Open-Meteo se chuva > 60% na semana de uma visita planejada.
+- Requer backend: tabela de alertas planejados, cron job, registro de push tokens
+- Alto esforço — pós-launch
 
 ---
 
-## Ordem de Implementação Recomendada
+## Ordem de Implementação (2–4 semanas)
 
-| # | Feature | Status |
-|---|---|---|
-| 1 | PWA (bloqueia nada, alto impacto imediato) | ⬜ Pendente |
-| 2 | Landing Page Pública (necessária antes de qualquer campanha) | ⬜ Pendente |
-| 3 | Onboarding Interativo (retém usuários novos) | ⬜ Pendente |
-| 4 | Compartilhamento Social (ativa o loop viral) | ⬜ Pendente |
-| 5 | Favoritos de Campings | ⬜ Pendente |
-| 6 | **Status de Ocupação** | ✅ Pronto |
-| 7 | Estatísticas Avançadas do Perfil | ⬜ Pendente |
-| 8 | Ranking / Leaderboard | ⬜ Pendente |
-| 9 | Feed de Atividades | ⬜ Pendente |
-| 10 | Modo SOS | ⬜ Pendente |
-| 11 | Alertas de Clima | ⬜ Pendente |
-| 12 | QR Code por Camping | ⬜ Pendente |
+| # | Feature | Prioridade | Esforço estimado | Status |
+|---|---|---|---|---|
+| 1 | Política de Privacidade + Termos (LGPD) | 🔴 Bloqueador | Baixo (1–2 dias) | ✅ Concluído |
+| 2 | PWA (manifest + ngsw + banner) | 🔴 Bloqueador | Médio (2–3 dias) | ⬜ Pendente |
+| 3 | Onboarding Interativo | 🔴 Bloqueador | Médio (2–3 dias) | ⬜ Pendente |
+| 4 | Localização em Tempo Real de Seguidores | 🟡 Médio | Médio (3–4 dias) | ✅ Concluído |
+| 5 | Compartilhamento Social | 🟡 Médio | Médio (3–4 dias) | ⬜ Pendente |
+| 6 | Modo SOS | 🟡 Médio | Baixo (1 dia) | ⬜ Pendente |
+| 7 | Estatísticas Avançadas no Perfil | 🟡 Médio | Baixo (1–2 dias) | ⬜ Pendente |
+| 8 | QR Code por Camping | 🟢 Baixo | Baixo (1 dia) | ⬜ Pendente |
+| 9 | Alertas de Clima | 🟢 Baixo | Alto (5+ dias) | ⬜ Pendente |

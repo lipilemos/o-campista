@@ -35,7 +35,11 @@
 
       <div class="gift-info">
         <strong>Status:</strong>
-        {{ presenteSelecionado().estaDisponivel ? ('card.gift.available' | translate) : ('card.gift.redeemed' | translate) }}
+        {{
+          presenteSelecionado().estaDisponivel
+            ? ('card.gift.available' | translate)
+            : ('card.gift.redeemed' | translate)
+        }}
       </div>
 
       <div class="gift-info">
@@ -59,7 +63,9 @@
 
       @if (presenteSelecionado().estaDisponivel && !ehMeuPresente()) {
         @if (podeResgatar()) {
-          <button class="gift-button" (click)="resgatarPresente()">{{ 'card.gift.btn-redeem' | translate }}</button>
+          <button class="gift-button" (click)="resgatarPresente()">
+            {{ 'card.gift.btn-redeem' | translate }}
+          </button>
         }
       }
 

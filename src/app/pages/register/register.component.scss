@@ -146,6 +146,23 @@ button[type='submit'] {
   border-radius: var(--radius-sm);
 }
 
+.legal-links {
+  text-align: center;
+  font-size: var(--text-xs);
+  color: rgba(255, 255, 255, 0.55);
+
+  a {
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    font-weight: 600;
+
+    &:hover {
+      color: var(--color-text-inverse);
+      text-decoration: underline;
+    }
+  }
+}
+
 @media (max-width: 480px) {
   .register-card {
     width: 100%;

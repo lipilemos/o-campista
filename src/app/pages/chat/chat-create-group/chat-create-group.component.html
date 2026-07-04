@@ -23,7 +23,11 @@
       }
 
       <button class="btn-criar" (click)="criar()" [disabled]="!nomeGrupo().trim() || criando()">
-        {{ criando() ? ('chat.group.btn-creating' | translate) : ('chat.group.btn-create' | translate) }}
+        {{
+          criando()
+            ? ('chat.group.btn-creating' | translate)
+            : ('chat.group.btn-create' | translate)
+        }}
       </button>
     </div>
   } @else {
@@ -37,7 +41,9 @@
           {{ 'chat.group.btn-copy' | translate }}
         </button>
       </div>
-      <button class="btn-ir-grupo" (click)="irParaGrupo()">{{ 'chat.group.btn-go-chats' | translate }}</button>
+      <button class="btn-ir-grupo" (click)="irParaGrupo()">
+        {{ 'chat.group.btn-go-chats' | translate }}
+      </button>
     </div>
   }
 </div>

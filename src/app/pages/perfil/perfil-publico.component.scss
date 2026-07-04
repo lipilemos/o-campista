@@ -1,0 +1,364 @@
+.perfil-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2rem;
+}
+
+.perfil-loading,
+.perfil-erro {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--color-text-muted, #888);
+
+  .btn-voltar-home {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.25rem;
+    background: var(--color-primary, #6e1217);
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+}
+
+.perfil-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.perfil-avatar-wrap {
+  flex-shrink: 0;
+}
+
+.perfil-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--color-border, #ddd);
+}
+
+.perfil-avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary, #6e1217);
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.perfil-info {
+  flex: 1;
+
+  h1 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--color-primary, #6e1217);
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+  }
+}
+
+.perfil-acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.btn-follow {
+  padding: 0.45rem 1.1rem;
+  border-radius: 20px;
+  border: 2px solid var(--color-primary, #6e1217);
+  background: var(--color-primary, #6e1217);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+  white-space: nowrap;
+
+  &.seguindo {
+    background: transparent;
+    color: var(--color-primary, #6e1217);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-mensagem {
+  padding: 0.45rem 1.1rem;
+  border-radius: 20px;
+  border: 2px solid var(--color-border, #ddd);
+  background: transparent;
+  color: var(--color-text, #333);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--color-surface, #f5f5f5);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.perfil-social {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.social-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  transition: background 0.15s;
+
+  &:hover {
+    background: var(--color-surface-hover, rgba(0, 0, 0, 0.05));
+  }
+
+  strong {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text, #222);
+  }
+
+  span {
+    font-size: 0.78rem;
+    color: var(--color-text-muted, #888);
+  }
+}
+
+.stats {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+
+  .stat-card {
+    flex: 1;
+    background: var(--color-surface, #f9f9f9);
+    border: 1px solid var(--color-border, #eee);
+    border-radius: 10px;
+    padding: 0.85rem 0.5rem;
+    text-align: center;
+
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 0 0 0.2rem;
+    }
+
+    span {
+      font-size: 0.75rem;
+      color: var(--color-text-muted, #888);
+    }
+  }
+}
+
+.perfil-privado {
+  text-align: center;
+  padding: 1.25rem;
+  background: var(--color-surface, #f9f9f9);
+  border-radius: 10px;
+  color: var(--color-text-muted, #888);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.section {
+  margin-bottom: 1.5rem;
+
+  h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+}
+
+.cards.scrollable-cards {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.item-card {
+  min-width: 160px;
+  background: var(--color-surface, #f9f9f9);
+  border: 1px solid var(--color-border, #eee);
+  border-radius: 10px;
+  padding: 0.85rem;
+  flex-shrink: 0;
+
+  h3 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin: 0 0 0.3rem;
+  }
+
+  p {
+    font-size: 0.75rem;
+    color: var(--color-text-muted, #888);
+    margin: 0;
+  }
+}
+
+.checkins-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.checkin-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 0.85rem;
+  background: var(--color-surface, #f9f9f9);
+  border: 1px solid var(--color-border, #eee);
+  border-radius: 8px;
+  font-size: 0.875rem;
+
+  .checkin-nome {
+    font-weight: 600;
+  }
+
+  .checkin-data {
+    font-size: 0.78rem;
+    color: var(--color-text-muted, #888);
+  }
+}
+
+.lista-modal {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  @media (min-width: 480px) {
+    align-items: center;
+  }
+}
+
+.lista-modal-content {
+  background: var(--color-bg, #fff);
+  border-radius: 16px 16px 0 0;
+  width: 100%;
+  max-width: 480px;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  @media (min-width: 480px) {
+    border-radius: 16px;
+    max-height: 60vh;
+  }
+}
+
+.lista-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem 0.75rem;
+  border-bottom: 1px solid var(--color-border, #eee);
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+  }
+}
+
+.lista-loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-muted, #888);
+}
+
+.lista-usuarios {
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.usuario-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s;
+
+  &:hover {
+    background: var(--color-surface-hover, rgba(0, 0, 0, 0.05));
+  }
+}
+
+.usuario-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.usuario-avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary, #6e1217);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.usuario-info {
+  p {
+    margin: 0 0 0.1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  small {
+    font-size: 0.75rem;
+    color: var(--color-text-muted, #888);
+  }
+}
+
+.lista-vazia {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-muted, #888);
+  font-size: 0.875rem;
+}

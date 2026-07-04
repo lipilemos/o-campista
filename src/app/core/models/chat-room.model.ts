@@ -1,4 +1,4 @@
-export type TipoSala = 'camping' | 'grupo';
+export type TipoSala = 'camping' | 'grupo' | 'dm';
 
 export interface SalaChat {
   id: number;
@@ -11,6 +11,7 @@ export interface SalaChat {
   ultimaMensagem?: UltimaMensagem;
   totalNaoLidas: number;
   podeEnviar: boolean;
+  outroUsuarioId?: string;
 }
 
 export interface UltimaMensagem {

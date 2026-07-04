@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { CampingFoto } from '../../core/models/camping-foto.model';
 import { Camping } from '../../core/models/camping.model';
 import {
@@ -34,6 +34,7 @@ import { TranslatePipe } from '../../core/pipes/translate.pipe';
   ],
   templateUrl: './card-camping.component.html',
   styleUrl: './card-camping.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardCampingComponent {
   private authService = inject(AuthService);
@@ -58,6 +59,8 @@ export class CardCampingComponent {
   fotos = signal<CampingFoto[]>([]);
   aguardandoOcupacao = signal(false);
   ocupacaoLocal = signal<OcupacaoStatus | null>(null);
+  favoritoSalvando = signal(false);
+  ehFavorito = computed(() => this.campingService.ehFavorito(this.campingSelecionado().id));
 
   // --- drag (bottom sheet mobile) ---
   alturaCard = signal<string | null>(null);
@@ -68,6 +71,11 @@ export class CardCampingComponent {
   private startVh = 58;
 
   constructor() {
+    const usuario = this.authService.getUser();
+    if (usuario) {
+      this.campingService.carregarFavoritos(usuario.id);
+    }
+
     effect(() => {
       const camping = this.campingSelecionado();
       if (camping?.tipo === 'camping') {
@@ -214,6 +222,28 @@ export class CardCampingComponent {
 
   cancelarOcupacao() {
     this.aguardandoOcupacao.set(false);
+  }
+
+  toggleFavorito(): void {
+    if (this.favoritoSalvando()) return;
+    const usuario = this.authService.getUser();
+    if (!usuario) return;
+
+    this.favoritoSalvando.set(true);
+    const campingId = this.campingSelecionado().id;
+    const eraFavorito = this.ehFavorito();
+    const obs = eraFavorito
+      ? this.campingService.desfavoritar(usuario.id, campingId)
+      : this.campingService.favoritar(usuario.id, campingId);
+
+    obs.subscribe({
+      next: () => this.favoritoSalvando.set(false),
+      error: () => {
+        this.campingService.reverterFavorito(campingId, eraFavorito);
+        this.toast.error('card.camping.favorito-erro');
+        this.favoritoSalvando.set(false);
+      },
+    });
   }
 
   statusOcupacaoAtual(): { nivel: OcupacaoStatus; emoji: string; label: string } | null {

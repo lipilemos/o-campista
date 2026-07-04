@@ -1,0 +1,88 @@
+<div class="notificacoes-page">
+  <div class="page-header">
+    <h1>{{ 'notifications.title' | translate }}</h1>
+    @if (notificacoes().length > 0 && !marcandoLidas()) {
+      <button
+        class="btn-marcar-lidas"
+        (click)="marcarComoLidas()"
+        [attr.aria-label]="'notifications.mark-read' | translate"
+      >
+        {{ 'notifications.mark-read' | translate }}
+      </button>
+    }
+  </div>
+
+  @if (carregando() && notificacoes().length === 0) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+    </div>
+  } @else if (erro() && notificacoes().length === 0) {
+    <div class="empty-state">
+      <span class="empty-icon">⚠️</span>
+      <p>{{ 'notifications.error' | translate }}</p>
+      <button class="btn-retry" (click)="carregar()">{{ 'error.retry' | translate }}</button>
+    </div>
+  } @else if (notificacoes().length === 0) {
+    <div class="empty-state">
+      <span class="empty-icon">🔔</span>
+      <p>{{ 'notifications.empty' | translate }}</p>
+    </div>
+  } @else {
+    <ul class="notificacoes-lista" role="list">
+      @for (notif of notificacoes(); track notif.id) {
+        <li class="notif-item" [class.nao-lida]="!notif.lida" role="listitem">
+          <a
+            class="notif-remetente-link"
+            [routerLink]="['/perfil', notif.remetenteId]"
+            [attr.aria-label]="notif.remetenteNome"
+          >
+            @if (notif.remetenteFoto) {
+              <img
+                class="notif-avatar"
+                [src]="notif.remetenteFoto"
+                [alt]="notif.remetenteNome"
+                appImgFallback
+              />
+            } @else {
+              <div class="notif-avatar notif-avatar-inicial">
+                {{ notif.remetenteNome.charAt(0).toUpperCase() }}
+              </div>
+            }
+          </a>
+
+          <div class="notif-body">
+            <p class="notif-texto">
+              <a
+                class="notif-nome"
+                [routerLink]="['/perfil', notif.remetenteId]"
+              >{{ notif.remetenteNome }}</a>
+              {{ chaveTraducaoPorTipo(notif.tipo) | translate }}
+            </p>
+            @if (notif.postTexto) {
+              <p class="notif-preview">{{ notif.postTexto }}</p>
+            }
+            <time class="notif-data" [attr.datetime]="notif.criadoEm">
+              {{ notif.criadoEm | date: 'dd/MM/yyyy HH:mm' }}
+            </time>
+          </div>
+
+          <span class="notif-icone" [attr.aria-hidden]="true">
+            {{ iconePorTipo(notif.tipo) }}
+          </span>
+        </li>
+      }
+    </ul>
+
+    @if (!semMais()) {
+      <div class="load-more">
+        <button class="btn-load-more" (click)="carregarMais()" [disabled]="carregando()">
+          @if (carregando()) {
+            <span class="spinner-sm"></span>
+          } @else {
+            {{ 'notifications.load-more' | translate }}
+          }
+        </button>
+      </div>
+    }
+  }
+</div>

@@ -138,6 +138,10 @@ export class ChatRoomService {
     );
   }
 
+  abrirDm(usuarioId: string): Observable<SalaChat> {
+    return this.http.post<SalaChat>(`${environment.apiUrl}/chat/diretas/${usuarioId}`, {});
+  }
+
   private carregarMensagens(salaId: number): void {
     this._carregandoMensagens.set(true);
     this.http

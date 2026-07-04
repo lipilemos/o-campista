@@ -50,18 +50,25 @@
       </div>
 
       <div class="stat-card">
-        <h2>
-          {{ usuario.totalCampingsVisitados }}
-        </h2>
+        <h2>{{ usuario.totalCampingsVisitados }}</h2>
         <span>{{ 'account.stat-campings-label' | translate }}</span>
       </div>
 
       <div class="stat-card">
-        <h2>
-          {{ usuario.totalTrilhasConcluidas }}
-        </h2>
+        <h2>{{ usuario.totalTrilhasConcluidas }}</h2>
         <span>{{ 'account.stat-trails-label' | translate }}</span>
       </div>
+    </div>
+
+    <div class="social-stats">
+      <button class="social-stat-btn" (click)="abrirModalSeguidores()">
+        <strong>{{ totalSeguidores() }}</strong>
+        <span>{{ 'social.seguidores' | translate }}</span>
+      </button>
+      <button class="social-stat-btn" (click)="abrirModalSeguindo()">
+        <strong>{{ totalSeguindo() }}</strong>
+        <span>{{ 'social.seguindo' | translate }}</span>
+      </button>
     </div>
 
     <div class="section">
@@ -80,6 +87,41 @@
           </p>
         }
       </div>
+    </div>
+    <hr />
+    <div class="section">
+      <h2>{{ 'account.section-favoritos' | translate }}</h2>
+      @if (carregandoFavoritos()) {
+        <div class="loading-row"><div class="spinner-sm"></div></div>
+      } @else if (favoritos().length === 0) {
+        <p class="empty-hint">{{ 'account.favoritos-empty' | translate }}</p>
+      } @else {
+        <div class="cards scrollable-cards custom-scrollbar">
+          @for (camping of favoritos(); track camping.id) {
+            <div class="favorito-card">
+              @if (camping.fotoPrincipal) {
+                <img
+                  class="favorito-foto"
+                  [src]="camping.fotoPrincipal"
+                  [alt]="camping.nome"
+                  appImgFallback
+                />
+              }
+              <div class="favorito-info">
+                <h3>{{ camping.nome }}</h3>
+                <p>{{ camping.cidade }} — {{ camping.estado }}</p>
+              </div>
+              <button
+                class="btn-desfavoritar"
+                (click)="desfavoritarCamping(camping.id)"
+                [attr.aria-label]="'account.favorito-remover' | translate"
+              >
+                ❤️
+              </button>
+            </div>
+          }
+        </div>
+      }
     </div>
     <hr />
     <div class="section">
@@ -109,7 +151,9 @@
       </div>
       <hr />
       <div class="gift-action">
-        <button class="btn-gift" (click)="openGiftForm()">{{ 'account.btn-gift' | translate }}</button>
+        <button class="btn-gift" (click)="openGiftForm()">
+          {{ 'account.btn-gift' | translate }}
+        </button>
       </div>
     </div>
     @if (presenteSelecionado) {
@@ -158,8 +202,66 @@
       </div>
     }
 
+    @if (privacidade()) {
+      <div class="section privacy-section">
+        <h2>{{ 'social.privacy-title' | translate }}</h2>
+        <div class="privacy-list">
+          <label class="privacy-item">
+            <span>{{ 'social.privacy-perfil' | translate }}</span>
+            <input
+              type="checkbox"
+              [checked]="privacidade()!.perfilPublico"
+              [disabled]="salvandoPrivacidade()"
+              (change)="togglePrivacidade('perfilPublico')"
+            />
+          </label>
+          <label class="privacy-item">
+            <span>{{ 'social.privacy-checkins' | translate }}</span>
+            <input
+              type="checkbox"
+              [checked]="privacidade()!.checkinsPublicos"
+              [disabled]="salvandoPrivacidade()"
+              (change)="togglePrivacidade('checkinsPublicos')"
+            />
+          </label>
+          <label class="privacy-item">
+            <span>{{ 'social.privacy-conquistas' | translate }}</span>
+            <input
+              type="checkbox"
+              [checked]="privacidade()!.conquistasPublicas"
+              [disabled]="salvandoPrivacidade()"
+              (change)="togglePrivacidade('conquistasPublicas')"
+            />
+          </label>
+          <label class="privacy-item">
+            <span>{{ 'social.privacy-nivel' | translate }}</span>
+            <input
+              type="checkbox"
+              [checked]="privacidade()!.nivelPublico"
+              [disabled]="salvandoPrivacidade()"
+              (change)="togglePrivacidade('nivelPublico')"
+            />
+          </label>
+          <label class="privacy-item privacy-item--column">
+            <div class="privacy-item__labels">
+              <span>{{ 'social.privacy-visivel-mapa' | translate }}</span>
+              <small class="privacy-hint">{{ 'social.privacy-visivel-mapa-hint' | translate }}</small>
+            </div>
+            <input
+              type="checkbox"
+              [checked]="privacidade()!.visivelNoMapa"
+              [disabled]="salvandoPrivacidade()"
+              (change)="togglePrivacidade('visivelNoMapa')"
+            />
+          </label>
+        </div>
+      </div>
+    }
+
     <div class="danger-zone">
-      <button class="btn-excluir-conta" (click)="excluirConta()">{{ 'account.btn-delete' | translate }}</button>
+      <button class="btn-excluir-conta" (click)="excluirConta()">
+        {{ 'account.btn-delete' | translate }}
+      </button>
     </div>
 
     @if (mostrarHistorico) {
@@ -185,5 +287,52 @@
         (perfilAtualizado)="onPerfilAtualizado($event)"
       />
     }
+  </div>
+}
+
+@if (modalSocial()) {
+  <div class="lista-modal overlay-backdrop" (click)="fecharModalSocial()">
+    <div class="lista-modal-content" (click)="$event.stopPropagation()">
+      <div class="lista-modal-header">
+        <h3>
+          @if (modalSocial() === 'seguidores') {
+            {{ 'social.seguidores' | translate }}
+          } @else {
+            {{ 'social.seguindo' | translate }}
+          }
+        </h3>
+        <button
+          class="btn-close-round btn-close-round--light"
+          (click)="fecharModalSocial()"
+          [attr.aria-label]="'perfil.modal-close' | translate"
+        >
+          ✕
+        </button>
+      </div>
+      @if (carregandoLista()) {
+        <p class="lista-loading">{{ 'loading.text' | translate }}</p>
+      } @else {
+        <div class="lista-usuarios custom-scrollbar">
+          @for (u of listaModal(); track u.id) {
+            <a [routerLink]="['/perfil', u.id]" class="usuario-item" (click)="fecharModalSocial()">
+              @if (u.fotoPerfil) {
+                <img [src]="u.fotoPerfil" [alt]="u.nome" class="usuario-avatar" appImgFallback />
+              } @else {
+                <div class="usuario-avatar usuario-avatar-placeholder">
+                  {{ u.nome.charAt(0).toUpperCase() }}
+                </div>
+              }
+              <div class="usuario-info">
+                <p class="usuario-nome">{{ u.nome }}</p>
+                <small>{{ 'account.badge-level' | translate }} {{ u.nivel }}</small>
+              </div>
+            </a>
+          }
+          @if (listaModal().length === 0) {
+            <p class="lista-vazia">{{ 'perfil.lista-vazia' | translate }}</p>
+          }
+        </div>
+      }
+    </div>
   </div>
 }

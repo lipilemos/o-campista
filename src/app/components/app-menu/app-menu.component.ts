@@ -5,6 +5,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UsuarioLogado } from '../../core/models/user.model';
 import { AuthService } from '../../core/services/auth.service';
 import { ChatNotificationService } from '../../core/services/chat-notification.service';
+import { NotificacaoService } from '../../core/services/notificacao.service';
 import { MapStateService } from '../../core/services/map-state.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { I18nService } from '../../core/services/i18n.service';
@@ -24,6 +25,7 @@ export class AppMenuComponent {
   private authService = inject(AuthService);
   protected mapState = inject(MapStateService);
   protected chatNotification = inject(ChatNotificationService);
+  protected notificacao = inject(NotificacaoService);
   protected themeService = inject(ThemeService);
   protected i18n = inject(I18nService);
 
@@ -44,6 +46,7 @@ export class AppMenuComponent {
     if (user) {
       this.usuario.set(user);
       this.chatNotification.iniciar();
+      this.notificacao.iniciar();
     }
   }
 

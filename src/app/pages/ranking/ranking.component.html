@@ -1,0 +1,215 @@
+<div class="ranking-page">
+  <header class="ranking-header">
+    <h1 class="ranking-title">{{ 'ranking.title' | translate }}</h1>
+  </header>
+
+  <div class="ranking-tabs" role="tablist">
+    <button
+      class="ranking-tab"
+      role="tab"
+      [class.active]="abaAtiva() === 'global'"
+      [attr.aria-selected]="abaAtiva() === 'global'"
+      (click)="trocarAba('global')"
+    >
+      🌍 {{ 'ranking.tab-global' | translate }}
+    </button>
+    <button
+      class="ranking-tab"
+      role="tab"
+      [class.active]="abaAtiva() === 'seguidos'"
+      [attr.aria-selected]="abaAtiva() === 'seguidos'"
+      (click)="trocarAba('seguidos')"
+    >
+      👥 {{ 'ranking.tab-seguidos' | translate }}
+    </button>
+    <button
+      class="ranking-tab"
+      role="tab"
+      [class.active]="abaAtiva() === 'campings'"
+      [attr.aria-selected]="abaAtiva() === 'campings'"
+      (click)="trocarAba('campings')"
+    >
+      ⛺ {{ 'ranking.tab-campings' | translate }}
+    </button>
+  </div>
+
+  <div class="ranking-body" role="tabpanel">
+    @if (carregando() && usuarios().length === 0 && campings().length === 0) {
+      <div class="ranking-loading">
+        <span class="spinner"></span>
+        <p>{{ 'ranking.loading' | translate }}</p>
+      </div>
+    } @else if (erro()) {
+      <div class="ranking-empty">
+        <p>{{ 'ranking.error' | translate }}</p>
+        <button class="btn-retry" (click)="carregar()">{{ 'ranking.retry' | translate }}</button>
+      </div>
+    } @else if (abaAtiva() !== 'campings') {
+      <!-- Minha posição fixada no topo (quando não estou na página 1 visível) -->
+      @if (minhaLinhaGlobal() && minhaLinhaGlobal()!.posicao > LIMITE_USUARIOS) {
+        <div class="minha-posicao card-elevated">
+          <span class="pos-badge eu">{{ medalha(minhaLinhaGlobal()!.posicao) }}</span>
+          <a [routerLink]="['/perfil', minhaLinhaGlobal()!.usuarioId]" class="ranking-usuario-info">
+            <div class="ranking-avatar ranking-avatar-placeholder eu-avatar">
+              {{ minhaLinhaGlobal()!.nome.charAt(0).toUpperCase() }}
+            </div>
+            <div class="ranking-nome-wrap">
+              <span class="ranking-nome">{{ minhaLinhaGlobal()!.nome }}</span>
+              <span class="ranking-sub"
+                >{{ 'ranking.nivel' | translate }} {{ minhaLinhaGlobal()!.nivel }} ·
+                {{ minhaLinhaGlobal()!.xp }} XP</span
+              >
+            </div>
+          </a>
+          <span class="checkins-count">{{ minhaLinhaGlobal()!.totalCheckins }} 📍</span>
+        </div>
+      }
+
+      @if (usuarios().length === 0 && !carregando()) {
+        <div class="ranking-empty">
+          <p>
+            @if (abaAtiva() === 'seguidos') {
+              {{ 'ranking.empty-seguidos' | translate }}
+            } @else {
+              {{ 'ranking.empty-global' | translate }}
+            }
+          </p>
+        </div>
+      } @else {
+        <ol class="ranking-list" aria-label="ranking">
+          @for (item of usuarios(); track item.usuarioId) {
+            <li class="ranking-row card-elevated" [class.eu]="item.usuarioId === meuId">
+              <span
+                class="pos-badge"
+                [class.ouro]="item.posicao === 1"
+                [class.prata]="item.posicao === 2"
+                [class.bronze]="item.posicao === 3"
+              >
+                {{ medalha(item.posicao) }}
+              </span>
+
+              <a [routerLink]="['/perfil', item.usuarioId]" class="ranking-usuario-info">
+                @if (item.fotoPerfil) {
+                  <img
+                    [src]="item.fotoPerfil"
+                    [alt]="item.nome"
+                    class="ranking-avatar"
+                    appImgFallback
+                  />
+                } @else {
+                  <div class="ranking-avatar ranking-avatar-placeholder">
+                    {{ item.nome.charAt(0).toUpperCase() }}
+                  </div>
+                }
+                <div class="ranking-nome-wrap">
+                  <span class="ranking-nome">
+                    {{ item.nome }}
+                    @if (item.usuarioId === meuId) {
+                      <span class="badge-eu">{{ 'ranking.badge-eu' | translate }}</span>
+                    }
+                  </span>
+                  <span class="ranking-sub"
+                    >{{ 'ranking.nivel' | translate }} {{ item.nivel }} · {{ item.xp }} XP</span
+                  >
+                </div>
+              </a>
+
+              <div class="ranking-right">
+                <span class="checkins-count">{{ item.totalCheckins }} 📍</span>
+                @if (item.usuarioId !== meuId) {
+                  <button
+                    class="btn-follow"
+                    [class.following]="item.estouSeguindo"
+                    [disabled]="salvandoFollow() === item.usuarioId"
+                    (click)="toggleFollow(item)"
+                    [attr.aria-label]="
+                      (item.estouSeguindo ? 'perfil.btn-unfollow' : 'perfil.btn-follow') | translate
+                    "
+                  >
+                    {{
+                      item.estouSeguindo
+                        ? ('perfil.btn-unfollow' | translate)
+                        : ('perfil.btn-follow' | translate)
+                    }}
+                  </button>
+                }
+              </div>
+            </li>
+          }
+        </ol>
+
+        @if (!semMais() && abaAtiva() === 'global') {
+          <button class="btn-load-more" (click)="carregarMais()" [disabled]="carregando()">
+            @if (carregando()) {
+              {{ 'ranking.loading' | translate }}
+            } @else {
+              {{ 'ranking.load-more' | translate }}
+            }
+          </button>
+        }
+      }
+    } @else {
+      <!-- Aba Campings -->
+      @if (campings().length === 0 && !carregando()) {
+        <div class="ranking-empty">
+          <p>{{ 'ranking.empty-campings' | translate }}</p>
+        </div>
+      } @else {
+        <ol class="ranking-list" aria-label="ranking campings">
+          @for (camping of campings(); track camping.campingId) {
+            <li class="ranking-row ranking-camping card-elevated">
+              <span
+                class="pos-badge"
+                [class.ouro]="camping.posicao === 1"
+                [class.prata]="camping.posicao === 2"
+                [class.bronze]="camping.posicao === 3"
+              >
+                {{ medalha(camping.posicao) }}
+              </span>
+
+              <div class="camping-foto-wrap">
+                @if (camping.fotoPrincipal) {
+                  <img
+                    [src]="camping.fotoPrincipal"
+                    [alt]="camping.nome"
+                    class="camping-thumb"
+                    appImgFallback
+                  />
+                } @else {
+                  <div class="camping-thumb camping-thumb-placeholder">⛺</div>
+                }
+              </div>
+
+              <div class="ranking-nome-wrap">
+                <span class="ranking-nome">{{ camping.nome }}</span>
+                <span class="ranking-sub">
+                  @if (camping.cidade) {
+                    {{ camping.cidade }}
+                    @if (camping.estado) {
+                      , {{ camping.estado }}
+                    }
+                  }
+                  @if (camping.avaliacaoMedia > 0) {
+                    · ⭐ {{ camping.avaliacaoMedia | number: '1.1-1' }}
+                  }
+                </span>
+              </div>
+
+              <span class="checkins-count">{{ camping.totalCheckins }} 📍</span>
+            </li>
+          }
+        </ol>
+
+        @if (!semMais()) {
+          <button class="btn-load-more" (click)="carregarMais()" [disabled]="carregando()">
+            @if (carregando()) {
+              {{ 'ranking.loading' | translate }}
+            } @else {
+              {{ 'ranking.load-more' | translate }}
+            }
+          </button>
+        }
+      }
+    }
+  </div>
+</div>

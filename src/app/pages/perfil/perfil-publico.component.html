@@ -1,0 +1,186 @@
+<div class="perfil-page">
+  @if (carregando()) {
+    <div class="perfil-loading">
+      <p>{{ 'loading.text' | translate }}</p>
+    </div>
+  } @else if (erro()) {
+    <div class="perfil-erro">
+      <p>{{ 'perfil.error' | translate }}</p>
+      <a [routerLink]="['/home']" class="btn-voltar-home">{{ 'error.404.back' | translate }}</a>
+    </div>
+  } @else if (perfil(); as p) {
+    <div class="perfil-header">
+      <div class="perfil-avatar-wrap">
+        @if (p.fotoPerfil) {
+          <img class="perfil-avatar" [src]="p.fotoPerfil" [alt]="p.nome" appImgFallback />
+        } @else {
+          <div class="perfil-avatar perfil-avatar-placeholder">
+            {{ p.nome.charAt(0).toUpperCase() }}
+          </div>
+        }
+      </div>
+
+      <div class="perfil-info">
+        <h1>{{ p.nome }}</h1>
+        @if (p.nivel !== undefined) {
+          <span class="badge">🏕️ {{ 'account.badge-level' | translate }} {{ p.nivel }}</span>
+        }
+      </div>
+
+      @if (!ehProprioUsuario()) {
+        <div class="perfil-acoes">
+          <button
+            class="btn-follow"
+            [class.seguindo]="p.estouSeguindo"
+            [disabled]="salvandoFollow()"
+            (click)="toggleFollow()"
+            [attr.aria-label]="
+              (p.estouSeguindo ? 'perfil.btn-unfollow' : 'perfil.btn-follow') | translate
+            "
+          >
+            {{ (p.estouSeguindo ? 'perfil.btn-unfollow' : 'perfil.btn-follow') | translate }}
+          </button>
+          @if (p.segueMutuo) {
+            <button
+              class="btn-mensagem"
+              [disabled]="abrindoDm()"
+              (click)="enviarMensagem()"
+              [attr.aria-label]="'perfil.btn-mensagem' | translate"
+            >
+              {{ 'perfil.btn-mensagem' | translate }}
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="perfil-social">
+      <button class="social-stat" (click)="abrirSeguidores()">
+        <strong>{{ p.totalSeguidores }}</strong>
+        <span>{{ 'perfil.seguidores' | translate }}</span>
+      </button>
+      <button class="social-stat" (click)="abrirSeguindo()">
+        <strong>{{ p.totalSeguindo }}</strong>
+        <span>{{ 'perfil.seguindo' | translate }}</span>
+      </button>
+    </div>
+
+    @if (
+      p.totalCheckins !== undefined ||
+      p.totalCampingsVisitados !== undefined ||
+      p.totalTrilhasConcluidas !== undefined
+    ) {
+      <div class="stats">
+        @if (p.totalCheckins !== undefined) {
+          <div class="stat-card">
+            <h2>{{ p.totalCheckins }}</h2>
+            <span>{{ 'account.stat-checkins-label' | translate }}</span>
+          </div>
+        }
+        @if (p.totalCampingsVisitados !== undefined) {
+          <div class="stat-card">
+            <h2>{{ p.totalCampingsVisitados }}</h2>
+            <span>{{ 'account.stat-campings-label' | translate }}</span>
+          </div>
+        }
+        @if (p.totalTrilhasConcluidas !== undefined) {
+          <div class="stat-card">
+            <h2>{{ p.totalTrilhasConcluidas }}</h2>
+            <span>{{ 'account.stat-trails-label' | translate }}</span>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="perfil-privado">
+        <p>🔒 {{ 'perfil.stats-private' | translate }}</p>
+      </div>
+    }
+
+    @if (p.conquistas && p.conquistas.length > 0) {
+      <div class="section">
+        <h2>{{ 'account.section-achievements' | translate }}</h2>
+        <div class="cards scrollable-cards custom-scrollbar">
+          @for (conquista of p.conquistas; track conquista.id) {
+            <div class="item-card">
+              <h3>🏆 {{ conquista.nome }}</h3>
+              <p>{{ conquista.descricao }}</p>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (ehProprioUsuario()) {
+      <div class="section">
+        <app-sugestoes-usuarios />
+      </div>
+    }
+
+    @if (p.ultimosCheckins && p.ultimosCheckins.length > 0) {
+      <div class="section">
+        <h2>{{ 'perfil.last-checkins' | translate }}</h2>
+        <div class="checkins-list">
+          @for (checkin of p.ultimosCheckins; track checkin.id) {
+            <div class="checkin-item">
+              <span class="checkin-nome">{{ checkin.camping?.nome ?? checkin.trilhaNome }}</span>
+              <span class="checkin-data">{{ checkin.dataCriacao | date: 'dd/MM/yyyy' }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>
+
+@if (modalLista()) {
+  <div class="lista-modal overlay-backdrop" (click)="fecharModal()">
+    <div class="lista-modal-content" (click)="$event.stopPropagation()">
+      <div class="lista-modal-header">
+        <h3>
+          @if (modalLista() === 'seguidores') {
+            {{ 'perfil.seguidores' | translate }}
+          } @else {
+            {{ 'perfil.seguindo' | translate }}
+          }
+        </h3>
+        <button
+          class="btn-close-round btn-close-round--light"
+          (click)="fecharModal()"
+          [attr.aria-label]="'perfil.modal-close' | translate"
+        >
+          ✕
+        </button>
+      </div>
+
+      @if (carregandoLista()) {
+        <p class="lista-loading">{{ 'loading.text' | translate }}</p>
+      } @else {
+        <div class="lista-usuarios custom-scrollbar">
+          @for (usuario of listaModal(); track usuario.id) {
+            <a [routerLink]="['/perfil', usuario.id]" class="usuario-item" (click)="fecharModal()">
+              @if (usuario.fotoPerfil) {
+                <img
+                  [src]="usuario.fotoPerfil"
+                  [alt]="usuario.nome"
+                  class="usuario-avatar"
+                  appImgFallback
+                />
+              } @else {
+                <div class="usuario-avatar usuario-avatar-placeholder">
+                  {{ usuario.nome.charAt(0).toUpperCase() }}
+                </div>
+              }
+              <div class="usuario-info">
+                <p class="usuario-nome">{{ usuario.nome }}</p>
+                <small>{{ 'account.badge-level' | translate }} {{ usuario.nivel }}</small>
+              </div>
+            </a>
+          }
+          @if (listaModal().length === 0) {
+            <p class="lista-vazia">{{ 'perfil.lista-vazia' | translate }}</p>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}

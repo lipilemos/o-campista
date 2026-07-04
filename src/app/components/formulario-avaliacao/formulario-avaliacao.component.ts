@@ -157,15 +157,17 @@ export class FormularioAvaliacaoComponent implements OnChanges {
     };
 
     this.carregando = true;
-    this.trilhaService.criarAvaliacao(trilhaId, avaliacao, this.fotoSelecionada ?? undefined).subscribe({
-      next: (resultado) => {
-        this.carregando = false;
-        this.minhaAvaliacao = resultado;
-        this.avaliacaoSalva.emit(resultado);
-        this.usuarioService.verificarNovasConquistas();
-      },
-      error: () => (this.carregando = false),
-    });
+    this.trilhaService
+      .criarAvaliacao(trilhaId, avaliacao, this.fotoSelecionada ?? undefined)
+      .subscribe({
+        next: (resultado) => {
+          this.carregando = false;
+          this.minhaAvaliacao = resultado;
+          this.avaliacaoSalva.emit(resultado);
+          this.usuarioService.verificarNovasConquistas();
+        },
+        error: () => (this.carregando = false),
+      });
   }
 
   async onFotoSelecionada(event: Event): Promise<void> {
@@ -199,20 +201,18 @@ export class FormularioAvaliacaoComponent implements OnChanges {
     const camping = this.camping();
     if (!usuarioId || !camping) return;
 
-    this.campingService
-      .obterAvaliacaoUsuario(camping.id, usuarioId, this.checkinId())
-      .subscribe({
-        next: (avaliacao) => {
-          if (avaliacao?.length) {
-            this.minhaAvaliacao = avaliacao[0];
-            this.nota = avaliacao[0].nota;
-            this.comentario = avaliacao[0].comentario;
-            if (avaliacao[0].fotoUrl) this.fotoPreview = avaliacao[0].fotoUrl;
-            this.cdr.markForCheck();
-          }
-        },
-        error: () => {},
-      });
+    this.campingService.obterAvaliacaoUsuario(camping.id, usuarioId, this.checkinId()).subscribe({
+      next: (avaliacao) => {
+        if (avaliacao?.length) {
+          this.minhaAvaliacao = avaliacao[0];
+          this.nota = avaliacao[0].nota;
+          this.comentario = avaliacao[0].comentario;
+          if (avaliacao[0].fotoUrl) this.fotoPreview = avaliacao[0].fotoUrl;
+          this.cdr.markForCheck();
+        }
+      },
+      error: () => {},
+    });
   }
 
   private carregarMinhaAvaliacaoTrilha(): void {

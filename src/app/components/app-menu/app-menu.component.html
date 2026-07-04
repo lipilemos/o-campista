@@ -11,26 +11,36 @@
     <aside class="sidebar" [class.open]="menuOpen()">
       <div class="logo"></div>
       @if (usuario()) {
-        <div class="usuario">
-          @if (usuario()!.fotoPerfil) {
-            <img
-              class="avatar avatar-img"
-              [src]="usuario()!.fotoPerfil"
-              [alt]="usuario()!.nome"
-              appImgFallback
-            />
-          } @else {
-            <div class="avatar">
-              {{ usuario()!.nome.charAt(0).toUpperCase() }}
-            </div>
-          }
-          <div class="usuario-info">
-            <span class="nome">
-              {{ usuario()!.nome }}
-            </span>
-            <small class="nivel"> {{ 'nav.level' | translate }} {{ usuario()!.nivel }} </small>
+        <button
+          class="usuario"
+          [class.active]="isActive('notificacoes')"
+          (click)="navigateTo('notificacoes')"
+          [attr.aria-label]="'nav.notifications' | translate"
+        >
+          <div class="avatar-wrap">
+            @if (usuario()!.fotoPerfil) {
+              <img
+                class="avatar avatar-img"
+                [src]="usuario()!.fotoPerfil"
+                [alt]="usuario()!.nome"
+                appImgFallback
+              />
+            } @else {
+              <div class="avatar">
+                {{ usuario()!.nome.charAt(0).toUpperCase() }}
+              </div>
+            }
+            @if (notificacao.totalNaoLidas() > 0) {
+              <span class="badge-usuario" aria-hidden="true">{{
+                notificacao.totalNaoLidas() > 99 ? '99+' : notificacao.totalNaoLidas()
+              }}</span>
+            }
           </div>
-        </div>
+          <div class="usuario-info">
+            <span class="nome">{{ usuario()!.nome }}</span>
+            <small class="nivel">{{ 'nav.level' | translate }} {{ usuario()!.nivel }}</small>
+          </div>
+        </button>
       }
       <nav class="menu">
         <button class="menu-item" [class.active]="isActive('home')" (click)="navigateTo('home')">
@@ -42,6 +52,16 @@
           (click)="navigateTo('account')"
         >
           {{ 'nav.account' | translate }}
+        </button>
+        <button class="menu-item" [class.active]="isActive('feed')" (click)="navigateTo('feed')">
+          {{ 'nav.feed' | translate }}
+        </button>
+        <button
+          class="menu-item"
+          [class.active]="isActive('ranking')"
+          (click)="navigateTo('ranking')"
+        >
+          {{ 'nav.ranking' | translate }}
         </button>
         <button class="menu-item" [class.active]="isActive('mapa')" (click)="navigateTo('mapa')">
           {{ 'nav.map' | translate }}

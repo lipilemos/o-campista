@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, effect, inject, input, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { AvaliacaoComUsuario } from '../../core/models/avaliacao.model';
 import { ImgFallbackDirective } from '../../core/directives/img-fallback.directive';
 import { CampingService } from '../../core/services/camping.service';
@@ -8,7 +9,7 @@ import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-avaliacoes-usuarios',
-  imports: [DatePipe, ImgFallbackDirective, TranslatePipe],
+  imports: [DatePipe, ImgFallbackDirective, TranslatePipe, RouterLink],
   templateUrl: './avaliacoes-usuarios.component.html',
   styleUrl: './avaliacoes-usuarios.component.scss',
 })

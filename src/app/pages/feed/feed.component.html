@@ -1,0 +1,82 @@
+<div class="feed-page">
+  <header class="feed-header">
+    <h1 class="feed-title">{{ 'nav.feed' | translate }}</h1>
+    <button
+      class="btn-novo-post"
+      (click)="mostrarCriarPost.set(true)"
+      [attr.aria-label]="'feed.novo-post' | translate"
+    >
+      ✏️ {{ 'feed.novo-post' | translate }}
+    </button>
+  </header>
+
+  <div class="feed-tabs" role="tablist">
+    <button
+      class="feed-tab"
+      role="tab"
+      [class.active]="abaAtiva() === 'seguindo'"
+      [attr.aria-selected]="abaAtiva() === 'seguindo'"
+      (click)="trocarAba('seguindo')"
+    >
+      {{ 'feed.tab-seguindo' | translate }}
+    </button>
+    <button
+      class="feed-tab"
+      role="tab"
+      [class.active]="abaAtiva() === 'descobrir'"
+      [attr.aria-selected]="abaAtiva() === 'descobrir'"
+      (click)="trocarAba('descobrir')"
+    >
+      {{ 'feed.tab-descobrir' | translate }}
+    </button>
+  </div>
+
+  @if (abaAtiva() === 'descobrir') {
+    <app-sugestoes-usuarios />
+  }
+
+  <div class="feed-list" role="tabpanel">
+    @if (carregando() && items().length === 0) {
+      <div class="feed-loading">
+        <span class="spinner"></span>
+        <p>{{ 'feed.loading' | translate }}</p>
+      </div>
+    } @else if (erro()) {
+      <div class="feed-empty">
+        <p>{{ 'feed.error' | translate }}</p>
+        <button class="btn-retry" (click)="carregarFeed()">Tentar novamente</button>
+      </div>
+    } @else if (items().length === 0) {
+      <div class="feed-empty">
+        <p>
+          @if (abaAtiva() === 'seguindo') {
+            {{ 'feed.empty-seguindo' | translate }}
+          } @else {
+            {{ 'feed.empty-descobrir' | translate }}
+          }
+        </p>
+      </div>
+    } @else {
+      @for (item of items(); track item.id) {
+        <app-feed-item [item]="item" [meuId]="meuId" (deletar)="onDeletarPost($event)" />
+      }
+
+      @if (!semMais()) {
+        <button class="btn-load-more" (click)="carregarMais()" [disabled]="carregando()">
+          @if (carregando()) {
+            {{ 'feed.loading' | translate }}
+          } @else {
+            {{ 'feed.load-more' | translate }}
+          }
+        </button>
+      }
+    }
+  </div>
+</div>
+
+@if (mostrarCriarPost()) {
+  <app-post-create
+    (publicado)="onPostPublicado($event)"
+    (cancelado)="mostrarCriarPost.set(false)"
+  />
+}

@@ -165,7 +165,7 @@
   border: none;
   border-radius: var(--radius-full);
   padding: var(--space-3) var(--space-4);
-  background: #4CAF50;
+  background: #4caf50;
   color: white;
   font-weight: 700;
   font-size: var(--text-sm);
@@ -173,7 +173,7 @@
   box-shadow: var(--shadow-md);
 
   &:hover {
-    background: #388E3C;
+    background: #388e3c;
   }
 }
 
@@ -389,7 +389,6 @@
 }
 
 @media (max-width: 768px) {
-
   /* quando o card está aberto, move o botão de localização para cima da bottom sheet */
   .map-wrapper.card-aberto .btn-localizacao {
     bottom: calc(var(--card-height, 58vh) + var(--space-4));

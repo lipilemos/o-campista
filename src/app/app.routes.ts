@@ -26,6 +26,16 @@ export const routes: Routes = [
       import('./pages/register/register.component').then((m) => m.RegisterComponent),
   },
   {
+    path: 'privacidade',
+    loadComponent: () =>
+      import('./pages/privacidade/privacidade.component').then((m) => m.PrivacidadeComponent),
+  },
+  {
+    path: 'termos',
+    loadComponent: () =>
+      import('./pages/termos/termos.component').then((m) => m.TermosComponent),
+  },
+  {
     path: '',
     canActivate: [authGuard],
     loadComponent: () =>
@@ -84,6 +94,27 @@ export const routes: Routes = [
       {
         path: 'gift',
         loadComponent: () => import('./pages/gift/gift.component').then((m) => m.GiftComponent),
+      },
+      {
+        path: 'feed',
+        loadComponent: () => import('./pages/feed/feed.component').then((m) => m.FeedComponent),
+      },
+      {
+        path: 'ranking',
+        loadComponent: () =>
+          import('./pages/ranking/ranking.component').then((m) => m.RankingComponent),
+      },
+      {
+        path: 'perfil/:id',
+        loadComponent: () =>
+          import('./pages/perfil/perfil-publico.component').then((m) => m.PerfilPublicoComponent),
+      },
+      {
+        path: 'notificacoes',
+        loadComponent: () =>
+          import('./pages/notificacoes/notificacoes.component').then(
+            (m) => m.NotificacoesComponent,
+          ),
       },
     ],
   },

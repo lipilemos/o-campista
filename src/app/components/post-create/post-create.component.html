@@ -1,0 +1,79 @@
+<div class="overlay-backdrop" (click)="cancelar()"></div>
+
+<div
+  class="post-create-modal glass-card"
+  role="dialog"
+  [attr.aria-label]="'post.create-title' | translate"
+>
+  <header class="post-modal-header">
+    <h2 class="post-modal-title">{{ 'post.create-title' | translate }}</h2>
+    <button
+      class="btn-close-round btn-close-round--light"
+      (click)="cancelar()"
+      [attr.aria-label]="'perfil.modal-close' | translate"
+    >
+      ✕
+    </button>
+  </header>
+
+  <div class="post-modal-body">
+    <textarea
+      class="post-textarea"
+      [(ngModel)]="texto"
+      [placeholder]="'post.placeholder' | translate"
+      [maxlength]="MAX_CHARS"
+      rows="5"
+      [attr.aria-label]="'post.placeholder' | translate"
+    ></textarea>
+
+    <p class="char-count" [class.warn]="charsRestantes < 100">
+      {{ charsRestantes }} {{ 'post.char-limit' | translate }}
+    </p>
+
+    @if (fotoPreview()) {
+      <div class="foto-preview-wrap">
+        <img [src]="fotoPreview()" alt="preview" class="foto-preview" />
+        <button
+          class="btn-close-round btn-close-round--inverse"
+          (click)="removerFoto()"
+          [attr.aria-label]="'post.btn-remover-foto' | translate"
+        >
+          ✕
+        </button>
+      </div>
+    }
+
+    <input
+      #fileInput
+      type="file"
+      accept="image/*"
+      class="hidden-input"
+      (change)="onFotoSelecionada($event)"
+    />
+  </div>
+
+  <footer class="post-modal-footer">
+    <button
+      class="btn-foto"
+      type="button"
+      (click)="selecionarFoto()"
+      [disabled]="publicando()"
+      [attr.aria-label]="'post.btn-foto' | translate"
+    >
+      📷 {{ 'post.btn-foto' | translate }}
+    </button>
+
+    <button
+      class="btn-publicar"
+      type="button"
+      (click)="publicar()"
+      [disabled]="publicando() || !texto().trim()"
+    >
+      @if (publicando()) {
+        {{ 'post.btn-publicando' | translate }}
+      } @else {
+        {{ 'post.btn-publicar' | translate }}
+      }
+    </button>
+  </footer>
+</div>
