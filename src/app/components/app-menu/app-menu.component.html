@@ -11,26 +11,36 @@
     <aside class="sidebar" [class.open]="menuOpen()">
       <div class="logo"></div>
       @if (usuario()) {
-        <div class="usuario">
-          @if (usuario()!.fotoPerfil) {
-            <img
-              class="avatar avatar-img"
-              [src]="usuario()!.fotoPerfil"
-              [alt]="usuario()!.nome"
-              appImgFallback
-            />
-          } @else {
-            <div class="avatar">
-              {{ usuario()!.nome.charAt(0).toUpperCase() }}
-            </div>
-          }
-          <div class="usuario-info">
-            <span class="nome">
-              {{ usuario()!.nome }}
-            </span>
-            <small class="nivel"> {{ 'nav.level' | translate }} {{ usuario()!.nivel }} </small>
+        <button
+          class="usuario"
+          [class.active]="isActive('notificacoes')"
+          (click)="navigateTo('notificacoes')"
+          [attr.aria-label]="'nav.notifications' | translate"
+        >
+          <div class="avatar-wrap">
+            @if (usuario()!.fotoPerfil) {
+              <img
+                class="avatar avatar-img"
+                [src]="usuario()!.fotoPerfil"
+                [alt]="usuario()!.nome"
+                appImgFallback
+              />
+            } @else {
+              <div class="avatar">
+                {{ usuario()!.nome.charAt(0).toUpperCase() }}
+              </div>
+            }
+            @if (notificacao.totalNaoLidas() > 0) {
+              <span class="badge-usuario" aria-hidden="true">{{
+                notificacao.totalNaoLidas() > 99 ? '99+' : notificacao.totalNaoLidas()
+              }}</span>
+            }
           </div>
-        </div>
+          <div class="usuario-info">
+            <span class="nome">{{ usuario()!.nome }}</span>
+            <small class="nivel">{{ 'nav.level' | translate }} {{ usuario()!.nivel }}</small>
+          </div>
+        </button>
       }
       <nav class="menu">
         <button class="menu-item" [class.active]="isActive('home')" (click)="navigateTo('home')">
@@ -61,18 +71,6 @@
           @if (chatNotification.totalNaoLidas() > 0) {
             <span class="badge-nao-lidas">{{
               chatNotification.totalNaoLidas() > 99 ? '99+' : chatNotification.totalNaoLidas()
-            }}</span>
-          }
-        </button>
-        <button
-          class="menu-item"
-          [class.active]="isActive('notificacoes')"
-          (click)="navigateTo('notificacoes')"
-        >
-          {{ 'nav.notifications' | translate }}
-          @if (notificacao.totalNaoLidas() > 0) {
-            <span class="badge-nao-lidas">{{
-              notificacao.totalNaoLidas() > 99 ? '99+' : notificacao.totalNaoLidas()
             }}</span>
           }
         </button>
