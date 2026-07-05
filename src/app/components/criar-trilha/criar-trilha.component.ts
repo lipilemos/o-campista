@@ -10,8 +10,10 @@ import {
   signal,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { CriarTrilhaRequest, Trilha } from '../../core/models/trilha.model';
 import { AuthService } from '../../core/services/auth.service';
+import { BackgroundGeolocationService } from '../../core/services/background-geolocation.service';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 import { ToastService } from '../../core/services/toast.service';
 import { TrilhaService } from '../../core/services/trilha.service';
@@ -38,13 +40,14 @@ export class CriarTrilhaComponent implements OnInit, OnDestroy {
   private confirmDialog = inject(ConfirmDialogService);
   private toast = inject(ToastService);
   private cdr = inject(ChangeDetectorRef);
+  private bgGeo = inject(BackgroundGeolocationService);
 
   finalizando = signal(false);
   salvando = signal(false);
   distanciaTotal = signal(0);
 
   private waypoints: { ordem: number; latitude: number; longitude: number }[] = [];
-  private watchId?: number;
+  private geoSub?: Subscription;
   private ultimoPonto?: { lat: number; lng: number };
   private readonly MIN_DIST_METROS = 15;
 
@@ -75,19 +78,10 @@ export class CriarTrilhaComponent implements OnInit, OnDestroy {
     this.ultimoPonto = undefined;
     this.distanciaTotal.set(0);
 
-    if (!navigator.geolocation) {
-      this.toast.error('Geolocalização não disponível neste dispositivo.');
-      return;
-    }
-
-    this.watchId = navigator.geolocation.watchPosition(
-      (pos) => this.adicionarWaypoint(pos.coords.latitude, pos.coords.longitude),
-      (err) => {
-        console.error('Erro GPS:', err);
-        this.toast.error('Erro ao obter localização GPS.');
-      },
-      { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 },
-    );
+    this.geoSub = this.bgGeo.watch().subscribe({
+      next: (pos) => this.adicionarWaypoint(pos.coords.latitude, pos.coords.longitude),
+      error: () => this.toast.error('Erro ao obter localização GPS.'),
+    });
   }
 
   finalizar(): void {
@@ -156,10 +150,8 @@ export class CriarTrilhaComponent implements OnInit, OnDestroy {
   }
 
   private pararGravacao(): void {
-    if (this.watchId !== undefined) {
-      navigator.geolocation.clearWatch(this.watchId);
-      this.watchId = undefined;
-    }
+    this.geoSub?.unsubscribe();
+    this.geoSub = undefined;
   }
 
   private adicionarWaypoint(lat: number, lng: number): void {
