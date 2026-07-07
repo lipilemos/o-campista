@@ -74,6 +74,7 @@
   "trail.checkin.success": "Trail check-in done! +100 XP 🥾",
   "trail.checkin.already-done": "You already checked in to this trail today.",
   "trail.checkin.too-far": "You need to be within 250 meters of the trail start.",
+  "trail.card.btn-navigate": "Navigate to the trail",
   "trail.card.close": "Close trail",
   "trail.card.creator": "Created by",
   "trail.card.checkin-btn": "📍 Check In to Trail",
@@ -120,6 +121,7 @@
   "card.gift.distance": "Current distance:",
   "card.gift.btn-redeem": "🎁 Redeem Gift",
   "card.gift.too-far": "You need to be within 150 meters of the gift to redeem it.",
+  "card.gift.btn-navigate": "Navigate to the gift",
   "card.gift.own": "This gift was left by you. Only other campers can redeem it.",
   "card.gift.found": "This gift has already been found by another camper.",
 
@@ -162,6 +164,7 @@
   "card.camping.btn-checkin": "Check In",
   "card.camping.btn-checking": "Checking...",
   "card.camping.distance-warning": "You need to be within 250 meters of the camping to check in.",
+  "card.camping.btn-navigate": "Navigate to location",
   "card.camping.no-checkin": "No check-ins in the last 24h",
   "card.camping.one-checkin": "1 person checked in in the last 24h",
   "card.camping.no-visits": "No visits recorded yet",
@@ -329,6 +332,9 @@
   "account.favoritos-empty": "No campsites saved yet. Tap ❤️ on a campsite card to save it.",
   "account.favorito-remover": "Remove from favorites",
   "account.favorito-erro": "Could not remove favorite.",
+
+  "trilha-detail.too-far": "Get closer to the start or end of the trail (within 500m) to mark it as completed.",
+  "trilha-detail.btn-navigate": "Navigate to the trail",
 
   "sugestoes.titulo": "Campers you may know",
   "sugestoes.btn-seguir": "Follow",

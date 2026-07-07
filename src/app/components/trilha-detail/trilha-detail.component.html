@@ -33,8 +33,11 @@
       </button>
     } @else {
       <p class="trilha-aviso">
-        Aproxime-se do início ou fim da trilha (até 500m) para marcá-la como concluída.
+        {{ 'trilha-detail.too-far' | translate }}
       </p>
+      <button class="btn-navegar" (click)="navegarAte()">
+        🧭 {{ 'trilha-detail.btn-navigate' | translate }}
+      </button>
     }
   }
 </div>

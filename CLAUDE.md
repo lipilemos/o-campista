@@ -166,7 +166,7 @@ src/app/
 │   ├── models/          # Interfaces/tipos de dados
 │   ├── pipes/           # translate.pipe.ts — pipe de tradução i18n
 │   ├── services/        # Serviços de negócio e HTTP
-│   └── Utils.ts         # Util.calcularDistanciaMetros() — fórmula de Haversine
+│   └── Utils.ts         # Util.calcularDistanciaMetros() (Haversine), Util.abrirNavegacaoGps() (abre rota no Google Maps)
 ├── pages/               # Páginas/features (uma pasta por rota)
 │   ├── login/
 │   ├── register/
@@ -312,6 +312,7 @@ Definidos em `src/app/core/models/`:
 - **Geolocalização padrão (fallback):** São Carlos/SP (`-22.0174, -47.8903`)
 - **Timeout geolocalização:** 10s (LocationService), 2s (WeatherService)
 - **Cache de posição:** 5 minutos (maxAge: 300000ms)
+- **Navegação até um ponto do mapa:** os cards de camping/cachoeira/mirante/pesca (`CardCampingComponent`), presente (`CardGiftComponent`), trilha independente (`CardTrilhaComponent`) e trilha de camping (`TrilhaDetailComponent`) exibem um botão "Navegar até" (via `Util.abrirNavegacaoGps`, abre rota no Google Maps em nova aba) sempre que o usuário estiver fora do raio de proximidade da respectiva ação (250m camping, 150m presente, 250m trilha independente, 500m trilha de camping)
 - **Status camping (clima):** chuva > 60% = "Ruim", vento > 35km/h = "Atenção", temp < 16°C = "Atenção", senão = "Excelente"
 - **Status de ocupação:** ao fazer check-in o usuário reporta `tranquilo | movimentado | lotado` — enviado no payload do `POST /checkin` (campo `ocupacao`). O backend deve agregar a moda das últimas **6 horas** por camping e retornar `statusOcupacao` no `GET /mapa/campings`. O frontend exibe badge colorido no card (verde/laranja/vermelho) e armazena localmente via signal `ocupacaoLocal` após o check-in da sessão atual.
 - **Gamificação:** XP por check-ins, níveis progressivos, conquistas desbloqueáveis

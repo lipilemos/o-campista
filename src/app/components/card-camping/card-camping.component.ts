@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { CampingFoto } from '../../core/models/camping-foto.model';
 import { Camping } from '../../core/models/camping.model';
 import {
@@ -172,6 +181,24 @@ export class CardCampingComponent {
     );
 
     return distancia <= 250;
+  }
+
+  distanciaMetros(): number | null {
+    const pos = this.minhaPosicao();
+    const camping = this.campingSelecionado();
+    if (!pos || !camping) return null;
+
+    return Util.calcularDistanciaMetros(pos.lat, pos.lng, camping.latitude, camping.longitude);
+  }
+
+  precisaNavegar(): boolean {
+    const distancia = this.distanciaMetros();
+    return distancia !== null && distancia > 250;
+  }
+
+  navegarAte(): void {
+    const camping = this.campingSelecionado();
+    Util.abrirNavegacaoGps(camping.latitude, camping.longitude);
   }
 
   fazerCheckin() {

@@ -74,6 +74,7 @@
   "trail.checkin.success": "Check-in na trilha realizado! +100 XP 🥾",
   "trail.checkin.already-done": "Você já fez check-in nesta trilha hoje.",
   "trail.checkin.too-far": "Você precisa estar a menos de 250 metros do início da trilha.",
+  "trail.card.btn-navigate": "Navegar até a trilha",
   "trail.card.close": "Fechar trilha",
   "trail.card.creator": "Criado por",
   "trail.card.checkin-btn": "📍 Fazer Check-in na Trilha",
@@ -120,6 +121,7 @@
   "card.gift.distance": "Distância atual:",
   "card.gift.btn-redeem": "🎁 Resgatar Presente",
   "card.gift.too-far": "Você precisa estar a menos de 150 metros do presente para resgatá-lo.",
+  "card.gift.btn-navigate": "Navegar até o presente",
   "card.gift.own": "Este presente foi deixado por você. Apenas outros campistas podem resgatá-lo.",
   "card.gift.found": "Este presente já foi encontrado por outro campista.",
 
@@ -162,6 +164,7 @@
   "card.camping.btn-checkin": "Fazer Check-in",
   "card.camping.btn-checking": "Verificando...",
   "card.camping.distance-warning": "Você precisa estar a menos de 250 metros do camping para fazer check-in.",
+  "card.camping.btn-navigate": "Navegar até o local",
   "card.camping.no-checkin": "Nenhum check-in nas últimas 24h",
   "card.camping.one-checkin": "1 pessoa fez check-in nas últimas 24h",
   "card.camping.no-visits": "Nenhuma visita registrada ainda",
@@ -329,6 +332,9 @@
   "account.favoritos-empty": "Nenhum camping favoritado ainda. Toque em ❤️ no card de um camping para salvar.",
   "account.favorito-remover": "Remover dos favoritos",
   "account.favorito-erro": "Não foi possível remover o favorito.",
+
+  "trilha-detail.too-far": "Aproxime-se do início ou fim da trilha (até 500m) para marcá-la como concluída.",
+  "trilha-detail.btn-navigate": "Navegar até a trilha",
 
   "sugestoes.titulo": "Campistas que você pode conhecer",
   "sugestoes.btn-seguir": "Seguir",
