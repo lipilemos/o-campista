@@ -70,6 +70,7 @@
   "trail.create.min-points": "Record at least 2 GPS points before finishing.",
   "trail.create.success": "Trail created! +500 XP 🥾",
   "trail.create.cancel-confirm": "The recorded route will be discarded. Continue?",
+  "trail.create.draft-restored": "Trail draft restored.",
   "trail.checkin.success": "Trail check-in done! +100 XP 🥾",
   "trail.checkin.already-done": "You already checked in to this trail today.",
   "trail.checkin.too-far": "You need to be within 250 meters of the trail start.",

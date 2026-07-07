@@ -32,6 +32,7 @@ import { LocationSharingService } from '../../core/services/location-sharing.ser
 import { MapStateService } from '../../core/services/map-state.service';
 import { NetworkStatusService } from '../../core/services/network-status.service';
 import { SocialService } from '../../core/services/social.service';
+import { TrilhaDraftService } from '../../core/services/trilha-draft.service';
 import { TrilhaService } from '../../core/services/trilha.service';
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
@@ -77,6 +78,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private giftService = inject(GiftService);
   private campingService = inject(CampingService);
   private trilhaService = inject(TrilhaService);
+  private trilhaDraftService = inject(TrilhaDraftService);
   private authService = inject(AuthService);
   private socialService = inject(SocialService);
   private locationSharingService = inject(LocationSharingService);
@@ -143,6 +145,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.criarMapa();
     this.definirLocalizacaoInicial();
+
+    if (this.trilhaDraftService.temRascunho()) {
+      this.iniciarGravacaoTrilha();
+    }
 
     this.buscaSubject.pipe(debounceTime(400)).subscribe(() => {
       this.carregarCampings();
@@ -747,8 +753,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   private criarConteudoMarcadorUsuario(usuario: LocalizacaoUsuario): HTMLElement {
     const wrapper = document.createElement('div');
-    wrapper.style.cssText =
-      'position:relative;width:44px;height:44px;cursor:pointer;';
+    wrapper.style.cssText = 'position:relative;width:44px;height:44px;cursor:pointer;';
 
     const avatar = document.createElement('div');
     avatar.style.cssText =

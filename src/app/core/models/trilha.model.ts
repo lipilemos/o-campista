@@ -30,3 +30,12 @@ export interface CriarTrilhaRequest {
   criadorNome: string;
   pontos: { ordem: number; latitude: number; longitude: number }[];
 }
+
+export interface TrilhaRascunho {
+  waypoints: { ordem: number; latitude: number; longitude: number }[];
+  distanciaTotal: number;
+  finalizando: boolean;
+  nome: string;
+  dificuldade: string;
+  descricao: string;
+}

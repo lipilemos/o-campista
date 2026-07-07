@@ -70,6 +70,7 @@
   "trail.create.min-points": "Grave pelo menos 2 pontos GPS antes de finalizar.",
   "trail.create.success": "Trilha criada! +500 XP 🥾",
   "trail.create.cancel-confirm": "O percurso registrado será descartado. Deseja continuar?",
+  "trail.create.draft-restored": "Rascunho de trilha restaurado.",
   "trail.checkin.success": "Check-in na trilha realizado! +100 XP 🥾",
   "trail.checkin.already-done": "Você já fez check-in nesta trilha hoje.",
   "trail.checkin.too-far": "Você precisa estar a menos de 250 metros do início da trilha.",

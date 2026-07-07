@@ -33,6 +33,7 @@ export class PerfilPublicoComponent {
   modalLista = signal<'seguidores' | 'seguindo' | null>(null);
   listaModal = signal<UsuarioBusca[]>([]);
   carregandoLista = signal(false);
+  fotoErro = signal(false);
 
   private meuId = this.authService.getUser()?.id;
   ehProprioUsuario = computed(() => this.perfil()?.id === this.meuId);
@@ -47,6 +48,7 @@ export class PerfilPublicoComponent {
   carregarPerfil(id: string): void {
     this.carregando.set(true);
     this.erro.set(false);
+    this.fotoErro.set(false);
     this.perfil.set(null);
     this.socialService.getPerfil(id).subscribe({
       next: (perfil) => {

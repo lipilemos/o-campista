@@ -271,6 +271,7 @@ Base URL configurada em `src/environments/environment.ts` (`environment.apiUrl`)
 | **GiftService**             | Criar, buscar, resgatar e deletar presentes                                      | `POST /presentes`, `GET /presentes?lat&lng`, `POST /presentes/resgatar`, `DELETE /presentes/{id}`                                               |
 | **WeatherService**          | Clima atual e previsão 5 dias                                                    | Open-Meteo API (externo), Nominatim (geocoding)                                                                                                 |
 | **ChecklistService**        | CRUD local de checklists                                                         | localStorage (`ocampista-checklists`) — sem backend                                                                                             |
+| **TrilhaDraftService**      | Persiste rascunho de trilha em criação (waypoints, distância, form)              | Sem endpoint — localStorage (`ocampista-trilha-rascunho`)                                                                                       |
 | **LocationService**         | Geolocalização em tempo real                                                     | Browser Geolocation API                                                                                                                         |
 | **LoadingService**          | Estado de loading global (Signal)                                                | Sem endpoint — gerenciado pelo interceptor                                                                                                      |
 | **MapStateService**         | Estado do mapa (modais abertos)                                                  | Sem endpoint — Signals locais                                                                                                                   |
@@ -319,11 +320,14 @@ Definidos em `src/app/core/models/`:
 - **Chat direto (DM):** apenas entre usuários que se seguem mutuamente (A segue B e B segue A); `POST /chat/diretas/{usuarioId}` retorna 403 se não houver seguimento mútuo; sala criada com `Tipo="dm"`, idempotente (segunda chamada retorna a sala existente)
 - **Salas automáticas:** ao fazer check-in, sala de chat do camping é criada automaticamente e o usuário é adicionado como membro
 - **Rate limit chat:** máximo 10 mensagens por minuto por usuário (via MemoryCache no backend)
+- **Expiração de sessão (JWT):** token expira em **24 horas** (`TokenService.GenerateToken` no backend). `POST /auth/refresh` é `[Authorize]` e só funciona com token ainda válido — não há refresh token de longa duração, então a sessão expira de vez após ~24h (não é renovável após esse ponto)
+- **Rascunho de trilha em criação:** os waypoints/distância/formulário da trilha sendo gravada em `CriarTrilhaComponent` são persistidos incrementalmente no localStorage (`TrilhaDraftService`) a cada ponto GPS e a cada mudança no formulário, sobrevivendo a refresh de página ou expiração de sessão. `MapComponent` reabre a gravação automaticamente no `ngAfterViewInit` se houver rascunho salvo. O rascunho é limpo ao salvar a trilha com sucesso ou ao cancelar a gravação
 
 ## Gerenciamento de Estado
 
 - **Autenticação:** localStorage (`token`, `user`) — gerenciado pelo AuthService
 - **Checklists:** localStorage (`ocampista-checklists`) — gerenciado pelo ChecklistService
+- **Rascunho de trilha em criação:** localStorage (`ocampista-trilha-rascunho`) — gerenciado pelo TrilhaDraftService
 - **Loading global:** Signal no LoadingService, controlado pelo loading.interceptor
 - **Estado do mapa:** Signals no MapStateService (modais de camping/presente)
 - **Dados do backend:** Observables HTTP (sem NgRx/Redux)
