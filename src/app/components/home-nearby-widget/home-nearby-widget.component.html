@@ -1,0 +1,65 @@
+<div class="home-nearby-widget card-elevated">
+  <div class="widget-section">
+    <h3>{{ 'home.nearby.gifts-title' | translate }}</h3>
+
+    @if (carregandoPresentes()) {
+      <div class="widget-loading" aria-busy="true">
+        <span class="spinner"></span>
+      </div>
+    } @else if (presentes().length === 0) {
+      <p class="empty-hint">{{ 'home.nearby.gifts-empty' | translate }}</p>
+    } @else {
+      <ul class="nearby-list">
+        @for (presente of presentes(); track presente.id) {
+          <li>
+            <a
+              class="nearby-item nearby-item--link"
+              [routerLink]="['/mapa']"
+              [queryParams]="{ presenteId: presente.id }"
+            >
+              <span class="nearby-icon" aria-hidden="true">🎁</span>
+              <span class="nearby-nome">{{ presente.nome }}</span>
+              <span class="nearby-distancia">{{
+                formatarDistancia(presente.distanciaMetros)
+              }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <div class="widget-section">
+    <h3>{{ 'home.nearby.campings-title' | translate }}</h3>
+
+    @if (carregandoCampings()) {
+      <div class="widget-loading" aria-busy="true">
+        <span class="spinner"></span>
+      </div>
+    } @else if (campingsFavoritos().length === 0) {
+      <div class="widget-empty">
+        <p>{{ 'account.favoritos-empty' | translate }}</p>
+        <a routerLink="/mapa" class="btn-cta">{{ 'home.nearby.campings-cta' | translate }}</a>
+      </div>
+    } @else {
+      <ul class="nearby-list">
+        @for (camping of campingsFavoritos(); track camping.id) {
+          <li class="nearby-item">
+            <span class="nearby-nome">{{ camping.nome }}</span>
+            @if (statusOcupacao(camping); as status) {
+              <span
+                class="badge-ocupacao"
+                [class]="'badge-ocupacao--' + status.nivel"
+                [attr.aria-label]="('card.camping.ocupacao-label' | translate) + status.label"
+                role="status"
+              >
+                <span aria-hidden="true">{{ status.emoji }}</span>
+                <span class="badge-ocupacao__label">{{ status.label }}</span>
+              </span>
+            }
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</div>

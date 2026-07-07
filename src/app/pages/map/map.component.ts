@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   NgZone,
@@ -12,7 +13,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GoogleMapsModule } from '@angular/google-maps';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription, debounceTime } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { CardCampingComponent } from '../../components/card-camping/card-camping.component';
@@ -83,7 +84,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private socialService = inject(SocialService);
   private locationSharingService = inject(LocationSharingService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private ngZone = inject(NgZone);
+  private cdr = inject(ChangeDetectorRef);
+  private presenteIdParaAbrir?: number;
   protected networkStatus = inject(NetworkStatusService);
   private locationSubscription?: Subscription;
   private locationInterval?: ReturnType<typeof setInterval>;
@@ -146,6 +150,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.criarMapa();
     this.definirLocalizacaoInicial();
 
+    const presenteId = this.route.snapshot.queryParamMap.get('presenteId');
+    if (presenteId) {
+      this.presenteIdParaAbrir = Number(presenteId);
+      this.categoriaSelecionada = 'presente';
+    }
+
     if (this.trilhaDraftService.temRascunho()) {
       this.iniciarGravacaoTrilha();
     }
@@ -160,6 +170,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   private carregarCampings() {
+    this.atualizarVisibilidadeTrilhasIndependentes();
+
     if (this.categoriaSelecionada === 'presente') {
       this.limparMarkers();
       this.carregaPresentes();
@@ -182,6 +194,22 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       this.desenharMarkers();
     });
   }
+
+  // Trilhas independentes (criadas por usuários) são desenhadas fora do fluxo de
+  // filtro de campings/presentes — sem isso, permaneciam visíveis mesmo com um
+  // filtro de categoria (ex: presentes) ativo. Ficam visíveis quando nenhum filtro
+  // está ativo ou quando o filtro de categoria "Trilha" está selecionado.
+  private trilhaIndependenteVisivel(): boolean {
+    return this.categoriaSelecionada === '' || this.categoriaSelecionada === 'trilha';
+  }
+
+  private atualizarVisibilidadeTrilhasIndependentes(): void {
+    const visivel = this.trilhaIndependenteVisivel();
+    this.trilhaIndependenteMarkers.forEach((marker) => {
+      marker.map = visivel ? this.map : null;
+    });
+  }
+
   private carregaPresentes() {
     const pos = this.minhaPosicao ?? this.posicaoPadrao;
 
@@ -207,6 +235,27 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       presentesMark.forEach((presente) => {
         this.criarMarkerPresente(presente);
       });
+
+      if (this.presenteIdParaAbrir) {
+        const alvo = presentesMark.find((p) => p.id === this.presenteIdParaAbrir);
+        if (alvo) {
+          this.selecionarPresente(alvo);
+          this.map.panTo({ lat: alvo.latitude, lng: alvo.longitude });
+          this.map.setZoom(16);
+        }
+        this.presenteIdParaAbrir = undefined;
+      }
+    });
+  }
+
+  private selecionarPresente(presente: Presente): void {
+    this.ngZone.run(() => {
+      this.mapState.campingAberto.set(false);
+      this.campingSelecionado = undefined;
+
+      this.mapState.presenteAberto.set(true);
+      this.presenteSelecionado = presente;
+      this.cdr.detectChanges();
     });
   }
   private criarMarkerPresente(presente: Presente) {
@@ -237,11 +286,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     });
 
     marker.addEventListener('gmp-click', () => {
-      this.mapState.campingAberto.set(false);
-      this.campingSelecionado = undefined;
-
-      this.mapState.presenteAberto.set(true);
-      this.presenteSelecionado = presente;
+      this.selecionarPresente(presente);
     });
 
     this.markers.push(marker);
@@ -580,7 +625,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     element.style.fontSize = '50px';
 
     const marker = new google.maps.marker.AdvancedMarkerElement({
-      map: this.map,
+      map: this.trilhaIndependenteVisivel() ? this.map : null,
       position: { lat: Number(trilha.latitude), lng: Number(trilha.longitude) },
       title: trilha.nome,
       content: element,

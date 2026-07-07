@@ -333,5 +333,20 @@
   "sugestoes.titulo": "Campistas que você pode conhecer",
   "sugestoes.btn-seguir": "Seguir",
   "sugestoes.dispensar": "Dispensar sugestão",
-  "sugestoes.erro-follow": "Não foi possível seguir este usuário."
+  "sugestoes.erro-follow": "Não foi possível seguir este usuário.",
+
+  "home.feed.title": "Atividade recente",
+  "home.feed.ver-mais": "Ver mais",
+  "home.feed.empty": "Siga outros campistas para ver atividades aqui.",
+  "home.feed.error": "Não foi possível carregar o feed.",
+  "home.feed.retry": "Tentar novamente",
+  "home.ranking.title": "Ranking",
+  "home.ranking.ver-mais": "Ver ranking completo",
+  "home.ranking.stats-title": "Minhas estatísticas",
+  "home.ranking.error": "Não foi possível carregar o ranking.",
+  "home.nearby.gifts-title": "Presentes por perto",
+  "home.nearby.gifts-empty": "Nenhum presente por perto.",
+  "home.nearby.campings-title": "Meus campings favoritos",
+  "home.nearby.campings-cta": "Explorar o mapa",
+  "home.nearby.error": "Não foi possível carregar os dados de proximidade."
 }

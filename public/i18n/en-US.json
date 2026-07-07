@@ -333,5 +333,20 @@
   "sugestoes.titulo": "Campers you may know",
   "sugestoes.btn-seguir": "Follow",
   "sugestoes.dispensar": "Dismiss suggestion",
-  "sugestoes.erro-follow": "Could not follow this user."
+  "sugestoes.erro-follow": "Could not follow this user.",
+
+  "home.feed.title": "Recent activity",
+  "home.feed.ver-mais": "See more",
+  "home.feed.empty": "Follow other campers to see activity here.",
+  "home.feed.error": "Could not load the feed.",
+  "home.feed.retry": "Try again",
+  "home.ranking.title": "Ranking",
+  "home.ranking.ver-mais": "See full ranking",
+  "home.ranking.stats-title": "My stats",
+  "home.ranking.error": "Could not load the ranking.",
+  "home.nearby.gifts-title": "Gifts nearby",
+  "home.nearby.gifts-empty": "No gifts nearby.",
+  "home.nearby.campings-title": "My favorite campsites",
+  "home.nearby.campings-cta": "Explore the map",
+  "home.nearby.error": "Could not load nearby data."
 }

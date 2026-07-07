@@ -172,7 +172,7 @@ src/app/
 │   ├── register/
 │   ├── forgot-password/
 │   ├── reset-password/  # Redefinição de senha via token
-│   ├── home/            # Shell principal — sidebar, navegação, weather cards
+│   ├── home/            # Dashboard inicial — clima, XP/conquistas, ranking, feed social, presentes/campings próximos
 │   ├── account/         # Perfil, conquistas, presentes, histórico check-ins
 │   │   └── checkin-history/
 │   ├── map/             # Mapa interativo com markers, check-in, presentes
@@ -272,7 +272,7 @@ Base URL configurada em `src/environments/environment.ts` (`environment.apiUrl`)
 | **WeatherService**          | Clima atual e previsão 5 dias                                                    | Open-Meteo API (externo), Nominatim (geocoding)                                                                                                 |
 | **ChecklistService**        | CRUD local de checklists                                                         | localStorage (`ocampista-checklists`) — sem backend                                                                                             |
 | **TrilhaDraftService**      | Persiste rascunho de trilha em criação (waypoints, distância, form)              | Sem endpoint — localStorage (`ocampista-trilha-rascunho`)                                                                                       |
-| **LocationService**         | Geolocalização em tempo real                                                     | Browser Geolocation API                                                                                                                         |
+| **LocationService**         | Geolocalização em tempo real e posição atual (one-shot, com fallback São Carlos) | Browser Geolocation API                                                                                                                         |
 | **LoadingService**          | Estado de loading global (Signal)                                                | Sem endpoint — gerenciado pelo interceptor                                                                                                      |
 | **MapStateService**         | Estado do mapa (modais abertos)                                                  | Sem endpoint — Signals locais                                                                                                                   |
 | **SocialService**           | Perfil público, seguir/desseguir, seguidores, seguindo, feed, posts, sugestões   | `GET/POST /usuarios/{id}/seguir`, `GET /usuarios/{id}/seguidores`, `GET /usuarios/{id}/seguindo`, `GET /usuarios/{id}/perfil`, `GET /feed`      |

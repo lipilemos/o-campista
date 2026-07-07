@@ -7,6 +7,10 @@ import {
 } from '@angular/core';
 import { WeatherForecastCardComponent } from '../../components/weather-card-forecast/weather-card-forecast.component';
 import { WeatherCardComponent } from '../../components/weather-card/weather-card.component';
+import { HomeFeedWidgetComponent } from '../../components/home-feed-widget/home-feed-widget.component';
+import { HomeNearbyWidgetComponent } from '../../components/home-nearby-widget/home-nearby-widget.component';
+import { HomeRankingWidgetComponent } from '../../components/home-ranking-widget/home-ranking-widget.component';
+import { HomeXpCardComponent } from '../../components/home-xp-card/home-xp-card.component';
 import { UsuarioLogado } from '../../core/models/user.model';
 import { WeatherForecast } from '../../core/models/weather-forecast.model';
 import { Weather } from '../../core/models/weather.model';
@@ -15,7 +19,14 @@ import { WeatherService } from '../../core/services/weather.service';
 
 @Component({
   selector: 'app-home',
-  imports: [WeatherCardComponent, WeatherForecastCardComponent],
+  imports: [
+    WeatherCardComponent,
+    WeatherForecastCardComponent,
+    HomeXpCardComponent,
+    HomeRankingWidgetComponent,
+    HomeFeedWidgetComponent,
+    HomeNearbyWidgetComponent,
+  ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
