@@ -13,9 +13,11 @@ import { ToastService } from '../../core/services/toast.service';
 import { TrilhaService } from '../../core/services/trilha.service';
 import { UsuarioService } from '../../core/services/usuario.service';
 import { Util } from '../../core/Utils.ts/Util';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-trilha-detail',
+  imports: [TranslatePipe],
   templateUrl: './trilha-detail.component.html',
   styleUrl: './trilha-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,6 +58,36 @@ export class TrilhaDetailComponent {
 
     return Math.min(distPrimeiro, distUltimo) <= 500;
   });
+
+  navegarAte(): void {
+    const pos = this.minhaPosicao();
+    const t = this.trilha();
+    if (t.pontos.length === 0) return;
+
+    const primeiro = t.pontos[0];
+    const ultimo = t.pontos[t.pontos.length - 1];
+
+    if (!pos) {
+      Util.abrirNavegacaoGps(Number(primeiro.latitude), Number(primeiro.longitude));
+      return;
+    }
+
+    const distPrimeiro = Util.calcularDistanciaMetros(
+      pos.lat,
+      pos.lng,
+      Number(primeiro.latitude),
+      Number(primeiro.longitude),
+    );
+    const distUltimo = Util.calcularDistanciaMetros(
+      pos.lat,
+      pos.lng,
+      Number(ultimo.latitude),
+      Number(ultimo.longitude),
+    );
+
+    const alvo = distPrimeiro <= distUltimo ? primeiro : ultimo;
+    Util.abrirNavegacaoGps(Number(alvo.latitude), Number(alvo.longitude));
+  }
 
   concluirTrilha(): void {
     const usuario = this.authService.getUser();

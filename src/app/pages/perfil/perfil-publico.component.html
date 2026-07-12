@@ -11,8 +11,13 @@
   } @else if (perfil(); as p) {
     <div class="perfil-header">
       <div class="perfil-avatar-wrap">
-        @if (p.fotoPerfil) {
-          <img class="perfil-avatar" [src]="p.fotoPerfil" [alt]="p.nome" appImgFallback />
+        @if (p.fotoPerfil && !fotoErro()) {
+          <img
+            class="perfil-avatar"
+            [src]="p.fotoPerfil"
+            [alt]="p.nome"
+            (error)="fotoErro.set(true)"
+          />
         } @else {
           <div class="perfil-avatar perfil-avatar-placeholder">
             {{ p.nome.charAt(0).toUpperCase() }}
@@ -40,16 +45,6 @@
           >
             {{ (p.estouSeguindo ? 'perfil.btn-unfollow' : 'perfil.btn-follow') | translate }}
           </button>
-          @if (p.segueMutuo) {
-            <button
-              class="btn-mensagem"
-              [disabled]="abrindoDm()"
-              (click)="enviarMensagem()"
-              [attr.aria-label]="'perfil.btn-mensagem' | translate"
-            >
-              {{ 'perfil.btn-mensagem' | translate }}
-            </button>
-          }
         </div>
       }
     </div>
@@ -63,6 +58,16 @@
         <strong>{{ p.totalSeguindo }}</strong>
         <span>{{ 'perfil.seguindo' | translate }}</span>
       </button>
+      @if (!ehProprioUsuario() && p.segueMutuo) {
+        <button
+          class="btn-mensagem"
+          [disabled]="abrindoDm()"
+          (click)="enviarMensagem()"
+          [attr.aria-label]="'perfil.btn-mensagem' | translate"
+        >
+          {{ 'perfil.btn-mensagem' | translate }}
+        </button>
+      }
     </div>
 
     @if (

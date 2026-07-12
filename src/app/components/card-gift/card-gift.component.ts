@@ -68,6 +68,11 @@ export class CardGiftComponent {
     return usuario?.id === this.presenteSelecionado().usuarioCriadorId;
   }
 
+  navegarAte(): void {
+    const presente = this.presenteSelecionado();
+    Util.abrirNavegacaoGps(presente.latitude, presente.longitude);
+  }
+
   copiarCodigo() {
     navigator.clipboard.writeText(this.presenteSelecionado().codigoResgate);
     this.toast.success('Código copiado!');

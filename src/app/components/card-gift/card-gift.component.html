@@ -71,6 +71,9 @@
 
       @if (distanciaPresente() !== null && distanciaPresente()! > 150) {
         <p>{{ 'card.gift.too-far' | translate }}</p>
+        <button class="btn-navegar" (click)="navegarAte()">
+          🧭 {{ 'card.gift.btn-navigate' | translate }}
+        </button>
       }
 
       @if (ehMeuPresente()) {

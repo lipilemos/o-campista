@@ -110,7 +110,7 @@
 
 .menu-toggle {
   display: none;
-  position: absolute;
+  position: fixed;
   top: var(--space-5);
   left: var(--space-5);
   width: 48px;

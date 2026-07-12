@@ -118,6 +118,27 @@
   }
 }
 
+.btn-navegar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-inverse);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-base);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.18);
+  }
+}
+
 .gift-message {
   text-align: center;
   padding: var(--space-3);

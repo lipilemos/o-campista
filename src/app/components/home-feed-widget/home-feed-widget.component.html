@@ -1,0 +1,25 @@
+<div class="home-feed-widget card-elevated">
+  <div class="widget-header">
+    <h3>{{ 'home.feed.title' | translate }}</h3>
+    <a routerLink="/feed" class="ver-mais">{{ 'home.feed.ver-mais' | translate }}</a>
+  </div>
+
+  @if (carregando()) {
+    <div class="widget-loading" aria-busy="true">
+      <span class="spinner"></span>
+    </div>
+  } @else if (erro()) {
+    <div class="widget-empty">
+      <p>{{ 'home.feed.error' | translate }}</p>
+      <button class="btn-retry" (click)="carregar()">{{ 'home.feed.retry' | translate }}</button>
+    </div>
+  } @else if (itens().length === 0) {
+    <div class="widget-empty">
+      <p>{{ 'home.feed.empty' | translate }}</p>
+    </div>
+  } @else {
+    @for (item of itens(); track item.id) {
+      <app-feed-item [item]="item" [meuId]="meuId" (deletar)="onDeletar($event)" />
+    }
+  }
+</div>

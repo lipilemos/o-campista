@@ -123,6 +123,9 @@
         </button>
       } @else {
         <p class="distancia-aviso">{{ 'trail.checkin.too-far' | translate }}</p>
+        <button class="btn-navegar" (click)="navegarAte()">
+          🧭 {{ 'trail.card.btn-navigate' | translate }}
+        </button>
       }
     }
   </div>

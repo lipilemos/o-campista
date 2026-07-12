@@ -27,7 +27,9 @@
       [class.btn-favorito--ativo]="ehFavorito()"
       [disabled]="favoritoSalvando()"
       (click)="toggleFavorito()"
-      [attr.aria-label]="(ehFavorito() ? 'card.camping.desfavoritar' : 'card.camping.favoritar') | translate"
+      [attr.aria-label]="
+        (ehFavorito() ? 'card.camping.desfavoritar' : 'card.camping.favoritar') | translate
+      "
       [attr.aria-pressed]="ehFavorito()"
     >
       {{ ehFavorito() ? '❤️' : '🤍' }}
@@ -114,6 +116,12 @@
     <div class="info-item">🛣️ {{ campingSelecionado().endereco }}</div>
 
     <div class="info-item">📞 {{ campingSelecionado().telefone }}</div>
+
+    @if (precisaNavegar()) {
+      <button class="btn-navegar" (click)="navegarAte()">
+        🧭 {{ 'card.camping.btn-navigate' | translate }}
+      </button>
+    }
 
     <h4>{{ 'card.camping.resources' | translate }}</h4>
 

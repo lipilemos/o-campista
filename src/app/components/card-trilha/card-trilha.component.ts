@@ -91,6 +91,12 @@ export class CardTrilhaComponent {
     });
   }
 
+  navegarAte(): void {
+    const t = this.trilha();
+    if (!t.latitude || !t.longitude) return;
+    Util.abrirNavegacaoGps(t.latitude, t.longitude);
+  }
+
   fazerCheckin() {
     const usuario = this.authService.getUser();
     const pos = this.minhaPosicao();

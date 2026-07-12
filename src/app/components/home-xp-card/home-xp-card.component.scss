@@ -1,0 +1,116 @@
+:host {
+  display: block;
+  margin: 0 var(--space-5) var(--space-4);
+}
+
+.home-xp-card {
+  padding: var(--space-5);
+}
+
+@media (max-width: 768px) {
+  :host {
+    margin: 0 0 var(--space-4);
+  }
+}
+
+.xp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+
+  h3 {
+    margin: 0;
+    padding: 0;
+    font-size: var(--text-base);
+    color: var(--color-text);
+  }
+}
+
+.badge {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.xp-bar {
+  width: 100%;
+  height: 10px;
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--space-2);
+}
+
+.xp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-hover));
+  border-radius: var(--radius-full);
+  transition: width var(--transition-slow);
+}
+
+.xp-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.achievements {
+  margin-top: var(--space-5);
+
+  h4 {
+    margin: 0 0 var(--space-3);
+    padding: 0;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+}
+
+.scrollable-cards {
+  display: flex;
+  flex-direction: column;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: var(--space-2);
+}
+
+.item-card {
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border-light);
+
+  h5 {
+    margin: 0 0 var(--space-1);
+    padding: 0;
+    font-size: var(--text-sm);
+    color: var(--color-text);
+  }
+
+  p {
+    margin: 0;
+    padding: 0;
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+}
+
+.empty-hint {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  margin: 0;
+}

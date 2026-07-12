@@ -1,0 +1,29 @@
+@if (usuario) {
+  <div class="home-xp-card card-elevated">
+    <div class="xp-header">
+      <span class="badge">🏕️ {{ 'account.badge-level' | translate }} {{ usuario.nivel }}</span>
+      <h3>{{ 'account.xp-title' | translate }}</h3>
+    </div>
+
+    <div class="xp-bar">
+      <div class="xp-fill" [style.width.%]="percentualXp"></div>
+    </div>
+    <span class="xp-label">{{ usuario.xp }} / {{ usuario.xpProximoNivel }} XP</span>
+
+    <div class="achievements">
+      <h4>{{ 'account.section-achievements' | translate }}</h4>
+      @if (conquistasRecentes.length > 0) {
+        <div class="cards scrollable-cards custom-scrollbar">
+          @for (conquista of conquistasRecentes; track conquista.id) {
+            <div class="item-card">
+              <h5>🏆 {{ conquista.nome }}</h5>
+              <p>{{ conquista.descricao }}</p>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="empty-hint">{{ 'account.achievements-empty' | translate }}</p>
+      }
+    </div>
+  </div>
+}

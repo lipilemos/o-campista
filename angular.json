@@ -35,7 +35,9 @@
                 "output": "/"
               }
             ],
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "src/styles.scss"
+            ],
             "serviceWorker": "ngsw-config.json",
             "fileReplacements": []
           },
@@ -72,7 +74,9 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
-            "allowedHosts": ["1694-2804-2894-c100-2c48-43e6-4533-d347-18f2.ngrok-free.app"]
+            "allowedHosts": [
+              "a5db-2804-2894-c100-842c-2dca-31be-684e-8307.ngrok-free.app"
+            ]
           },
           "configurations": {
             "production": {

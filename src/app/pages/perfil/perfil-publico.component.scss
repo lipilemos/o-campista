@@ -128,8 +128,13 @@
 
 .perfil-social {
   display: flex;
+  align-items: center;
   gap: 1.5rem;
   margin-bottom: 1.5rem;
+
+  .btn-mensagem {
+    margin-left: auto;
+  }
 }
 
 .social-stat {
