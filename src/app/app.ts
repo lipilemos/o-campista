@@ -4,6 +4,7 @@ import { AchievementCelebrationComponent } from './components/achievement-celebr
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { OfflineIndicatorComponent } from './components/offline-indicator/offline-indicator.component';
+import { OnboardingComponent } from './components/onboarding/onboarding.component';
 import { ToastComponent } from './components/toast/toast.component';
 
 @Component({
@@ -15,6 +16,7 @@ import { ToastComponent } from './components/toast/toast.component';
     ToastComponent,
     ConfirmDialogComponent,
     AchievementCelebrationComponent,
+    OnboardingComponent,
   ],
   templateUrl: './app.html',
 })

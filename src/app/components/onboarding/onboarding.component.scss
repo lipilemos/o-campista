@@ -1,0 +1,130 @@
+.onboarding-backdrop {
+  z-index: 10000;
+}
+
+.onboarding-card {
+  width: 420px;
+  max-width: 90vw;
+  padding: var(--space-8) var(--space-6) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: center;
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.onboarding-dots {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.onboarding-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-border);
+  transition: var(--transition-fast);
+
+  &--active {
+    width: 20px;
+    border-radius: var(--radius-sm);
+    background: var(--color-primary);
+  }
+}
+
+.onboarding-icon {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.onboarding-title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-text);
+  padding: 0;
+}
+
+.onboarding-description {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  padding: 0;
+}
+
+.onboarding-progress {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  padding: 0;
+}
+
+.onboarding-actions {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-4);
+}
+
+.onboarding-actions-right {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.onboarding-btn {
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  border: none;
+
+  &--skip {
+    background: transparent;
+    color: var(--color-text-secondary);
+
+    &:hover {
+      color: var(--color-text);
+    }
+  }
+
+  &--back {
+    background: var(--color-surface-alt);
+    color: var(--color-text-secondary);
+
+    &:hover {
+      background: var(--color-border);
+      color: var(--color-text);
+    }
+  }
+
+  &--next {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+
+    &:hover {
+      background: var(--color-primary-dark);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .onboarding-card {
+    padding: var(--space-6) var(--space-4) var(--space-4);
+  }
+
+  .onboarding-actions {
+    flex-direction: column-reverse;
+    gap: var(--space-3);
+  }
+
+  .onboarding-actions-right {
+    width: 100%;
+
+    .onboarding-btn {
+      flex: 1;
+    }
+  }
+}

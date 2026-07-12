@@ -15,6 +15,7 @@ import { UsuarioLogado } from '../../core/models/user.model';
 import { WeatherForecast } from '../../core/models/weather-forecast.model';
 import { Weather } from '../../core/models/weather.model';
 import { AuthService } from '../../core/services/auth.service';
+import { OnboardingService } from '../../core/services/onboarding.service';
 import { WeatherService } from '../../core/services/weather.service';
 
 @Component({
@@ -34,6 +35,7 @@ import { WeatherService } from '../../core/services/weather.service';
 export class HomeComponent implements OnInit {
   private weatherService = inject(WeatherService);
   private authService = inject(AuthService);
+  private onboardingService = inject(OnboardingService);
   private cdr = inject(ChangeDetectorRef);
 
   previsao3Dias: WeatherForecast[] = [];
@@ -45,6 +47,8 @@ export class HomeComponent implements OnInit {
     if (usuario) {
       this.usuario = usuario;
     }
+
+    this.onboardingService.iniciarSePrimeiraVez();
 
     this.weatherService.carregarDadosClima().subscribe((dados) => {
       this.weather = dados.clima;
