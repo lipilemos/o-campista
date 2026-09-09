@@ -8,11 +8,12 @@
   <div class="overlay" [class.show]="menuOpen()" (click)="toggleMenu()"></div>
 
   <div class="layout">
-    <aside class="sidebar" [class.open]="menuOpen()">
+    <aside class="sidebar" [class.open]="menuOpen() || onboardingService.precisaSidebarAberta()">
       <div class="logo"></div>
       @if (usuario()) {
         <button
           class="usuario"
+          data-onboarding="nav-notificacoes"
           [class.active]="isActive('notificacoes')"
           (click)="navigateTo('notificacoes')"
           [attr.aria-label]="'nav.notifications' | translate"
@@ -48,6 +49,7 @@
         </button>
         <button
           class="menu-item"
+          data-onboarding="nav-account"
           [class.active]="isActive('account')"
           (click)="navigateTo('account')"
         >
@@ -63,10 +65,20 @@
         >
           {{ 'nav.ranking' | translate }}
         </button>
-        <button class="menu-item" [class.active]="isActive('mapa')" (click)="navigateTo('mapa')">
+        <button
+          class="menu-item"
+          data-onboarding="nav-mapa"
+          [class.active]="isActive('mapa')"
+          (click)="navigateTo('mapa')"
+        >
           {{ 'nav.map' | translate }}
         </button>
-        <button class="menu-item" [class.active]="isActive('chat')" (click)="navigateTo('chat')">
+        <button
+          class="menu-item"
+          data-onboarding="nav-chat"
+          [class.active]="isActive('chat')"
+          (click)="navigateTo('chat')"
+        >
           {{ 'nav.chat' | translate }}
           @if (chatNotification.totalNaoLidas() > 0) {
             <span class="badge-nao-lidas">{{
@@ -76,6 +88,7 @@
         </button>
         <button
           class="menu-item"
+          data-onboarding="nav-checklist"
           [class.active]="isActive('checklist')"
           (click)="navigateTo('checklist')"
         >

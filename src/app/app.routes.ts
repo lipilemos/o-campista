@@ -32,8 +32,12 @@ export const routes: Routes = [
   },
   {
     path: 'termos',
+    loadComponent: () => import('./pages/termos/termos.component').then((m) => m.TermosComponent),
+  },
+  {
+    path: 'design-system',
     loadComponent: () =>
-      import('./pages/termos/termos.component').then((m) => m.TermosComponent),
+      import('./pages/design-system/design-system.component').then((m) => m.DesignSystemComponent),
   },
   {
     path: '',

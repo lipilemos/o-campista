@@ -7,6 +7,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { ChatNotificationService } from '../../core/services/chat-notification.service';
 import { NotificacaoService } from '../../core/services/notificacao.service';
 import { MapStateService } from '../../core/services/map-state.service';
+import { OnboardingService } from '../../core/services/onboarding.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { I18nService } from '../../core/services/i18n.service';
 import { ImgFallbackDirective } from '../../core/directives/img-fallback.directive';
@@ -27,6 +28,7 @@ export class AppMenuComponent {
   protected chatNotification = inject(ChatNotificationService);
   protected notificacao = inject(NotificacaoService);
   protected themeService = inject(ThemeService);
+  protected onboardingService = inject(OnboardingService);
   protected i18n = inject(I18nService);
 
   protected appVersion = APP_VERSION;

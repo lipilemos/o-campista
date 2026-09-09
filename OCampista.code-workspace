@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../o-campista.api"
+		},
+		{
+			"path": "../o-campista.landing"
+		}
+	]
+}

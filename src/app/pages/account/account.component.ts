@@ -21,6 +21,7 @@ import { CampingService } from '../../core/services/camping.service';
 import { TrilhaService } from '../../core/services/trilha.service';
 import { CheckinService } from '../../core/services/checkin.service';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
+import { OnboardingService } from '../../core/services/onboarding.service';
 import { SocialService } from '../../core/services/social.service';
 import { ToastService } from '../../core/services/toast.service';
 import { UsuarioService } from '../../core/services/usuario.service';
@@ -292,6 +293,13 @@ export class AccountComponent implements OnInit {
   private trilhaService = inject(TrilhaService);
   private toast = inject(ToastService);
   private confirmDialog = inject(ConfirmDialogService);
+  private onboardingService = inject(OnboardingService);
+
+  async reverTutorial(): Promise<void> {
+    // O tour destaca elementos que só existem na Home — navega até lá antes de reabrir.
+    await this.router.navigateByUrl('/home');
+    this.onboardingService.reabrir();
+  }
 
   desfavoritarCamping(campingId: number): void {
     const usuarioId = this.usuario?.id;

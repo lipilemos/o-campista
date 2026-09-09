@@ -369,6 +369,28 @@ Configurados em `src/environments/`:
 
 Nunca commitar API keys ou tokens diretamente — usar os arquivos de environment.
 
+## Landing Page de Divulgação (`landing/`)
+
+Site estático de página única para a promoção de inauguração do app (sorteio de kit de camping).
+**Não faz parte do build do Angular** — HTML/CSS/JS puros, sem dependências, deployável sozinho
+(Netlify/Vercel/GitHub Pages). Ver `landing/README.md`.
+
+```
+landing/
+├── index.html          # hero, recursos, telas do app, sorteio, download, compartilhar, FAQ
+├── assets/
+│   ├── styles.css      # cópia dos tokens de src/styles.scss + estilos da landing
+│   ├── main.js         # tema, menu mobile, form da lista de espera, share, scroll reveal
+│   └── img/            # cópias de public/images (logo 512px, background, banner, favicon)
+└── README.md           # como rodar, o que preencher (TODOs) e como publicar
+```
+
+- **Identidade visual:** `assets/styles.css` **duplica** os tokens de `src/styles.scss` (cores, Nunito, radius, sombras, animações, dark mode). Ao mudar um token no app, replicar aqui.
+- **Prints do app:** as 6 telas (Mapa, Check-in, Clima, Presente, Chat, Conquistas) são mockups em HTML/CSS dentro de `.phone-frame > .phone-screen`, com textos reais de `public/i18n/pt-BR.json`. Para usar screenshots reais, trocar o conteúdo de `.phone-screen` por um `<img>` (o CSS já recorta).
+- **Configuração:** constantes no topo de `assets/main.js` (`SITE_URL`, `SHARE_TEXT`, `FORM_ENDPOINT`, `FALLBACK_EMAIL`). Com `FORM_ENDPOINT` vazio, o formulário cai em `mailto:`.
+- **Pendências marcadas com `TODO` no HTML:** links das redes sociais, links das lojas (hoje "Em breve"), URLs de termos/privacidade e regulamento do sorteio.
+- **Verificação:** `npx prettier --check landing` e abrir `landing/index.html` no navegador (light e dark, 1440/768/375px).
+
 ## Verificação de Mudanças
 
 1. `npm start` — verificar que a aplicação inicia sem erros

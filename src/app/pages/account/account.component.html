@@ -245,7 +245,9 @@
           <label class="privacy-item privacy-item--column">
             <div class="privacy-item__labels">
               <span>{{ 'social.privacy-visivel-mapa' | translate }}</span>
-              <small class="privacy-hint">{{ 'social.privacy-visivel-mapa-hint' | translate }}</small>
+              <small class="privacy-hint">{{
+                'social.privacy-visivel-mapa-hint' | translate
+              }}</small>
             </div>
             <input
               type="checkbox"
@@ -257,6 +259,12 @@
         </div>
       </div>
     }
+
+    <div class="section">
+      <button class="btn-rever-tutorial" (click)="reverTutorial()">
+        {{ 'account.btn-tutorial' | translate }}
+      </button>
+    </div>
 
     <div class="danger-zone">
       <button class="btn-excluir-conta" (click)="excluirConta()">

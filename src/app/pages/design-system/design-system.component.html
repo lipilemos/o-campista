@@ -1,0 +1,478 @@
+<div class="ds">
+  <header class="ds__header">
+    <div class="ds__header-top">
+      <a routerLink="/home" class="ds__back">&#8592; Voltar</a>
+      <button
+        type="button"
+        class="ds__btn ds__btn--ghost"
+        (click)="alternarTema()"
+        [attr.aria-label]="temaEscuro() ? 'Mudar para tema claro' : 'Mudar para tema escuro'"
+      >
+        {{ temaEscuro() ? '☀️ Tema claro' : '🌙 Tema escuro' }}
+      </button>
+    </div>
+    <h1>Design System — O Campista</h1>
+    <p class="ds__lead">
+      Referência viva dos tokens e padrões visuais do app. Tudo nesta página é renderizado com os
+      mesmos <code>var(--token)</code> e classes globais de <code>src/styles.scss</code> — se algo
+      mudar lá, muda aqui. Todo elemento visual novo do projeto deve sair daqui antes de ser
+      inventado do zero.
+    </p>
+
+    <nav class="ds__nav" aria-label="Seções do design system">
+      @for (secao of secoes; track secao.id) {
+        <a class="ds__nav-link" [href]="'#' + secao.id">{{ secao.label }}</a>
+      }
+    </nav>
+  </header>
+
+  <!-- ============ PRINCÍPIOS ============ -->
+  <section class="ds__section" id="principios">
+    <h2>Princípios</h2>
+    <ol class="ds__rules">
+      <li>
+        <strong>Sem framework de UI.</strong> Nenhum Material, Bootstrap ou Tailwind. Todo
+        componente é SCSS puro sobre os design tokens.
+      </li>
+      <li>
+        <strong>Token antes de valor literal.</strong> Nunca hardcode hex, px de espaçamento, raio,
+        sombra ou <code>font-size</code> quando existe um token equivalente.
+      </li>
+      <li>
+        <strong>Reaproveite o padrão existente.</strong> Antes de criar uma classe nova, procure o
+        card/badge/modal/formulário mais parecido no app e copie a estrutura de classes dele.
+      </li>
+      <li>
+        <strong>Global só com 3+ usos.</strong> Uma classe só sobe para <code>styles.scss</code>
+        quando o padrão se repete em três ou mais componentes. Caso contrário, fica no
+        <code>.component.scss</code>.
+      </li>
+      <li>
+        <strong>Dark mode é automático.</strong> Se o componente usa apenas
+        <code>var(--token)</code>, o tema escuro já funciona. Nunca escreva
+        <code>[data-theme='dark'] .minha-classe</code> dentro de um componente — a única exceção são
+        cores que não vêm de token (gradientes e <code>rgba</code> customizados).
+      </li>
+      <li>
+        <strong>Acessibilidade e i18n não são opcionais.</strong> WCAG AA, checks AXE limpos,
+        <code>TranslatePipe</code> em todo texto visível e chaves em <code>pt-BR.json</code>
+        <em>e</em> <code>en-US.json</code>.
+      </li>
+    </ol>
+    <p class="ds__note">
+      Esta página é documentação interna de desenvolvimento e, como as páginas de
+      <a routerLink="/termos">Termos</a> e <a routerLink="/privacidade">Privacidade</a>, é a única
+      exceção à regra de i18n: seu conteúdo é fixo em pt-BR.
+    </p>
+  </section>
+
+  <!-- ============ CORES ============ -->
+  <section class="ds__section" id="cores">
+    <h2>Cores</h2>
+    <p>
+      Definidas em <code>:root</code> e sobrescritas em <code>[data-theme='dark']</code>. Alterne o
+      tema no topo da página para conferir qualquer combinação nos dois modos.
+    </p>
+
+    @for (grupo of gruposDeCor; track grupo.titulo) {
+      <h3>{{ grupo.titulo }}</h3>
+      <p>{{ grupo.descricao }}</p>
+      <div class="ds__grid">
+        @for (token of grupo.tokens; track token) {
+          <div class="ds__swatch card-elevated">
+            <div class="ds__swatch-color" [style.background]="'var(' + token + ')'"></div>
+            <div class="ds__swatch-info">
+              <code>{{ token }}</code>
+              <span class="ds__value">{{ valorDoToken(token) }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <div class="ds__callout">
+      <strong>Fundos escuros e glass.</strong> Em telas sobre imagem escura ou
+      <code>.glass-card</code> (auth, onboarding), texto e bordas usam
+      <code>rgba(255, 255, 255, X)</code> direto — os tokens de texto são calibrados para fundo
+      claro/superfície e perdem contraste ali.
+    </div>
+  </section>
+
+  <!-- ============ TIPOGRAFIA ============ -->
+  <section class="ds__section" id="tipografia">
+    <h2>Tipografia</h2>
+    <p>
+      Família única: <code>--font-family</code> (Nunito). <code>h1</code>–<code>h5</code> e
+      <code>p</code> já têm peso, cor e <code>padding</code> globais — não reestilize título ou
+      parágrafo do zero dentro de um componente; sobrescreva só a propriedade que precisa mudar.
+    </p>
+
+    <div class="ds__panel card-elevated">
+      <h1>h1 — Título de página</h1>
+      <h2>h2 — Seção</h2>
+      <h3>h3 — Subseção</h3>
+      <h4>h4 — Bloco</h4>
+      <h5>h5 — Rótulo</h5>
+      <p>p — Texto de apoio, descrições e labels secundários.</p>
+    </div>
+
+    <h3>Escala</h3>
+    <div class="ds__panel card-elevated">
+      @for (token of tamanhosDeTexto; track token) {
+        <div class="ds__row">
+          <code class="ds__row-key">{{ token }}</code>
+          <span class="ds__value">{{ valorDoToken(token) }}</span>
+          <span class="ds__type-sample" [style.font-size]="'var(' + token + ')'">
+            Acampar é bom
+          </span>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ============ ESPAÇAMENTO ============ -->
+  <section class="ds__section" id="espacamento">
+    <h2>Espaçamento</h2>
+    <p>
+      Escala de 4/8px. Todo <code>margin</code>, <code>padding</code> e <code>gap</code> usa um
+      <code>--space-*</code>.
+    </p>
+    <div class="ds__panel card-elevated">
+      @for (token of espacos; track token) {
+        <div class="ds__row">
+          <code class="ds__row-key">{{ token }}</code>
+          <span class="ds__value">{{ valorDoToken(token) }}</span>
+          <span class="ds__space-bar" [style.width]="'var(' + token + ')'"></span>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ============ RAIOS ============ -->
+  <section class="ds__section" id="raios">
+    <h2>Raios</h2>
+    <p>
+      <code>sm</code>/<code>md</code> em inputs e badges pequenos, <code>lg</code>/<code>xl</code>
+      em cards e modais, <code>full</code> em pills e avatares.
+    </p>
+    <div class="ds__grid">
+      @for (token of raios; track token) {
+        <div class="ds__demo-tile">
+          <div class="ds__radius-box" [style.border-radius]="'var(' + token + ')'"></div>
+          <code>{{ token }}</code>
+          <span class="ds__value">{{ valorDoToken(token) }}</span>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ============ SOMBRAS ============ -->
+  <section class="ds__section" id="sombras">
+    <h2>Sombras</h2>
+    <p>
+      <code>sm</code> para card em repouso, <code>md</code> para hover e dropdown,
+      <code>lg</code>/<code>xl</code> para modais e painéis flutuantes.
+    </p>
+    <div class="ds__grid">
+      @for (token of sombras; track token) {
+        <div class="ds__demo-tile">
+          <div class="ds__shadow-box" [style.box-shadow]="'var(' + token + ')'"></div>
+          <code>{{ token }}</code>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ============ MOVIMENTO ============ -->
+  <section class="ds__section" id="movimento">
+    <h2>Movimento</h2>
+    <p>
+      <code>--transition-fast</code> em hover de botão/ícone, <code>--transition-base</code> na
+      maioria das interações, <code>--transition-slow</code> em barras de progresso.
+    </p>
+    <div class="ds__panel card-elevated">
+      @for (token of transicoes; track token) {
+        <div class="ds__row">
+          <code class="ds__row-key">{{ token }}</code>
+          <span class="ds__value">{{ valorDoToken(token) }}</span>
+          <span
+            class="ds__transition-demo"
+            [style.transition]="'var(' + token + ')'"
+            aria-hidden="true"
+          ></span>
+          <span class="ds__hint">passe o mouse</span>
+        </div>
+      }
+    </div>
+
+    <h3>Animações globais</h3>
+    <p>
+      Declaradas uma única vez em <code>styles.scss</code>. Use-as (<code
+        >animation: fadeIn 0.2s ease</code
+      >) em vez de duplicar o keyframe. Keyframes específicos de um componente ficam locais.
+    </p>
+    <button type="button" class="ds__btn ds__btn--ghost" (click)="reexecutarAnimacoes()">
+      ▶ Reexecutar
+    </button>
+    <div class="ds__grid">
+      @for (anim of animacoes; track anim) {
+        @for (key of [animacaoKey()]; track key) {
+          <div class="ds__anim-box card-elevated" [style.animation]="anim + ' 0.6s ease'">
+            <code>{{ anim }}</code>
+          </div>
+        }
+      }
+    </div>
+  </section>
+
+  <!-- ============ BOTÕES ============ -->
+  <section class="ds__section" id="botoes">
+    <h2>Botões</h2>
+    <p>
+      Altura fixa de 40–48px, <code>--radius-md</code>, <code>font-weight: 700</code> e
+      <code>--transition-base</code>. Hover do primário escurece, sobe 1px e ganha sombra colorida;
+      <code>:active</code> remove o deslocamento; <code>:disabled</code> vai para
+      <code>opacity: 0.6</code> e <code>cursor: not-allowed</code>.
+    </p>
+    <div class="ds__panel card-elevated ds__inline">
+      <button type="button" class="ds__btn ds__btn--primary">Primário</button>
+      <button type="button" class="ds__btn ds__btn--outline">Secundário</button>
+      <button type="button" class="ds__btn ds__btn--danger">Destrutivo</button>
+      <button type="button" class="ds__btn ds__btn--ghost">Texto</button>
+      <button type="button" class="ds__btn ds__btn--primary" disabled>Desabilitado</button>
+      <button type="button" class="btn-close-round" aria-label="Exemplo de botão fechar">✕</button>
+      <button
+        type="button"
+        class="btn-close-round btn-close-round--light"
+        aria-label="Exemplo de botão fechar claro"
+      >
+        ✕
+      </button>
+    </div>
+    <div class="ds__callout">
+      <strong>Ação destrutiva</strong> sempre passa por <code>ConfirmDialogService</code> — nunca
+      <code>window.confirm()</code> ou <code>alert()</code>.
+    </div>
+  </section>
+
+  <!-- ============ CARDS ============ -->
+  <section class="ds__section" id="cards">
+    <h2>Cards</h2>
+    <p>
+      <code>background: var(--color-surface)</code>, <code>--radius-xl</code> (ou
+      <code>--radius-lg</code> em cards menores), <code>--shadow-sm</code> em repouso,
+      <code>border: 1px solid var(--color-border-light)</code> quando não é flutuante, padding
+      interno <code>--space-4</code>/<code>--space-5</code> e entrada com <code>cardAppear</code>.
+    </p>
+    <div class="ds__grid">
+      <article class="ds__example-card card-elevated">
+        <h4>Card padrão</h4>
+        <p>Use a classe global <code>.card-elevated</code> — não recrie superfície + sombra.</p>
+      </article>
+      <article class="ds__example-card ds__example-card--float">
+        <h4>Card flutuante</h4>
+        <p>Painel sobreposto ao mapa: <code>--shadow-lg</code> e sem borda.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ BADGES ============ -->
+  <section class="ds__section" id="badges">
+    <h2>Badges e pills</h2>
+    <p>
+      <code>--radius-full</code>, padding curto, <code>font-weight: 700</code> e
+      <code>--text-xs</code>. Estado semântico sempre em par
+      <code>background: var(--color-X-bg); color: var(--color-X)</code>.
+    </p>
+    <div class="ds__panel card-elevated ds__inline">
+      <span class="ds__badge ds__badge--success">Sucesso</span>
+      <span class="ds__badge ds__badge--error">Erro</span>
+      <span class="ds__badge ds__badge--warning">Atenção</span>
+      <span class="ds__badge ds__badge--neutral">Neutro</span>
+    </div>
+
+    <h3>Indicador de status</h3>
+    <p>
+      O padrão canônico de status é o <code>.badge-ocupacao</code> de
+      <code>card-camping.component.scss</code>: fundo <code>rgba(cor, 0.12)</code> com borda
+      <code>rgba(cor, 0.3)</code>. Reutilize esse padrão para qualquer novo indicador.
+    </p>
+    <div class="ds__panel card-elevated ds__inline">
+      <span class="ds__status ds__status--tranquilo" aria-label="Ocupação tranquila">
+        🟢 Tranquilo
+      </span>
+      <span class="ds__status ds__status--movimentado" aria-label="Ocupação movimentada">
+        🟠 Movimentado
+      </span>
+      <span class="ds__status ds__status--lotado" aria-label="Camping lotado">🔴 Lotado</span>
+    </div>
+    <div class="ds__callout">
+      <strong>Ícones são emoji.</strong> O app não usa icon set. Um emoji com significado precisa de
+      <code>aria-label</code> no elemento pai — leitores de tela não o anunciam de forma confiável
+      sozinho.
+    </div>
+  </section>
+
+  <!-- ============ FORMULÁRIOS ============ -->
+  <section class="ds__section" id="formularios">
+    <h2>Formulários</h2>
+    <p>
+      Inputs de 44–48px de altura, <code>--radius-md</code>; no <code>:focus</code> a borda vai para
+      <code>--color-accent</code> com anel <code>0 0 0 3px rgba(249, 153, 32, 0.25)</code>. Sempre
+      Reactive Forms (<code>FormBuilder</code>/<code>FormGroup</code> tipado) — nunca
+      <code>ngModel</code>.
+    </p>
+    <div class="ds__panel card-elevated ds__form">
+      <label class="ds__label" for="ds-input">Nome do camping</label>
+      <input id="ds-input" class="ds__input" type="text" placeholder="Ex.: Recanto da Serra" />
+
+      <label class="ds__label" for="ds-textarea">Descrição</label>
+      <textarea id="ds-textarea" class="ds__input" rows="3" placeholder="Conte como foi"></textarea>
+
+      <p class="ds__error-msg">Campo obrigatório — bloco com fundo e cor semânticos de erro.</p>
+    </div>
+  </section>
+
+  <!-- ============ FEEDBACK ============ -->
+  <section class="ds__section" id="feedback">
+    <h2>Feedback</h2>
+    <p>
+      Transiente é <code>ToastService</code> (success/error/warning/info); confirmação é
+      <code>ConfirmDialogService</code>. Nada de <code>alert()</code> ou <code>confirm()</code>
+      nativos.
+    </p>
+
+    <div class="ds__panel card-elevated ds__inline">
+      <button type="button" class="ds__btn ds__btn--primary" (click)="mostrarToast()">
+        Ver toast
+      </button>
+      <button type="button" class="ds__btn ds__btn--outline" (click)="abrirModal()">
+        Ver modal
+      </button>
+    </div>
+
+    <h3>Estados de tela</h3>
+    <p>Toda tela nova trata os quatro estados — não só o caminho feliz.</p>
+    <div class="ds__grid">
+      <div class="ds__state card-elevated">
+        <span class="ds__spinner" aria-hidden="true"></span>
+        <h5>Carregando</h5>
+        <p>Spinner ou skeleton — nunca tela em branco.</p>
+      </div>
+      <div class="ds__state card-elevated">
+        <span class="ds__state-icon" aria-hidden="true">📭</span>
+        <h5>Vazio</h5>
+        <p>Emoji, explicação curta e uma ação para sair do vazio.</p>
+      </div>
+      <div class="ds__state card-elevated">
+        <span class="ds__state-icon" aria-hidden="true">⚠️</span>
+        <h5>Erro</h5>
+        <p>Mensagem em cor semântica e botão de tentar de novo.</p>
+      </div>
+      <div class="ds__state card-elevated">
+        <span class="ds__state-icon" aria-hidden="true">🏕️</span>
+        <h5>Conteúdo</h5>
+        <p>O estado feliz, com os dados carregados.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ UTILITÁRIAS ============ -->
+  <section class="ds__section" id="utilitarias">
+    <h2>Classes utilitárias globais</h2>
+    <p>Já existem em <code>src/styles.scss</code>. Usar em vez de recriar.</p>
+    <div class="ds__panel card-elevated">
+      @for (util of utilitarias; track util.classe) {
+        <div class="ds__row ds__row--util">
+          <code class="ds__row-key">{{ util.classe }}</code>
+          <span>{{ util.uso }}</span>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ============ RESPONSIVO ============ -->
+  <section class="ds__section" id="responsivo">
+    <h2>Responsivo</h2>
+    <p>
+      Dois breakpoints em todo o app — não invente um terceiro sem necessidade real. O layout é
+      escrito primeiro para desktop e sobrescrito com <code>max-width</code> depois (o app não é
+      mobile-first; siga o mesmo padrão por consistência).
+    </p>
+    <div class="ds__panel card-elevated">
+      <div class="ds__row ds__row--util">
+        <code class="ds__row-key">max-width: 768px</code>
+        <span>
+          Tablet/mobile: layout empilhado, painel lateral escondido, painel flutuante vira bottom
+          sheet.
+        </span>
+      </div>
+      <div class="ds__row ds__row--util">
+        <code class="ds__row-key">max-width: 480px</code>
+        <span>Celular pequeno: menos padding, logo menor, larguras fixas viram 100%/90vw.</span>
+      </div>
+    </div>
+    <div class="ds__callout">
+      <strong>Bottom sheet.</strong> Abaixo de 768px, painéis flutuantes trocam
+      <code>position: absolute</code> por <code>fixed; bottom: 0; left: 0; right: 0</code>, mantêm
+      <code>border-radius</code> só no topo, entram com <code>slideUp</code> e podem ter um drag
+      handle (<code>::before</code> de 40×4px centralizado). Referência:
+      <code>.camping-info</code> em <code>card-camping.component.scss</code>.
+    </div>
+  </section>
+
+  <!-- ============ CHECKLIST ============ -->
+  <section class="ds__section" id="checklist">
+    <h2>Checklist antes de abrir o PR</h2>
+    <ol class="ds__rules">
+      <li>
+        Existe componente parecido? Copiei a estrutura de classes dele antes de criar do zero.
+      </li>
+      <li>Toda cor, espaçamento, raio, sombra e fonte vem de <code>var(--token)</code>.</li>
+      <li>Testado em 768px e 480px.</li>
+      <li>Testado com o tema escuro ativo.</li>
+      <li>
+        Chaves i18n adicionadas em <code>pt-BR.json</code> <em>e</em> <code>en-US.json</code>.
+      </li>
+      <li><code>aria-label</code>, ordem de foco e contraste revisados (AXE limpo).</li>
+      <li>Loading, vazio e erro tratados — não só a UI feliz.</li>
+      <li>
+        <code>npx prettier --check .</code>, <code>npm test</code> e teste manual no navegador.
+      </li>
+    </ol>
+  </section>
+</div>
+
+@if (modalAberto()) {
+  <div class="overlay-backdrop" (click)="fecharModal()">
+    <div
+      class="ds__modal card-elevated"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="ds-modal-title"
+      (click)="$event.stopPropagation()"
+    >
+      <h3 id="ds-modal-title">Exemplo de diálogo</h3>
+      <p>
+        Estrutura: <code>.overlay-backdrop</code> envolvendo um <code>.card-elevated</code> com
+        animação <code>cardAppear</code>. Ações alinhadas à direita com
+        <code>gap: var(--space-3)</code>.
+      </p>
+      <div class="ds__modal-actions">
+        <button type="button" class="ds__btn ds__btn--ghost" (click)="fecharModal()">
+          Cancelar
+        </button>
+        <button type="button" class="ds__btn ds__btn--danger" (click)="fecharModal()">
+          Confirmar
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (toastVisivel()) {
+  <div class="ds__toast" role="status">
+    <span aria-hidden="true">✅</span>
+    <span>Toast de exemplo — no app real, sempre via ToastService.</span>
+  </div>
+}

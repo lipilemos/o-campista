@@ -49,3 +49,6 @@ src/environments/environment.prod.ts
 
 skills-lock.json
 .agents
+
+# Claude Code (local)
+.claude/settings.local.json

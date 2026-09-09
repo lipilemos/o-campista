@@ -1,0 +1,65 @@
+@if (service.visivel()) {
+  <div class="onboarding-scrim"></div>
+
+  @if (spotlightStyle(); as spot) {
+    <div class="onboarding-spotlight" [style]="spot"></div>
+  }
+
+  <div class="onboarding-center">
+    <div
+      class="onboarding-card glass-card"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="service.passoAtualDados().tituloKey | translate"
+    >
+      <div class="onboarding-dots" aria-live="polite">
+        @for (passo of service.passos; track $index) {
+          <span
+            class="onboarding-dot"
+            [class.onboarding-dot--active]="$index === service.passoAtual()"
+          ></span>
+        }
+      </div>
+
+      <div class="onboarding-icon">{{ service.passoAtualDados().icone }}</div>
+      <h2 class="onboarding-title">{{ service.passoAtualDados().tituloKey | translate }}</h2>
+      <p class="onboarding-description">
+        {{ service.passoAtualDados().descricaoKey | translate }}
+      </p>
+
+      <p class="onboarding-progress">
+        {{ service.passoAtual() + 1 }} {{ 'onboarding.progress-de' | translate }}
+        {{ service.totalPassos }}
+      </p>
+
+      <div class="onboarding-actions">
+        <button type="button" class="onboarding-btn onboarding-btn--skip" (click)="service.pular()">
+          {{ 'onboarding.btn-skip' | translate }}
+        </button>
+
+        <div class="onboarding-actions-right">
+          @if (service.passoAtual() > 0) {
+            <button
+              type="button"
+              class="onboarding-btn onboarding-btn--back"
+              (click)="service.anterior()"
+            >
+              {{ 'onboarding.btn-back' | translate }}
+            </button>
+          }
+          <button
+            type="button"
+            class="onboarding-btn onboarding-btn--next"
+            (click)="service.proximo()"
+          >
+            {{
+              service.ehUltimoPasso()
+                ? ('onboarding.btn-finish' | translate)
+                : ('onboarding.btn-next' | translate)
+            }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
