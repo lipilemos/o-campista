@@ -295,7 +295,9 @@ export class AccountComponent implements OnInit {
   private confirmDialog = inject(ConfirmDialogService);
   private onboardingService = inject(OnboardingService);
 
-  reverTutorial(): void {
+  async reverTutorial(): Promise<void> {
+    // O tour destaca elementos que só existem na Home — navega até lá antes de reabrir.
+    await this.router.navigateByUrl('/home');
     this.onboardingService.reabrir();
   }
 

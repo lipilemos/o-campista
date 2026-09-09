@@ -1,5 +1,11 @@
 @if (service.visivel()) {
-  <div class="overlay-backdrop onboarding-backdrop">
+  <div class="onboarding-scrim"></div>
+
+  @if (spotlightStyle(); as spot) {
+    <div class="onboarding-spotlight" [style]="spot"></div>
+  }
+
+  <div class="onboarding-center">
     <div
       class="onboarding-card glass-card"
       role="dialog"
