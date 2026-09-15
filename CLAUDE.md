@@ -36,19 +36,23 @@ Solução: `o-campista.api.slnx`
 
 Ao precisar alterar o schema do banco:
 1. Criar um **script SQL novo** em `o-campista.scripts/sql/` descrevendo apenas o ALTER/INSERT necessário (ex: `add_dm_sala_tipo.sql`)
-2. **Atualizar** o script de criação original `o-campista.scripts/sql/tables.sql` para que a tabela já nasça com a coluna/constraint correta
+2. **Atualizar** o script de criação original `o-campista.scripts/ScriptsDB/tables.sql` para que a tabela já nasça com a coluna/constraint correta
 3. Executar o script novo no Supabase manualmente
 
-Scripts existentes em `o-campista.scripts/sql/`:
+Scripts de criação/seed em `o-campista.scripts/ScriptsDB/`:
 - `tables.sql` — script principal de criação de todas as tabelas (manter sempre atualizado)
 - `insert.sql` — dados base (usuários seed, etc.)
 - `insert_conquistas_trilhas.sql` — conquistas e trilhas base
 - `insert_recursos.sql` — recursos de camping
 - `insert_camping_recursos.sql` — vínculos camping-recurso
 - `insert_trilhas_pontos.sql` — pontos de trilhas
+
+Scripts incrementais em `o-campista.scripts/sql/`:
 - `create_mensagem_chat.sql` — criação da tabela de mensagens de chat
 - `create_sala_chat.sql` — criação das tabelas de salas de chat
 - `create_comentario_post.sql` — criação da tabela de comentários
+- `create_achado_perdido.sql` — criação da tabela de achados e perdidos
+- `add_visivel_no_mapa.sql` — flag de visibilidade de camping no mapa
 - `fix_storage_public_urls.sql` — correção de URLs de storage
 
 ### Arquitetura em Camadas
@@ -75,6 +79,7 @@ o-campista.scripts/           # Scripts SQL (sql/)
 | `CampingAvaliacaoController` | `api/mapa/camping` | CRUD de avaliações de camping |
 | `CheckinController` | `api/checkin` | Check-in, histórico, recentes por camping |
 | `PresenteController` | `api/presentes` | Criar, listar, resgatar, deletar presentes |
+| `AchadosPerdidosController` | `api/campings/{id}/achados-perdidos` + `api/achados-perdidos` | Mural de achados e perdidos por camping |
 | `ChatController` | `api/chat` | Histórico de mensagens de camping |
 | `SalaChatController` | `api/chat` | Salas (camping/grupo/dm), mensagens, membros, DMs |
 | `FeedController` | `api/feed` | Feed de atividades e feed de descoberta |
@@ -106,6 +111,7 @@ o-campista.scripts/           # Scripts SQL (sql/)
 | `Conquista` | `tb_conquista` | Definição de conquista |
 | `UsuarioConquista` | `tb_usuario_conquista` | Conquistas desbloqueadas por usuário |
 | `Presente` | `tb_presente` | Presente físico com foto, coords, código de resgate |
+| `AchadoPerdido` | `tb_achado_perdido` | Item achado ou perdido num camping — `Tipo`: `"achado"`, `"perdido"` |
 | `UsuarioPresente` | `tb_usuario_presente` | Registro de resgate de presente |
 | `SalaChat` | `tb_sala_chat` | Sala de chat — `Tipo`: `"camping"`, `"grupo"`, `"dm"` |
 | `SalaChatMembro` | `tb_sala_chat_membro` | Membros da sala — chave composta (SalaId, UsuarioId) |
@@ -209,6 +215,8 @@ src/app/
 | `/chat/:salaId`              | ChatConversationComponent | Sim (authGuard) |
 | `/checklist`                 | ChecklistComponent        | Sim (authGuard) |
 | `/gift`                      | GiftComponent             | Sim (authGuard) |
+| `/achados-perdidos/:campingId`      | AchadosPerdidosComponent  | Sim (authGuard) |
+| `/achados-perdidos/:campingId/novo` | AchadoPerdidoFormComponent | Sim (authGuard) |
 | `**`                         | NotFoundComponent (404)   | —               |
 
 ## Convenções de Código
@@ -269,6 +277,7 @@ Base URL configurada em `src/environments/environment.ts` (`environment.apiUrl`)
 | **CampingService**          | Listar campings, avaliações (CRUD)                                               | `GET /mapa/campings`, `GET/POST/PUT /mapa/camping/{id}/avaliacoes`, `POST /avaliacao`                                                           |
 | **CheckinService**          | Check-in (com campo `ocupacao?`) e histórico                                     | `POST /checkin`, `GET /checkin/historico/{usuarioId}`, `GET /checkin/camping/{id}/recentes`                                                     |
 | **GiftService**             | Criar, buscar, resgatar e deletar presentes                                      | `POST /presentes`, `GET /presentes?lat&lng`, `POST /presentes/resgatar`, `DELETE /presentes/{id}`                                               |
+| **AchadosPerdidosService**  | Mural de achados e perdidos do camping: acesso, listagem, publicação, resolução, reivindicação | `GET/POST /campings/{id}/achados-perdidos`, `GET /campings/{id}/achados-perdidos/acesso`, `PATCH /achados-perdidos/{id}/resolver`, `DELETE /achados-perdidos/{id}`, `POST /achados-perdidos/{id}/reivindicar` |
 | **WeatherService**          | Clima atual e previsão 5 dias                                                    | Open-Meteo API (externo), Nominatim (geocoding)                                                                                                 |
 | **ChecklistService**        | CRUD local de checklists                                                         | localStorage (`ocampista-checklists`) — sem backend                                                                                             |
 | **TrilhaDraftService**      | Persiste rascunho de trilha em criação (waypoints, distância, form)              | Sem endpoint — localStorage (`ocampista-trilha-rascunho`)                                                                                       |
@@ -293,6 +302,8 @@ Definidos em `src/app/core/models/`:
 - **Camping** — id, nome, descricao, lat/lng, cidade, estado, tipo, avaliacao, recursos[], statusOcupacao? (nivel, atualizadoEm)
 - **StatusOcupacao** — nivel: `'tranquilo' | 'movimentado' | 'lotado'`, atualizadoEm
 - **Presente** — id, nome, descricao, codigoResgate, fotoUrl, lat/lng, estaDisponivel
+- **AchadoPerdido** — id, campingId, tipo (`'achado'|'perdido'`), titulo, descricao?, fotoUrl?, localGuarda?, resolvido, criadoEm, usuarioNome, souAutor
+- **AcessoAchados** — podeVer (já fez check-in no camping), podePublicar (check-in nas últimas 24h)
 - **Checkin/HistoricoCheckin** — usuarioId, campingId, lat/lng, dataCriacao, camping (nested)
 - **OcupacaoStatus** — tipo `'tranquilo' | 'movimentado' | 'lotado'` (campo `ocupacao?` no CheckinRequestModel)
 - **Avaliacao/AvaliacaoComUsuario** — nota, comentario, usuarioNome, usuarioFoto
@@ -318,7 +329,8 @@ Definidos em `src/app/core/models/`:
 - **Gamificação:** XP por check-ins, níveis progressivos, conquistas desbloqueáveis
 - **Chat de camping:** envio de mensagens só com check-in nas últimas **24 horas** (leitura sempre disponível)
 - **Chat de grupo:** independente de campings, sem restrição de 24h, convite por código alfanumérico de 8 chars
-- **Chat direto (DM):** apenas entre usuários que se seguem mutuamente (A segue B e B segue A); `POST /chat/diretas/{usuarioId}` retorna 403 se não houver seguimento mútuo; sala criada com `Tipo="dm"`, idempotente (segunda chamada retorna a sala existente)
+- **Chat direto (DM):** entre usuários que se seguem mutuamente (A segue B e B segue A) **ou** que tenham um vínculo ativo de achados e perdidos (`IAchadoPerdidoRepository.ExisteVinculoAtivoAsync`); `POST /chat/diretas/{usuarioId}` retorna 403 quando nenhuma das duas condições vale; sala criada com `Tipo="dm"`, idempotente (segunda chamada retorna a sala existente)
+- **Achados e perdidos:** mural por camping. **Ver** exige qualquer check-in histórico naquele camping; **publicar** exige check-in nas últimas **24 horas** (mesma janela do chat). Dois tipos: `achado` (foto obrigatória) e `perdido` (foto opcional). O autor marca como resolvido ou exclui; itens com mais de **30 dias** saem da listagem (nada é apagado). O botão "É meu" (`POST /achados-perdidos/{id}/reivindicar`) abre a DM com quem publicou, mesmo sem seguimento mútuo
 - **Salas automáticas:** ao fazer check-in, sala de chat do camping é criada automaticamente e o usuário é adicionado como membro
 - **Rate limit chat:** máximo 10 mensagens por minuto por usuário (via MemoryCache no backend)
 - **Expiração de sessão (JWT):** token expira em **24 horas** (`TokenService.GenerateToken` no backend). `POST /auth/refresh` é `[Authorize]` e só funciona com token ainda válido — não há refresh token de longa duração, então a sessão expira de vez após ~24h (não é renovável após esse ponto)

@@ -1,0 +1,112 @@
+<div class="lost-page">
+  <header class="lost-header">
+    <button
+      class="btn-close-round btn-close-round--light"
+      (click)="voltarAoMapa()"
+      [attr.aria-label]="'lost.board.back' | translate"
+    >
+      ←
+    </button>
+    <h1 class="lost-title">{{ 'lost.board.title' | translate }}</h1>
+  </header>
+
+  @if (carregandoAcesso()) {
+    <div class="lost-loading">
+      <span class="spinner"></span>
+      <p>{{ 'lost.board.loading' | translate }}</p>
+    </div>
+  } @else if (!acesso()?.podeVer) {
+    <div class="lost-blocked">
+      <span class="lost-blocked__icon" aria-hidden="true">🔒</span>
+      <p>{{ 'lost.board.locked' | translate }}</p>
+      <button class="btn-retry" (click)="voltarAoMapa()">
+        {{ 'lost.board.go-map' | translate }}
+      </button>
+    </div>
+  } @else {
+    <p class="lost-subtitle">{{ 'lost.board.subtitle' | translate }}</p>
+
+    <div class="lost-tabs" role="tablist">
+      <button
+        class="lost-tab"
+        role="tab"
+        [class.active]="abaAtiva() === 'todos'"
+        [attr.aria-selected]="abaAtiva() === 'todos'"
+        (click)="trocarAba('todos')"
+      >
+        {{ 'lost.board.tab-all' | translate }}
+      </button>
+      <button
+        class="lost-tab"
+        role="tab"
+        [class.active]="abaAtiva() === 'achado'"
+        [attr.aria-selected]="abaAtiva() === 'achado'"
+        (click)="trocarAba('achado')"
+      >
+        {{ 'lost.board.tab-found' | translate }}
+      </button>
+      <button
+        class="lost-tab"
+        role="tab"
+        [class.active]="abaAtiva() === 'perdido'"
+        [attr.aria-selected]="abaAtiva() === 'perdido'"
+        (click)="trocarAba('perdido')"
+      >
+        {{ 'lost.board.tab-lost' | translate }}
+      </button>
+    </div>
+
+    <div class="lost-list" role="tabpanel">
+      @if (carregando() && itens().length === 0) {
+        <div class="lost-loading">
+          <span class="spinner"></span>
+          <p>{{ 'lost.board.loading' | translate }}</p>
+        </div>
+      } @else if (erro()) {
+        <div class="lost-empty">
+          <p>{{ 'lost.board.error' | translate }}</p>
+          <button class="btn-retry" (click)="carregar()">
+            {{ 'lost.board.retry' | translate }}
+          </button>
+        </div>
+      } @else if (itens().length === 0) {
+        <div class="lost-empty">
+          <span class="lost-empty__icon" aria-hidden="true">🎒</span>
+          <p>{{ 'lost.board.empty' | translate }}</p>
+        </div>
+      } @else {
+        @for (item of itens(); track item.id) {
+          <app-achado-perdido-card
+            [item]="item"
+            [reivindicando]="reivindicandoId() === item.id"
+            (reivindicar)="onReivindicar($event)"
+            (resolver)="onResolver($event)"
+            (deletar)="onDeletar($event)"
+          />
+        }
+
+        @if (!semMais()) {
+          <button class="btn-load-more" (click)="carregar()" [disabled]="carregando()">
+            @if (carregando()) {
+              {{ 'lost.board.loading' | translate }}
+            } @else {
+              {{ 'lost.board.load-more' | translate }}
+            }
+          </button>
+        }
+      }
+    </div>
+
+    @if (acesso()?.podePublicar) {
+      <button
+        class="btn-publicar"
+        (click)="publicar()"
+        [attr.aria-label]="'lost.board.btn-new' | translate"
+      >
+        <span aria-hidden="true">➕</span> {{ 'lost.board.btn-new' | translate }}
+      </button>
+    } @else {
+      <p class="lost-aviso">{{ 'lost.board.checkin-expired' | translate }}</p>
+    }
+  }
+</div>

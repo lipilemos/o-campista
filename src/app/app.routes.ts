@@ -91,6 +91,20 @@ export const routes: Routes = [
         ],
       },
       {
+        path: 'achados-perdidos/:campingId',
+        loadComponent: () =>
+          import('./pages/achados-perdidos/achados-perdidos.component').then(
+            (m) => m.AchadosPerdidosComponent,
+          ),
+      },
+      {
+        path: 'achados-perdidos/:campingId/novo',
+        loadComponent: () =>
+          import('./pages/achados-perdidos/achado-perdido-form/achado-perdido-form.component').then(
+            (m) => m.AchadoPerdidoFormComponent,
+          ),
+      },
+      {
         path: 'checklist',
         loadComponent: () =>
           import('./pages/checklist/checklist.component').then((m) => m.ChecklistComponent),

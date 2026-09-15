@@ -32,10 +32,10 @@
   flex-shrink: 0;
   width: 26px;
   height: 64px;
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--color-surface-translucent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--color-border-translucent);
   border-right: none;
   border-radius: var(--radius-md) 0 0 var(--radius-md);
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.12);
@@ -45,11 +45,11 @@
   cursor: pointer;
   font-size: var(--text-lg);
   font-weight: 700;
-  color: var(--color-primary);
+  color: var(--color-text);
   transition: background 0.2s;
 
   &:hover {
-    background: #fff;
+    background: var(--color-surface);
   }
 }
 
@@ -80,10 +80,10 @@
   flex-direction: column;
   gap: var(--space-2);
   padding: var(--space-3);
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--color-surface-translucent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--color-border-translucent);
   border-radius: var(--radius-lg) 0 0 var(--radius-lg);
   box-shadow: var(--shadow-lg);
   animation: slideInRight 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -98,6 +98,8 @@
     font-size: var(--text-sm);
     outline: none;
     background: var(--color-surface);
+    color: var(--color-text);
+    font-family: var(--font-family);
     box-sizing: border-box;
     transition: var(--transition-fast);
 
@@ -105,6 +107,15 @@
       border-color: var(--color-accent);
       box-shadow: 0 0 0 3px rgba(249, 153, 32, 0.15);
     }
+  }
+
+  input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  select option {
+    background: var(--color-surface);
+    color: var(--color-text);
   }
 }
 

@@ -1,0 +1,85 @@
+<article class="lost-card" [class.resolvido]="item().resolvido">
+  @if (item().fotoUrl) {
+    <div class="lost-card__foto">
+      <img [src]="item().fotoUrl" [alt]="item().titulo" appImgFallback />
+    </div>
+  }
+
+  <div class="lost-card__body">
+    <div class="lost-card__badges">
+      <span
+        class="badge-tipo"
+        [class.achado]="ehAchado()"
+        [class.perdido]="!ehAchado()"
+        [attr.aria-label]="
+          (ehAchado() ? 'lost.card.type-found' : 'lost.card.type-lost') | translate
+        "
+      >
+        @if (ehAchado()) {
+          🔍 {{ 'lost.card.type-found' | translate }}
+        } @else {
+          ❓ {{ 'lost.card.type-lost' | translate }}
+        }
+      </span>
+
+      @if (item().resolvido) {
+        <span class="badge-resolvido" [attr.aria-label]="'lost.card.resolved' | translate">
+          ✅ {{ 'lost.card.resolved' | translate }}
+        </span>
+      }
+    </div>
+
+    <h2 class="lost-card__titulo">{{ item().titulo }}</h2>
+
+    @if (item().descricao) {
+      <p class="lost-card__descricao">{{ item().descricao }}</p>
+    }
+
+    @if (item().localGuarda) {
+      <p class="lost-card__local">
+        <span aria-hidden="true">📍</span>
+        {{ 'lost.card.stored-at' | translate }} {{ item().localGuarda }}
+      </p>
+    }
+
+    <div class="lost-card__autor">
+      @if (item().usuarioFoto) {
+        <img
+          class="autor-foto"
+          [src]="item().usuarioFoto"
+          [alt]="item().usuarioNome"
+          appImgFallback
+        />
+      }
+      <span class="autor-nome">{{ item().usuarioNome }}</span>
+      <span class="autor-tempo">· {{ tempoRelativo() }}</span>
+    </div>
+
+    <div class="lost-card__acoes">
+      @if (!item().souAutor && !item().resolvido) {
+        <button
+          class="btn-reivindicar"
+          [disabled]="reivindicando()"
+          (click)="reivindicar.emit(item())"
+        >
+          @if (reivindicando()) {
+            {{ 'lost.card.claiming' | translate }}
+          } @else {
+            💬 {{ 'lost.card.btn-claim' | translate }}
+          }
+        </button>
+      }
+
+      @if (item().souAutor) {
+        @if (!item().resolvido) {
+          <button class="btn-resolver" (click)="resolver.emit(item())">
+            ✅ {{ 'lost.card.btn-resolve' | translate }}
+          </button>
+        }
+        <button class="btn-excluir" (click)="deletar.emit(item())">
+          {{ 'lost.card.btn-delete' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+</article>
