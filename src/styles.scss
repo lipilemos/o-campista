@@ -1,4 +1,6 @@
 :root {
+  color-scheme: light;
+
   --color-primary: #6e1217;
   --color-primary-light: #8b2025;
   --color-primary-dark: #4a0c10;
@@ -12,6 +14,9 @@
   --color-surface: #ffffff;
   --color-surface-hover: #faf8f6;
   --color-surface-alt: #f0ece7;
+  /* superfícies translúcidas (painéis flutuantes sobre mapa/imagem) */
+  --color-surface-translucent: rgba(255, 255, 255, 0.95);
+  --color-border-translucent: rgba(255, 255, 255, 0.6);
 
   --color-text: #1c1917;
   --color-text-secondary: #57534e;
@@ -71,6 +76,8 @@
 }
 
 [data-theme='dark'] {
+  color-scheme: dark;
+
   --color-primary: #8b2025;
   --color-primary-light: #a63038;
   --color-primary-dark: #6e1217;
@@ -79,6 +86,8 @@
   --color-surface: #242424;
   --color-surface-hover: #2e2e2e;
   --color-surface-alt: #303030;
+  --color-surface-translucent: rgba(30, 30, 30, 0.95);
+  --color-border-translucent: rgba(255, 255, 255, 0.12);
 
   --color-text: #e5e5e5;
   --color-text-secondary: #a3a3a3;

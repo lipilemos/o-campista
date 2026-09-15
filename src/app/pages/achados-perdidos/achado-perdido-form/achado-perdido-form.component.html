@@ -1,0 +1,131 @@
+<div class="lost-form-page">
+  <header class="lost-form-header">
+    <button
+      class="btn-close-round btn-close-round--light"
+      (click)="voltar()"
+      [attr.aria-label]="'lost.form.back' | translate"
+    >
+      ←
+    </button>
+    <h1 class="lost-form-title">{{ 'lost.form.title' | translate }}</h1>
+  </header>
+
+  <form class="lost-form" [formGroup]="form" (ngSubmit)="publicar()">
+    <fieldset class="tipo-group">
+      <legend class="campo-label">{{ 'lost.form.type-label' | translate }}</legend>
+      <div class="tipo-opcoes" role="radiogroup">
+        <button
+          type="button"
+          class="tipo-opcao"
+          role="radio"
+          [class.ativo]="tipo() === 'achado'"
+          [attr.aria-checked]="tipo() === 'achado'"
+          (click)="selecionarTipo('achado')"
+        >
+          <span class="tipo-emoji" aria-hidden="true">🔍</span>
+          {{ 'lost.form.type-found' | translate }}
+        </button>
+        <button
+          type="button"
+          class="tipo-opcao"
+          role="radio"
+          [class.ativo]="tipo() === 'perdido'"
+          [attr.aria-checked]="tipo() === 'perdido'"
+          (click)="selecionarTipo('perdido')"
+        >
+          <span class="tipo-emoji" aria-hidden="true">❓</span>
+          {{ 'lost.form.type-lost' | translate }}
+        </button>
+      </div>
+    </fieldset>
+
+    <div class="campo">
+      <label class="campo-label" for="titulo">{{ 'lost.form.name-label' | translate }}</label>
+      <input
+        id="titulo"
+        type="text"
+        formControlName="titulo"
+        maxlength="120"
+        [placeholder]="'lost.form.name-placeholder' | translate"
+      />
+      @if (form.controls.titulo.touched && form.controls.titulo.invalid) {
+        <p class="campo-erro">{{ 'lost.form.name-required' | translate }}</p>
+      }
+    </div>
+
+    <div class="campo">
+      <label class="campo-label" for="descricao">
+        {{ 'lost.form.description-label' | translate }}
+      </label>
+      <textarea
+        id="descricao"
+        formControlName="descricao"
+        rows="3"
+        maxlength="500"
+        [placeholder]="'lost.form.description-placeholder' | translate"
+      ></textarea>
+    </div>
+
+    @if (tipo() === 'achado') {
+      <div class="campo">
+        <label class="campo-label" for="localGuarda">
+          {{ 'lost.form.stored-label' | translate }}
+        </label>
+        <input
+          id="localGuarda"
+          type="text"
+          formControlName="localGuarda"
+          maxlength="120"
+          [placeholder]="'lost.form.stored-placeholder' | translate"
+        />
+        <p class="campo-ajuda">{{ 'lost.form.stored-help' | translate }}</p>
+      </div>
+    }
+
+    <div class="campo">
+      <span class="campo-label">
+        {{ 'lost.form.photo-label' | translate }}
+        @if (!fotoObrigatoria()) {
+          <span class="campo-opcional">({{ 'lost.form.optional' | translate }})</span>
+        }
+      </span>
+
+      <button
+        type="button"
+        class="upload-card"
+        (click)="abrirSeletorFoto()"
+        [attr.aria-label]="'lost.form.photo-prompt' | translate"
+      >
+        @if (fotoPreview()) {
+          <img [src]="fotoPreview()" [alt]="'lost.form.photo-preview' | translate" />
+        } @else {
+          <span class="upload-icon" aria-hidden="true">📷</span>
+          <span class="upload-texto">{{ 'lost.form.photo-prompt' | translate }}</span>
+        }
+      </button>
+
+      @if (fotoPreview()) {
+        <button type="button" class="btn-remover-foto" (click)="removerFoto()">
+          {{ 'lost.form.photo-remove' | translate }}
+        </button>
+      }
+
+      <input
+        #fileInput
+        type="file"
+        accept="image/*"
+        capture="environment"
+        (change)="onFotoSelecionada($event)"
+        hidden
+      />
+    </div>
+
+    <button type="submit" class="btn-publicar" [disabled]="!podeEnviar()">
+      @if (publicando()) {
+        {{ 'lost.form.publishing' | translate }}
+      } @else {
+        {{ 'lost.form.btn-submit' | translate }}
+      }
+    </button>
+  </form>
+</div>

@@ -30,6 +30,7 @@ import { ChatCampingComponent } from '../chat-camping/chat-camping.component';
 import { PhotoGalleryComponent } from '../photo-gallery/photo-gallery.component';
 import { TrilhaListComponent } from '../trilha-list/trilha-list.component';
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-card-camping',
@@ -39,6 +40,7 @@ import { TranslatePipe } from '../../core/pipes/translate.pipe';
     ImgFallbackDirective,
     TrilhaListComponent,
     PhotoGalleryComponent,
+    RouterLink,
     TranslatePipe,
   ],
   templateUrl: './card-camping.component.html',
