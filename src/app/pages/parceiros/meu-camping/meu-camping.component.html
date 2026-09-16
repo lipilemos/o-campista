@@ -1,0 +1,142 @@
+<div class="meu-camping-page">
+  <header class="page-header">
+    <h1 class="page-title">{{ 'parceiro.meu-camping.title' | translate }}</h1>
+    @if (campings().length > 0) {
+      <a class="btn-secundario btn-sm" routerLink="/parceiros/cadastrar">
+        + {{ 'parceiro.meu-camping.register-another' | translate }}
+      </a>
+    }
+  </header>
+
+  @if (carregando()) {
+    <p class="hint" aria-live="polite">{{ 'parceiro.meu-camping.loading' | translate }}</p>
+  } @else if (campings().length === 0 && !erro()) {
+    <section class="empty card-elevated">
+      <p class="empty-emoji" aria-hidden="true">🏕️</p>
+      <h2 class="empty-title">{{ 'parceiro.meu-camping.empty-title' | translate }}</h2>
+      <p class="empty-text">{{ 'parceiro.meu-camping.empty-text' | translate }}</p>
+      <a class="btn-primario" routerLink="/parceiros/cadastrar">
+        {{ 'parceiro.meu-camping.register' | translate }}
+      </a>
+    </section>
+  } @else {
+    @if (campings().length > 1) {
+      <div
+        class="chips"
+        role="tablist"
+        [attr.aria-label]="'parceiro.meu-camping.select-label' | translate"
+      >
+        @for (c of campings(); track c.id) {
+          <button
+            type="button"
+            role="tab"
+            class="chip"
+            [class.ativo]="selecionado()?.id === c.id"
+            [attr.aria-selected]="selecionado()?.id === c.id"
+            (click)="selecionar(c.id)"
+          >
+            {{ c.nome }}
+          </button>
+        }
+      </div>
+    }
+
+    @if (selecionado(); as camping) {
+      <section class="camping-head card-elevated">
+        <div>
+          <h2 class="camping-nome">{{ camping.nome }}</h2>
+          <small class="camping-local">{{ camping.cidade }}/{{ camping.estado }}</small>
+        </div>
+        <span
+          class="badge"
+          [class.badge--pendente]="camping.donoStatus === 'pendente'"
+          [class.badge--aprovado]="camping.donoStatus === 'aprovado'"
+        >
+          {{ 'parceiro.meu-camping.status-' + camping.donoStatus | translate }}
+        </span>
+      </section>
+
+      @if (camping.donoStatus === 'pendente') {
+        <p class="aviso" role="status">{{ 'parceiro.meu-camping.pending-notice' | translate }}</p>
+      }
+    }
+
+    @if (erro()) {
+      <section class="erro card-elevated" role="alert">
+        <p class="erro-texto">{{ 'parceiro.meu-camping.error' | translate }}</p>
+        <button type="button" class="btn-secundario btn-sm" (click)="recarregar()">
+          {{ 'parceiro.meu-camping.retry' | translate }}
+        </button>
+      </section>
+    } @else if (painel(); as p) {
+      <section class="kpis">
+        <article class="kpi card-elevated">
+          <span class="kpi-valor">{{ p.checkins30Dias }}</span>
+          <span class="kpi-label">{{ 'parceiro.meu-camping.kpi-checkins-30' | translate }}</span>
+        </article>
+        <article class="kpi card-elevated">
+          <span class="kpi-valor">{{ p.checkinsTotal }}</span>
+          <span class="kpi-label">{{ 'parceiro.meu-camping.kpi-checkins-total' | translate }}</span>
+        </article>
+        <article class="kpi card-elevated">
+          <span class="kpi-valor">{{ p.visitantesUnicos }}</span>
+          <span class="kpi-label">{{ 'parceiro.meu-camping.kpi-visitors' | translate }}</span>
+        </article>
+        <article class="kpi card-elevated">
+          <span class="kpi-valor">
+            <span aria-hidden="true">⭐</span> {{ p.avaliacaoMedia | number: '1.1-1' }}
+          </span>
+          <span class="kpi-label">
+            {{ 'parceiro.meu-camping.kpi-rating' | translate }} · {{ p.totalAvaliacoes }}
+            {{ 'parceiro.meu-camping.kpi-ratings-count' | translate }}
+          </span>
+        </article>
+        <article class="kpi card-elevated">
+          <span class="kpi-valor"><span aria-hidden="true">❤️</span> {{ p.totalFavoritos }}</span>
+          <span class="kpi-label">{{ 'parceiro.meu-camping.kpi-favorites' | translate }}</span>
+        </article>
+        <article class="kpi card-elevated">
+          @if (p.statusOcupacao; as oc) {
+            <span class="kpi-valor">
+              <span class="badge-ocupacao" [class]="'badge-ocupacao badge-ocupacao--' + oc.nivel">
+                {{ 'parceiro.meu-camping.occupancy-' + oc.nivel | translate }}
+              </span>
+            </span>
+          } @else {
+            <span class="kpi-valor kpi-valor--muted">—</span>
+            <span class="kpi-sub">{{ 'parceiro.meu-camping.occupancy-none' | translate }}</span>
+          }
+          <span class="kpi-label">{{ 'parceiro.meu-camping.kpi-occupancy' | translate }}</span>
+        </article>
+      </section>
+
+      <section class="grafico card-elevated">
+        <h3 class="grafico-titulo">{{ 'parceiro.meu-camping.chart-title' | translate }}</h3>
+        <svg
+          viewBox="0 0 300 120"
+          class="grafico-svg"
+          role="img"
+          [attr.aria-label]="'parceiro.meu-camping.chart-title' | translate"
+        >
+          @for (b of barras(); track b.data; let i = $index) {
+            <rect
+              [attr.x]="i * 10 + 1"
+              [attr.y]="100 - b.altura"
+              width="8"
+              [attr.height]="b.altura"
+              rx="1"
+              class="barra"
+            >
+              <title>{{ b.data }}: {{ b.quantidade }}</title>
+            </rect>
+            @if (i % 5 === 0) {
+              <text [attr.x]="i * 10 + 5" y="114" text-anchor="middle" class="eixo">
+                {{ diaCurto(b.data) }}
+              </text>
+            }
+          }
+        </svg>
+      </section>
+    }
+  }
+</div>

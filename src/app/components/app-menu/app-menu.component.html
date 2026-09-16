@@ -94,6 +94,14 @@
         >
           {{ 'nav.checklist' | translate }}
         </button>
+        <button
+          class="menu-item"
+          data-onboarding="nav-partner"
+          [class.active]="isActive('parceiros')"
+          (click)="navigateTo('parceiros')"
+        >
+          {{ 'nav.partner' | translate }}
+        </button>
       </nav>
       <button
         class="action-toggle"

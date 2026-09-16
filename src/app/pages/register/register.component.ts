@@ -7,7 +7,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../core/services/auth.service';
 import { GoogleAuthService } from '../../core/services/google-auth.service';
@@ -31,6 +31,7 @@ export class RegisterComponent {
   private authService = inject(AuthService);
   private googleAuthService = inject(GoogleAuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   private googleButtonRef = viewChild<ElementRef>('googleButton');
 
@@ -65,7 +66,7 @@ export class RegisterComponent {
       this.googleLoading.set(true);
       this.erro = '';
       this.authService.loginWithGoogle(token).subscribe({
-        next: () => this.router.navigate(['/home']),
+        next: () => this.irParaDestino(),
         error: () => {
           this.erro = 'Erro ao criar conta com Google. Tente novamente.';
           this.googleLoading.set(false);
@@ -97,7 +98,7 @@ export class RegisterComponent {
       next: () => {
         this.sucesso = 'Cadastro realizado com sucesso! Faça login para continuar.';
         this.loading = false;
-        setTimeout(() => this.router.navigate(['/']), 1200);
+        setTimeout(() => this.voltarParaLogin(), 1200);
       },
       error: () => {
         this.erro = 'Não foi possível criar a conta. Tente novamente.';
@@ -107,6 +108,11 @@ export class RegisterComponent {
   }
 
   voltarParaLogin() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/'], { queryParams: this.route.snapshot.queryParams });
+  }
+
+  private irParaDestino(): void {
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    this.router.navigateByUrl(returnUrl?.startsWith('/') ? returnUrl : '/home');
   }
 }

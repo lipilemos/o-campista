@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { afterNextRender, Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { AuthService } from '../../core/services/auth.service';
@@ -20,6 +20,7 @@ export class LoginComponent {
   private googleAuthService = inject(GoogleAuthService);
   private i18n = inject(I18nService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   private googleButtonRef = viewChild<ElementRef>('googleButton');
 
@@ -43,7 +44,7 @@ export class LoginComponent {
       this.googleLoading.set(true);
       this.erro = '';
       this.authService.loginWithGoogle(token).subscribe({
-        next: () => this.router.navigate(['/home']),
+        next: () => this.irParaDestino(),
         error: () => {
           this.erro = this.i18n.t('auth.error.google');
           this.googleLoading.set(false);
@@ -57,7 +58,7 @@ export class LoginComponent {
 
     this.authService.login(this.email, this.senha).subscribe({
       next: () => {
-        this.router.navigate(['/home']);
+        this.irParaDestino();
       },
       error: () => {
         this.erro = this.i18n.t('auth.error.invalid-user');
@@ -71,6 +72,11 @@ export class LoginComponent {
   }
 
   criarConta() {
-    this.router.navigate(['/register']);
+    this.router.navigate(['/register'], { queryParams: this.route.snapshot.queryParams });
+  }
+
+  private irParaDestino(): void {
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    this.router.navigateByUrl(returnUrl?.startsWith('/') ? returnUrl : '/home');
   }
 }

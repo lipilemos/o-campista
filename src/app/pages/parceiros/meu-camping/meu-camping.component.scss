@@ -1,0 +1,340 @@
+:host {
+  display: block;
+}
+
+.meu-camping-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.page-title {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--color-primary);
+  margin: 0;
+  padding: 0;
+}
+
+.hint {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin: 0;
+  padding: 0;
+}
+
+/* Estado vazio */
+
+.empty {
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  animation: cardAppear 0.3s ease;
+}
+
+.empty-emoji {
+  font-size: var(--text-4xl);
+  margin: 0;
+  padding: 0;
+}
+
+.empty-title {
+  font-size: var(--text-lg);
+  margin: 0;
+  padding: 0;
+}
+
+.empty-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  max-width: 420px;
+}
+
+/* Seleção de camping */
+
+.chips {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-family: var(--font-family);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+
+  &:hover {
+    border-color: var(--color-accent);
+  }
+
+  &.ativo {
+    border-color: var(--color-accent);
+    background: var(--color-surface-hover);
+    color: var(--color-text);
+    font-weight: 700;
+  }
+}
+
+/* Cabeçalho do camping */
+
+.camping-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  animation: cardAppear 0.3s ease;
+}
+
+.camping-nome {
+  font-size: var(--text-xl);
+  margin: 0;
+  padding: 0;
+}
+
+.camping-local {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.badge {
+  flex-shrink: 0;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 700;
+
+  &--pendente {
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+  }
+
+  &--aprovado {
+    background: var(--color-success-bg);
+    color: var(--color-success);
+  }
+}
+
+.aviso {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+/* Erro */
+
+.erro {
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.erro-texto {
+  margin: 0;
+  padding: 0;
+  color: var(--color-error);
+  font-weight: 600;
+}
+
+/* KPIs */
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-3);
+}
+
+.kpi {
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  animation: cardAppear 0.3s ease;
+}
+
+.kpi-valor {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--color-text);
+
+  &--muted {
+    color: var(--color-text-muted);
+  }
+}
+
+.kpi-sub {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.kpi-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Badge de ocupação — mesmo padrão de card-camping.component.scss */
+
+.badge-ocupacao {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &--tranquilo {
+    background: rgba(76, 175, 80, 0.12);
+    color: var(--color-success);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+  }
+
+  &--movimentado {
+    background: rgba(255, 152, 0, 0.12);
+    color: #e67e00;
+    border: 1px solid rgba(255, 152, 0, 0.3);
+  }
+
+  &--lotado {
+    background: rgba(244, 67, 54, 0.12);
+    color: var(--color-error);
+    border: 1px solid rgba(244, 67, 54, 0.3);
+  }
+}
+
+/* Gráfico */
+
+.grafico {
+  padding: var(--space-4) var(--space-5);
+  animation: cardAppear 0.3s ease;
+}
+
+.grafico-titulo {
+  font-size: var(--text-base);
+  margin: 0 0 var(--space-3);
+  padding: 0;
+}
+
+.grafico-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.barra {
+  fill: var(--color-accent);
+  transition: fill var(--transition-fast);
+
+  &:hover {
+    fill: var(--color-accent-hover);
+  }
+}
+
+.eixo {
+  font-family: var(--font-family);
+  font-size: 8px;
+  fill: var(--color-text-muted);
+}
+
+/* Botões — mesmo padrão de cadastrar-camping */
+
+.btn-primario,
+.btn-secundario {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family);
+  font-size: var(--text-base);
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.btn-primario {
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+  border: none;
+
+  &:hover {
+    background: var(--color-accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(249, 153, 32, 0.35);
+  }
+
+  &:active {
+    transform: none;
+  }
+}
+
+.btn-secundario {
+  background: transparent;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+
+  &:hover {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+  }
+}
+
+.btn-sm {
+  height: 40px;
+  padding: 0 var(--space-4);
+  font-size: var(--text-sm);
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .meu-camping-page {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .page-header .btn-secundario,
+  .empty .btn-primario,
+  .erro .btn-secundario {
+    width: 100%;
+  }
+
+  .camping-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

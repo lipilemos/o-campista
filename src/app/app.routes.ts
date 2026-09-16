@@ -114,6 +114,20 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/gift/gift.component').then((m) => m.GiftComponent),
       },
       {
+        path: 'parceiros',
+        loadComponent: () =>
+          import('./pages/parceiros/meu-camping/meu-camping.component').then(
+            (m) => m.MeuCampingComponent,
+          ),
+      },
+      {
+        path: 'parceiros/cadastrar',
+        loadComponent: () =>
+          import('./pages/parceiros/cadastrar-camping/cadastrar-camping.component').then(
+            (m) => m.CadastrarCampingComponent,
+          ),
+      },
+      {
         path: 'feed',
         loadComponent: () => import('./pages/feed/feed.component').then((m) => m.FeedComponent),
       },

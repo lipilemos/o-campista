@@ -1,0 +1,9 @@
+/* Configuração TypeScript dos testes unitários (Vitest via @angular/build:unit-test). */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/spec",
+    "types": ["google.maps"]
+  },
+  "include": ["src/**/*.ts"]
+}
