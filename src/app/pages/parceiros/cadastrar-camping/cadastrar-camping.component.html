@@ -1,0 +1,179 @@
+<div class="cadastro-page">
+  <header class="cadastro-header">
+    <button
+      type="button"
+      class="btn-close-round btn-close-round--light"
+      (click)="passo() === 'dados' ? voltarPasso() : voltar()"
+      [attr.aria-label]="'parceiro.cadastro.back' | translate"
+    >
+      ←
+    </button>
+    <h1 class="cadastro-title">{{ 'parceiro.cadastro.title' | translate }}</h1>
+  </header>
+
+  <p class="cadastro-step" aria-live="polite">
+    {{
+      (passo() === 'posicao' ? 'parceiro.cadastro.step-position' : 'parceiro.cadastro.step-data')
+        | translate
+    }}
+  </p>
+
+  <section class="passo-posicao" [hidden]="passo() !== 'posicao'">
+    <p class="campo-ajuda">{{ 'parceiro.cadastro.position-hint' | translate }}</p>
+    <div
+      #mapContainer
+      class="mapa-picker"
+      role="application"
+      [attr.aria-label]="'parceiro.cadastro.map-label' | translate"
+    ></div>
+
+    <div class="posicao-acoes">
+      <button type="button" class="btn-secundario" (click)="usarMinhaPosicao()">
+        <span aria-hidden="true">📍</span> {{ 'parceiro.cadastro.use-my-position' | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn-primario"
+        [disabled]="!podeContinuar()"
+        (click)="continuar()"
+      >
+        {{ 'parceiro.cadastro.continue' | translate }} →
+      </button>
+    </div>
+
+    @if (proximos().length > 0) {
+      <div class="proximos card-elevated">
+        <h2 class="proximos-title">{{ 'parceiro.cadastro.nearby-title' | translate }}</h2>
+        <p class="campo-ajuda">{{ 'parceiro.cadastro.nearby-hint' | translate }}</p>
+        <ul class="proximos-lista">
+          @for (c of proximos(); track c.id) {
+            <li class="proximo-item">
+              <div>
+                <strong>{{ c.nome }}</strong>
+                <small>
+                  {{ c.cidade }}/{{ c.estado }} · {{ c.distanciaMetros }}
+                  {{ 'parceiro.cadastro.nearby-distance' | translate }}
+                </small>
+              </div>
+              <button type="button" class="btn-secundario btn-sm" (click)="reivindicar(c.id)">
+                {{ 'parceiro.cadastro.claim' | translate }}
+              </button>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  </section>
+
+  @if (passo() === 'dados') {
+    <form class="passo-dados" [formGroup]="form" (ngSubmit)="enviar()">
+      <div class="campo">
+        <label class="campo-label" for="nome">{{ 'parceiro.cadastro.name' | translate }} *</label>
+        <input
+          id="nome"
+          type="text"
+          formControlName="nome"
+          maxlength="200"
+          aria-describedby="erro-nome"
+        />
+        @if (campoInvalido('nome')) {
+          <p class="campo-erro" id="erro-nome">{{ 'parceiro.cadastro.required' | translate }}</p>
+        }
+      </div>
+
+      <fieldset class="campo">
+        <legend class="campo-label">{{ 'parceiro.cadastro.type' | translate }} *</legend>
+        <div class="tipo-opcoes">
+          @for (t of tipos; track t) {
+            <label class="tipo-opcao" [class.ativo]="form.controls.tipo.value === t">
+              <input type="radio" formControlName="tipo" [value]="t" />
+              <span class="tipo-emoji" aria-hidden="true">{{ t === 'camping' ? '🏕️' : '🎣' }}</span>
+              {{ 'parceiro.cadastro.type-' + t | translate }}
+            </label>
+          }
+        </div>
+      </fieldset>
+
+      <div class="campo-linha">
+        <div class="campo campo--cresce">
+          <label class="campo-label" for="cidade">
+            {{ 'parceiro.cadastro.city' | translate }} *
+          </label>
+          <input
+            id="cidade"
+            type="text"
+            formControlName="cidade"
+            maxlength="100"
+            aria-describedby="erro-cidade"
+          />
+          @if (campoInvalido('cidade')) {
+            <p class="campo-erro" id="erro-cidade">
+              {{ 'parceiro.cadastro.required' | translate }}
+            </p>
+          }
+        </div>
+        <div class="campo campo--uf">
+          <label class="campo-label" for="estado">
+            {{ 'parceiro.cadastro.state' | translate }} *
+          </label>
+          <select id="estado" formControlName="estado" aria-describedby="erro-estado">
+            <option value="" disabled>
+              {{ 'parceiro.cadastro.state-placeholder' | translate }}
+            </option>
+            @for (uf of ufs; track uf) {
+              <option [value]="uf">{{ uf }}</option>
+            }
+          </select>
+          @if (campoInvalido('estado')) {
+            <p class="campo-erro" id="erro-estado">
+              {{ 'parceiro.cadastro.required' | translate }}
+            </p>
+          }
+        </div>
+      </div>
+
+      <div class="campo">
+        <label class="campo-label" for="descricao">
+          {{ 'parceiro.cadastro.description' | translate }}
+        </label>
+        <textarea id="descricao" formControlName="descricao" rows="4" maxlength="2000"></textarea>
+      </div>
+
+      <div class="campo">
+        <label class="campo-label" for="endereco">
+          {{ 'parceiro.cadastro.address' | translate }}
+        </label>
+        <input id="endereco" type="text" formControlName="endereco" maxlength="500" />
+      </div>
+
+      <div class="campo">
+        <label class="campo-label" for="telefone">
+          {{ 'parceiro.cadastro.phone' | translate }}
+        </label>
+        <input id="telefone" type="tel" formControlName="telefone" maxlength="30" />
+      </div>
+
+      @if (recursos().length > 0) {
+        <fieldset class="campo">
+          <legend class="campo-label">{{ 'parceiro.cadastro.resources' | translate }}</legend>
+          <div class="recursos-grid">
+            @for (r of recursos(); track r.id) {
+              <label class="recurso-chip" [class.ativo]="recursoSelecionado(r.id)">
+                <input
+                  type="checkbox"
+                  [checked]="recursoSelecionado(r.id)"
+                  (change)="alternarRecurso(r.id)"
+                />
+                {{ r.nome }}
+              </label>
+            }
+          </div>
+        </fieldset>
+      }
+
+      <button type="submit" class="btn-primario btn-enviar" [disabled]="enviando()">
+        {{ 'parceiro.cadastro.submit' | translate }}
+      </button>
+    </form>
+  }
+</div>

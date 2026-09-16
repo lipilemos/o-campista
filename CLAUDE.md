@@ -54,6 +54,10 @@ Scripts incrementais em `o-campista.scripts/sql/`:
 - `create_achado_perdido.sql` — criação da tabela de achados e perdidos
 - `add_visivel_no_mapa.sql` — flag de visibilidade de camping no mapa
 - `fix_storage_public_urls.sql` — correção de URLs de storage
+- `add_camping_dono.sql` — colunas `dono_usuario_id`/`dono_status` em `tb_camping` (parceiros)
+- `add_camping_dono.sqlserver.sql` — o mesmo, em T-SQL para o SQL Server local
+
+**Dois bancos:** `Database:Provider` no `appsettings` escolhe `SqlServer` (dev local, `.\SQLEXPRESS`, schema em `o-campista.scripts/ScriptsDB/sqlserver/02_schema.sql`) ou `Npgsql` (Supabase, schema em `tables.sql`). Toda alteração de schema precisa de **duas versões**: PostgreSQL (`sql/<nome>.sql` + `tables.sql`) e T-SQL (`sql/<nome>.sqlserver.sql` + `sqlserver/02_schema.sql`). Sintaxe T-SQL: sem `ADD COLUMN IF NOT EXISTS` (usar `IF COL_LENGTH(...) IS NULL`), `UNIQUEIDENTIFIER` em vez de `uuid`, `NVARCHAR`, `BIT`, `GO` entre batches.
 
 ### Arquitetura em Camadas
 
@@ -89,6 +93,8 @@ o-campista.scripts/           # Scripts SQL (sql/)
 | `FavoritosCampingController` | `api/favoritos` | Campings favoritos |
 | `RankingController` | `api/ranking` | Ranking de usuários e campings |
 | `TrilhaController` | `api/trilhas` | Trilhas, check-in em trilhas |
+| `CampingParceiroController` | `api/campings/parceiros` | Cadastro, reivindicação, listagem e painel de campings do dono |
+| `RecursoController` | `api/recursos` | Lista recursos de camping (`tb_recurso`) |
 
 ### Hubs SignalR (`o-campista.api/Hubs/`)
 
@@ -102,7 +108,7 @@ o-campista.scripts/           # Scripts SQL (sql/)
 | Entidade | Tabela | Descrição |
 |---|---|---|
 | `Usuario` | `tb_usuario` | Usuário principal — auth, nível, XP, foto |
-| `Camping` | `tb_camping` | Camping — nome, coords, tipo, recursos |
+| `Camping` | `tb_camping` | Camping — nome, coords, tipo, recursos; `dono_usuario_id`/`dono_status` (`pendente`\|`aprovado`) vinculam o dono |
 | `CampingAvaliacao` | `tb_camping_avaliacao` | Avaliações com nota e comentário |
 | `CampingFoto` | `tb_camping_foto` | Fotos de campings |
 | `CampingRecurso` | `tb_camping_recurso` | Vínculo camping ↔ recurso |
@@ -133,7 +139,7 @@ o-campista.scripts/           # Scripts SQL (sql/)
 
 Cada entidade tem `I{Entidade}Repository` + `{Entidade}Repository`. Registrados como `Scoped` no `Program.cs`.
 
-Repositórios disponíveis: `UsuarioRepository`, `CampingRepository`, `CampingAvaliacaoRepository`, `CampingFotoRepository`, `CheckinRepository`, `PresenteRepository`, `SalaChatRepository`, `MensagemChatRepository`, `MensagemSalaChatRepository`, `SocialRepository`, `FeedRepository`, `PostRepository`, `ComentarioPostRepository`, `NotificacaoRepository`, `RankingRepository`, `TrilhaRepository`, `UsuarioConquistaRepository`, `UsuarioPresenteRepository`, `UsuarioTrilhaRepository`, `FavoritoCampingRepository`
+Repositórios disponíveis: `UsuarioRepository`, `CampingRepository`, `CampingAvaliacaoRepository`, `CampingFotoRepository`, `CheckinRepository`, `PresenteRepository`, `SalaChatRepository`, `MensagemChatRepository`, `MensagemSalaChatRepository`, `SocialRepository`, `FeedRepository`, `PostRepository`, `ComentarioPostRepository`, `NotificacaoRepository`, `RankingRepository`, `TrilhaRepository`, `UsuarioConquistaRepository`, `UsuarioPresenteRepository`, `UsuarioTrilhaRepository`, `FavoritoCampingRepository`, `RecursoRepository`
 
 Contexto EF: `CampistaDbContext` em `o-campista.repository.imp/Context/`
 
@@ -141,12 +147,12 @@ Contexto EF: `CampistaDbContext` em `o-campista.repository.imp/Context/`
 
 Cada domínio tem `I{Domínio}Service` + `{Domínio}Service`. Registrados como `Scoped`.
 
-Serviços disponíveis: `AuthService`, `UsuarioService`, `SocialService`, `MapaService`, `CampingAvaliacaoService`, `CheckinService`, `PresenteService`, `ChatService`, `SalaChatService`, `FeedService`, `PostService`, `ComentarioPostService`, `NotificacaoService`, `RankingService`, `TrilhaService`, `UsuarioTrilhaService`, `ConquistaService`, `FavoritoCampingService`, `EmailService`, `StorageService`, `TokenService`
+Serviços disponíveis: `AuthService`, `UsuarioService`, `SocialService`, `MapaService`, `CampingAvaliacaoService`, `CheckinService`, `PresenteService`, `ChatService`, `SalaChatService`, `FeedService`, `PostService`, `ComentarioPostService`, `NotificacaoService`, `RankingService`, `TrilhaService`, `UsuarioTrilhaService`, `ConquistaService`, `FavoritoCampingService`, `CampingParceiroService`, `EmailService`, `StorageService`, `TokenService`
 
 ### DTOs (`o-campista.shared/Models/`)
 
-- **Requests:** `LoginRequest`, `RegisterRequest`, `GoogleAuthRequest`, `CheckinRequest`, `PresenteCreateRequest`, `ResgatarPresenteRequest`, `CriarGrupoRequest`, `EntrarGrupoRequest`, `CampingAvaliacaoRequest`, `PostViagemRequest`, `CriarTrilhaRequest`, `ConfiguracaoPrivacidadeRequest`, `ForgotPasswordRequest`, `ResetPasswordRequest`, `TrilhaAvaliacaoRequest`, `ComentarioPostRequest`
-- **Responses:** `LoginResponse`, `CampingMapaResponse`, `CheckinResponse`, `HistoricoCheckinResponse`, `SalaChatResponse` (inclui `OutroUsuarioId` para DMs), `MensagemSalaChatResponse`, `PerfilPublicoResponse` (inclui `SegueMutuo`), `FeedItemResponse`, e demais
+- **Requests:** `LoginRequest`, `RegisterRequest`, `GoogleAuthRequest`, `CheckinRequest`, `PresenteCreateRequest`, `ResgatarPresenteRequest`, `CriarGrupoRequest`, `EntrarGrupoRequest`, `CampingAvaliacaoRequest`, `PostViagemRequest`, `CriarTrilhaRequest`, `ConfiguracaoPrivacidadeRequest`, `ForgotPasswordRequest`, `ResetPasswordRequest`, `TrilhaAvaliacaoRequest`, `ComentarioPostRequest`, `CampingParceiroRequest`
+- **Responses:** `LoginResponse`, `CampingMapaResponse`, `CheckinResponse`, `HistoricoCheckinResponse`, `SalaChatResponse` (inclui `OutroUsuarioId` para DMs), `MensagemSalaChatResponse`, `PerfilPublicoResponse` (inclui `SegueMutuo`), `FeedItemResponse`, `CampingParceiroResponse`, `CampingPainelResponse` (+ `CheckinsDiaResponse`), `CampingProximoResponse`, `RecursoResponse`, e demais
 
 ---
 
@@ -189,6 +195,7 @@ src/app/
 │   │   └── chat-join-group/     # Entrar em grupo via convite
 │   ├── checklist/       # Checklist de preparação para camping
 │   ├── gift/            # Criação de presentes com upload de foto
+│   ├── parceiros/       # Dono de camping: cadastrar-camping/ (wizard posição → dados, reivindicação) e meu-camping/ (painel)
 │   └── not-found/       # Página 404 — rota não encontrada
 ├── app.routes.ts        # Definição de rotas (todas lazy-loaded)
 ├── app.config.ts        # Providers (router, httpClient, interceptors, GlobalErrorHandler)
@@ -217,6 +224,8 @@ src/app/
 | `/gift`                      | GiftComponent             | Sim (authGuard) |
 | `/achados-perdidos/:campingId`      | AchadosPerdidosComponent  | Sim (authGuard) |
 | `/achados-perdidos/:campingId/novo` | AchadoPerdidoFormComponent | Sim (authGuard) |
+| `/parceiros`                 | MeuCampingComponent       | Sim (authGuard) |
+| `/parceiros/cadastrar`       | CadastrarCampingComponent | Sim (authGuard) |
 | `**`                         | NotFoundComponent (404)   | —               |
 
 ## Convenções de Código
@@ -287,6 +296,7 @@ Base URL configurada em `src/environments/environment.ts` (`environment.apiUrl`)
 | **SocialService**           | Perfil público, seguir/desseguir, seguidores, seguindo, feed, posts, sugestões   | `GET/POST /usuarios/{id}/seguir`, `GET /usuarios/{id}/seguidores`, `GET /usuarios/{id}/seguindo`, `GET /usuarios/{id}/perfil`, `GET /feed`      |
 | **ChatRoomService**         | Salas de chat (camping + grupo + dm), mensagens, digitando, SignalR              | `GET /chat/salas`, `GET /chat/salas/{id}/mensagens`, `POST /chat/grupos`, `POST /chat/grupos/entrar`, `POST /chat/diretas/{usuarioId}` (DM), `DELETE /chat/grupos/{salaId}/sair` |
 | **ChatNotificationService** | Contadores de mensagens não-lidas (badge sidebar)                                | `GET /chat/nao-lidas` + SignalR `/notificationHub`                                                                                              |
+| **CampingParceiroService**  | Cadastro/reivindicação de camping pelo dono, campings sem dono no raio, painel de visitação, recursos | `POST /campings/parceiros`, `POST /campings/parceiros/{id}/reivindicar`, `GET /campings/parceiros/meus`, `GET /campings/parceiros/{id}/painel`, `GET /campings/parceiros/proximos?lat&lng`, `GET /recursos` |
 | **ToastService**            | Notificações toast globais (success, error, warning, info)                       | Sem endpoint — Signals locais                                                                                                                   |
 | **ConfirmDialogService**    | Diálogo de confirmação reutilizável para ações destrutivas                       | Sem endpoint — Signals locais                                                                                                                   |
 | **ThemeService**            | Alternância entre tema claro/escuro                                              | Sem endpoint — localStorage (`ocampista-theme`)                                                                                                 |
@@ -313,6 +323,7 @@ Definidos em `src/app/core/models/`:
 - **SalaChat** — id, nome, tipo (`'camping'|'grupo'|'dm'`), campingId?, outroUsuarioId? (DMs), totalNaoLidas, podeEnviar, ultimaMensagem?
 - **MensagemSalaChat** — id, salaId, usuarioId, nomeUsuario, fotoUsuario, texto, dataEnvio
 - **PerfilPublico** — id, nome, fotoPerfil, nivel?, xp?, totalCheckins?, totalCampingsVisitados?, conquistas?, ultimosCheckins?, totalSeguidores, totalSeguindo, estouSeguindo, segueMutuo
+- **CampingParceiro/CampingPainel/CampingProximo/Recurso** — camping do dono (`donoStatus: 'pendente' | 'aprovado'`, `ativo`), métricas de 30 dias (check-ins, visitantes únicos, avaliação, favoritos, ocupação, `checkinsPorDia[]`), campings sem dono no raio de 2 km, recursos de camping
 
 ## Regras de Negócio
 
@@ -335,6 +346,9 @@ Definidos em `src/app/core/models/`:
 - **Rate limit chat:** máximo 10 mensagens por minuto por usuário (via MemoryCache no backend)
 - **Expiração de sessão (JWT):** token expira em **24 horas** (`TokenService.GenerateToken` no backend). `POST /auth/refresh` é `[Authorize]` e só funciona com token ainda válido — não há refresh token de longa duração, então a sessão expira de vez após ~24h (não é renovável após esse ponto)
 - **Rascunho de trilha em criação:** os waypoints/distância/formulário da trilha sendo gravada em `CriarTrilhaComponent` são persistidos incrementalmente no localStorage (`TrilhaDraftService`) a cada ponto GPS e a cada mudança no formulário, sobrevivendo a refresh de página ou expiração de sessão. `MapComponent` reabre a gravação automaticamente no `ngAfterViewInit` se houver rascunho salvo. O rascunho é limpo ao salvar a trilha com sucesso ou ao cancelar a gravação
+- **Parceiros (dono de camping):** o dono, logado como usuário comum, cadastra um camping (tipo `camping` ou `pesca`) que nasce com `ativo = false` e `dono_status = 'pendente'`, ou **reivindica** um camping existente sem dono num raio de **2 km** da posição marcada (`dono_status = 'pendente'`, `ativo` inalterado). Aprovação é manual via SQL no Supabase (`UPDATE tb_camping SET ativo = true, dono_status = 'aprovado'`). `GET /mapa/campings` filtra `ativo = true`, então camping pendente não aparece no mapa. O painel "Meu camping" funciona mesmo pendente e mostra check-ins (30 dias/total), visitantes únicos, avaliação, favoritos e ocupação. Cupons/descontos e edição pelo dono ainda não existem (a landing `parceiros.html` os anuncia como "em breve")
+- **returnUrl:** `authGuard` redireciona para `/?returnUrl=<destino>`; login e registro (inclusive o retorno ao login após registro por e-mail) navegam para lá após autenticar, com fallback `/home`
+- **Toast e i18n:** `ToastService.success/error` recebem **texto já traduzido** (o `ToastComponent` não passa pelo `translate`) — usar `this.i18n.t('chave')` ao chamar
 
 ## Gerenciamento de Estado
 
